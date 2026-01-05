@@ -4,29 +4,39 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AgroHub - Owner Login</title>
-    <meta name="description" content="Login to your AgroHub owner account.">
+    <title>AgroHub - Owner Sign Up</title>
+    <meta name="description"
+        content="Register your business on AgroHub. List your equipment, reach more farmers, and grow your rental income.">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
+    <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
+
     <style>
         :root {
-            --primary: #0077b6;
-            --dark: #023e8a;
-            --light: #caf0f8;
+            --primary-blue: #0077b6;
+            --dark-blue: #023e8a;
+            --light-blue: #caf0f8;
             --accent-gold: #ffd60a;
             --accent-orange: #fb8500;
+            --owner-accent: #0096c7;
+            --owner-light: #90e0ef;
             --text-dark: #1a1a2e;
             --text-gray: #4a5568;
             --text-light: #a0aec0;
-            --white: #fff;
+            --white: #ffffff;
+            --cream: #fdfbf7;
+            --error: #ef4444;
             --font-serif: 'Playfair Display', serif;
             --font-sans: 'Inter', sans-serif;
         }
@@ -40,14 +50,18 @@
         body {
             font-family: var(--font-sans);
             color: var(--text-dark);
+            line-height: 1.6;
             min-height: 100vh;
             display: flex;
             background: linear-gradient(135deg, #caf0f8 0%, #90e0ef 50%, #48cae4 100%);
         }
 
+        /* Left Panel - Branding with Background */
         .brand-panel {
             flex: 1;
-            background: linear-gradient(135deg, rgba(2, 62, 138, 0.85) 0%, rgba(0, 119, 182, 0.9) 50%, rgba(72, 202, 228, 0.8) 100%), url('images/hero-bg.png');
+            background:
+                linear-gradient(135deg, rgba(2, 62, 138, 0.88) 0%, rgba(0, 119, 182, 0.9) 50%, rgba(0, 150, 199, 0.85) 100%),
+                url('images/hero-bg.png');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -59,6 +73,7 @@
             overflow: hidden;
         }
 
+        /* Animated Particles */
         .particles {
             position: absolute;
             width: 100%;
@@ -113,6 +128,7 @@
             0% {
                 bottom: -20px;
                 opacity: 0;
+                transform: translateX(0);
             }
 
             10% {
@@ -130,6 +146,7 @@
             }
         }
 
+        /* Floating Icons */
         .floating-icon {
             position: absolute;
             font-size: 2rem;
@@ -251,6 +268,7 @@
             font-family: var(--font-serif);
             font-size: 2rem;
             margin-bottom: 1rem;
+            line-height: 1.3;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
@@ -273,6 +291,7 @@
             margin-top: 2rem;
             font-weight: 500;
             border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .user-type-badge .material-icons-outlined {
@@ -280,6 +299,7 @@
             color: var(--accent-gold);
         }
 
+        /* Features List */
         .features-list {
             margin-top: 3rem;
             text-align: left;
@@ -303,7 +323,8 @@
             color: var(--accent-gold);
         }
 
-        .login-panel {
+        /* Right Panel - Signup Form */
+        .signup-panel {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -312,40 +333,43 @@
             padding: 3rem;
             background: var(--white);
             position: relative;
+            overflow-y: auto;
         }
 
-        .login-panel::before {
+        .signup-panel::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent-gold), var(--accent-orange));
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-gold), var(--accent-orange));
         }
 
-        .login-container {
+        .signup-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 480px;
             animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
-        .login-header {
+        .signup-header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
-        .login-header h1 {
+        .signup-header h1 {
             font-family: var(--font-serif);
             font-size: 2rem;
+            color: var(--text-dark);
             margin-bottom: 0.5rem;
         }
 
-        .login-header p {
+        .signup-header p {
             color: var(--text-gray);
             font-size: 0.95rem;
         }
 
+        /* Google Sign Up Button */
         .google-btn {
             width: 100%;
             display: flex;
@@ -358,14 +382,15 @@
             background: var(--white);
             font-size: 1rem;
             font-weight: 500;
+            color: var(--text-dark);
             cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
         }
 
         .google-btn:hover {
-            border-color: var(--primary);
-            background: var(--light);
+            border-color: var(--primary-blue);
+            background: var(--light-blue);
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(0, 119, 182, 0.15);
         }
@@ -375,11 +400,12 @@
             height: 20px;
         }
 
+        /* Divider */
         .divider {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .divider::before,
@@ -394,16 +420,25 @@
             color: var(--text-light);
             font-size: 0.875rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Form Styles */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .form-group label {
             display: block;
             font-size: 0.875rem;
             font-weight: 500;
+            color: var(--text-dark);
             margin-bottom: 0.5rem;
         }
 
@@ -427,20 +462,33 @@
             border: 2px solid #e5e7eb;
             border-radius: 12px;
             font-size: 1rem;
-            transition: all 0.3s;
+            font-family: var(--font-sans);
+            transition: all 0.3s ease;
             background: #fafafa;
         }
 
         .form-input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--primary-blue);
             background: var(--white);
             box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.1);
         }
 
         .form-input:focus+.material-icons-outlined,
         .input-wrapper:focus-within .material-icons-outlined {
-            color: var(--primary);
+            color: var(--primary-blue);
+        }
+
+        .form-input.icon-less {
+            padding-left: 1rem;
+        }
+
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23a0aec0' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
         }
 
         .password-toggle {
@@ -456,61 +504,75 @@
         }
 
         .password-toggle:hover {
-            color: var(--primary);
+            color: var(--primary-blue);
         }
 
-        .form-options {
+        /* Terms & Conditions */
+        .terms-checkbox {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
 
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .terms-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-blue);
             cursor: pointer;
+            margin-top: 0.1rem;
         }
 
-        .remember-me input {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-        }
-
-        .remember-me span {
+        .terms-checkbox label {
             font-size: 0.875rem;
             color: var(--text-gray);
+            line-height: 1.5;
         }
 
-        .forgot-password {
-            font-size: 0.875rem;
-            color: var(--primary);
+        .terms-checkbox label a {
+            color: var(--primary-blue);
             font-weight: 500;
-            transition: color 0.3s;
+            text-decoration: none;
         }
 
-        .forgot-password:hover {
+        .terms-checkbox label a:hover {
             text-decoration: underline;
         }
 
+        /* Submit Button */
         .submit-btn {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--dark));
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
             color: var(--white);
             border: none;
             border-radius: 12px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.4s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
             box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
         }
 
         .submit-btn:hover {
@@ -518,61 +580,31 @@
             box-shadow: 0 8px 25px rgba(0, 119, 182, 0.4);
         }
 
-        .signup-link {
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Login Link */
+        .login-link {
             text-align: center;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
             font-size: 0.95rem;
             color: var(--text-gray);
         }
 
-        .signup-link a {
-            color: var(--primary);
+        .login-link a {
+            color: var(--primary-blue);
             font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s;
         }
 
-        .signup-link a:hover {
+        .login-link a:hover {
+            color: var(--dark-blue);
             text-decoration: underline;
         }
 
-        .other-logins {
-            margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e5e7eb;
-            text-align: center;
-        }
-
-        .other-logins p {
-            font-size: 0.875rem;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-        }
-
-        .login-options {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .login-option {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.25rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            color: var(--text-gray);
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .login-option:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: var(--light);
-            transform: translateY(-2px);
-        }
-
+        /* Back to Home */
         .back-home {
             position: absolute;
             top: 2rem;
@@ -582,9 +614,9 @@
             gap: 0.5rem;
             color: rgba(255, 255, 255, 0.9);
             font-size: 0.9rem;
+            transition: all 0.3s;
             z-index: 10;
             text-decoration: none;
-            transition: all 0.3s;
         }
 
         .back-home:hover {
@@ -592,13 +624,56 @@
             transform: translateX(-5px);
         }
 
+        /* Password Strength Indicator */
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            border-radius: 2px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .password-strength-bar.weak {
+            width: 33%;
+            background: #ef4444;
+        }
+
+        .password-strength-bar.medium {
+            width: 66%;
+            background: #f59e0b;
+        }
+
+        .password-strength-bar.strong {
+            width: 100%;
+            background: #22c55e;
+        }
+
+        .password-hint {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        /* Responsive */
         @media (max-width: 992px) {
             body {
                 flex-direction: column;
             }
 
             .brand-panel {
+                padding: 3rem 2rem;
                 min-height: 35vh;
+            }
+
+            .signup-panel {
+                padding: 2.5rem 1.5rem;
             }
 
             .features-list {
@@ -607,21 +682,21 @@
         }
 
         @media (max-width: 480px) {
-            .form-options {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
+            .signup-container {
+                max-width: 100%;
             }
 
-            .login-options {
-                flex-direction: column;
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- Left Branding Panel -->
     <div class="brand-panel">
+        <!-- Animated Particles -->
         <div class="particles">
             <div class="particle"></div>
             <div class="particle"></div>
@@ -629,33 +704,63 @@
             <div class="particle"></div>
             <div class="particle"></div>
         </div>
+
+        <!-- Floating Icons -->
         <span class="floating-icon material-icons-outlined">storefront</span>
-        <span class="floating-icon material-icons-outlined">inventory</span>
+        <span class="floating-icon material-icons-outlined">inventory_2</span>
         <span class="floating-icon material-icons-outlined">trending_up</span>
-        <a href="landingpage.html" class="back-home"><span class="material-icons-outlined">arrow_back</span>Back to
-            Home</a>
+
+        <a href="landingpage.html" class="back-home">
+            <span class="material-icons-outlined">arrow_back</span>
+            Back to Home
+        </a>
+
         <div class="brand-content">
-            <div class="logo"><span class="material-icons-outlined">spa</span>AgroHub</div>
-            <h2 class="brand-title">Equipment Owner Portal</h2>
-            <p class="brand-subtitle">List your equipment, manage rentals, and grow your business with farmers.</p>
-            <div class="user-type-badge"><span class="material-icons-outlined">storefront</span>Owner Portal</div>
+            <div class="logo">
+                <span class="material-icons-outlined">spa</span>
+                AgroHub
+            </div>
+            <h2 class="brand-title">Grow Your Equipment Business</h2>
+            <p class="brand-subtitle">Register as an equipment owner and connect with thousands of farmers looking to
+                rent machinery.</p>
+
+            <div class="user-type-badge">
+                <span class="material-icons-outlined">storefront</span>
+                Owner Registration
+            </div>
+
             <div class="features-list">
-                <div class="feature-item"><span class="material-icons-outlined">check_circle</span><span>List unlimited
-                        equipment</span></div>
-                <div class="feature-item"><span class="material-icons-outlined">check_circle</span><span>Manage rental
-                        bookings</span></div>
-                <div class="feature-item"><span class="material-icons-outlined">check_circle</span><span>Track earnings
-                        & analytics</span></div>
+                <div class="feature-item">
+                    <span class="material-icons-outlined">check_circle</span>
+                    <span>List unlimited equipment for rent</span>
+                </div>
+                <div class="feature-item">
+                    <span class="material-icons-outlined">check_circle</span>
+                    <span>Reach 10,000+ verified farmers</span>
+                </div>
+                <div class="feature-item">
+                    <span class="material-icons-outlined">check_circle</span>
+                    <span>Secure digital agreements</span>
+                </div>
+                <div class="feature-item">
+                    <span class="material-icons-outlined">check_circle</span>
+                    <span>Real-time earnings tracking</span>
+                </div>
             </div>
         </div>
     </div>
-    <div class="login-panel">
-        <div class="login-container">
-            <div class="login-header">
-                <h1>Owner Sign In</h1>
-                <p>Access your equipment management dashboard</p>
+
+    <!-- Right Signup Panel -->
+    <div class="signup-panel">
+        <div class="signup-container">
+            <div class="signup-header">
+                <h1>Register your business</h1>
+                <p>Fill in the details below to get started</p>
             </div>
-            <button class="google-btn" id="google-signin"><svg viewBox="0 0 24 24">
+
+            <!-- Google Sign Up -->
+            <button class="google-btn" id="google-signup">
+                <svg viewBox="0 0 24 24">
                     <path fill="#4285F4"
                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                     <path fill="#34A853"
@@ -664,76 +769,174 @@
                         d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                     <path fill="#EA4335"
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                </svg>Continue with Google</button>
-            <div class="divider"><span>or</span></div>
-            <form id="login-form">
-                <div class="form-group"><label for="email">Email Address</label>
-                    <div class="input-wrapper"><input type="email" id="email" class="form-input"
-                            placeholder="owner@example.com" required><span class="material-icons-outlined">mail</span>
+                </svg>
+                Sign up with Google
+            </button>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <!-- Signup Form -->
+            <form id="signup-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="firstName" class="form-input" placeholder="Ravi" required>
+                            <span class="material-icons-outlined">person</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="lastName" class="form-input icon-less" placeholder="Sharma" required>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group"><label for="password">Password</label>
-                    <div class="input-wrapper"><input type="password" id="password" class="form-input"
-                            placeholder="Enter your password" required><span
-                            class="material-icons-outlined">lock</span><button type="button" class="password-toggle"
-                            id="toggle-password"><span class="material-icons-outlined">visibility</span></button></div>
+
+                <div class="form-group">
+                    <label for="businessName">Business Name</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="businessName" class="form-input" placeholder="Sharma Equipment Rentals"
+                            required>
+                        <span class="material-icons-outlined">storefront</span>
+                    </div>
                 </div>
-                <div class="form-options"><label class="remember-me"><input type="checkbox" id="remember"><span>Remember
-                            me</span></label><a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" class="form-input" placeholder="owner@business.com" required>
+                        <span class="material-icons-outlined">mail</span>
+                    </div>
                 </div>
-                <button type="submit" class="submit-btn"><span class="material-icons-outlined">login</span>Sign
-                    In</button>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="phone" class="form-input" placeholder="+91 9876543210" required>
+                        <span class="material-icons-outlined">phone</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Business Location / District</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="location" class="form-input" placeholder="Enter your district" required>
+                        <span class="material-icons-outlined">location_on</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="equipmentCount">Number of Equipment to List</label>
+                    <div class="input-wrapper">
+                        <select id="equipmentCount" class="form-input" required>
+                            <option value="">Select range</option>
+                            <option value="1-5">1 - 5 equipment</option>
+                            <option value="6-10">6 - 10 equipment</option>
+                            <option value="11-20">11 - 20 equipment</option>
+                            <option value="21-50">21 - 50 equipment</option>
+                            <option value="50+">More than 50 equipment</option>
+                        </select>
+                        <span class="material-icons-outlined">agriculture</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" class="form-input" placeholder="Create a strong password"
+                            required>
+                        <span class="material-icons-outlined">lock</span>
+                        <button type="button" class="password-toggle" id="toggle-password">
+                            <span class="material-icons-outlined">visibility</span>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strength-bar"></div>
+                    </div>
+                    <p class="password-hint">Use 8+ characters with a mix of letters, numbers & symbols</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" class="form-input"
+                            placeholder="Confirm your password" required>
+                        <span class="material-icons-outlined">lock</span>
+                    </div>
+                </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>, and consent
+                        to receive updates about AgroHub services.
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span class="material-icons-outlined">storefront</span>
+                    Register Business
+                </button>
             </form>
-            <p class="signup-link">Don't have an owner account? <a href="signup-owner.html">Register your business</a>
+
+            <p class="login-link">
+                Already have an owner account? <a href="login-owner.html">Sign in here</a>
             </p>
-            <div class="other-logins">
-                <p>Looking for a different portal?</p>
-                <div class="login-options"><a href="login-farmer.html" class="login-option"><span
-                            class="material-icons-outlined">agriculture</span>Farmer Login</a><a href="login-admin.html"
-                        class="login-option"><span class="material-icons-outlined">admin_panel_settings</span>Admin
-                        Login</a></div>
-            </div>
         </div>
     </div>
+
     <script>
-        // Google Sign-In Configuration
-        const GOOGLE_CLIENT_ID = '1099298645708-av54k0kbvnib0o4lqdtr1hb920hi126k.apps.googleusercontent.com';
+        // Password visibility toggle
+        const togglePassword = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('password');
 
-        // Initialize Google Sign-In
-        function initializeGoogleSignIn() {
-            google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                callback: handleGoogleSignIn,
-                auto_select: false,
-                cancel_on_tap_outside: true
-            });
-        }
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('.material-icons-outlined').textContent =
+                type === 'password' ? 'visibility' : 'visibility_off';
+        });
 
-        // Handle Google Sign-In Response
-        function handleGoogleSignIn(response) {
-            if (response.credential) {
-                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        // Password strength checker
+        const strengthBar = document.getElementById('strength-bar');
 
-                console.log('Google Sign-In Successful!');
+        passwordInput.addEventListener('input', function () {
+            const password = this.value;
+            let strength = 0;
 
-                localStorage.setItem('agrohub_user', JSON.stringify({
-                    name: payload.name,
-                    email: payload.email,
-                    picture: payload.picture,
-                    userType: 'owner',
-                    loginMethod: 'google',
-                    token: response.credential
-                }));
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password) && /[^a-zA-Z\d]/.test(password)) strength++;
 
-                showNotification('Welcome, ' + payload.name + '!', 'success');
+            strengthBar.className = 'password-strength-bar';
+            if (strength === 1) strengthBar.classList.add('weak');
+            else if (strength === 2) strengthBar.classList.add('medium');
+            else if (strength === 3) strengthBar.classList.add('strong');
+        });
 
-                setTimeout(() => {
-                    window.location.href = 'owner-dashboard.html';
-                }, 1500);
-            } else {
-                showNotification('Sign-in failed. Please try again.', 'error');
+        // Form submission
+        document.getElementById('signup-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
             }
-        }
+
+            // Add your signup logic here
+            console.log('Owner signup attempted');
+            // Redirect to dashboard after successful signup
+            window.location.href = 'owner-dashboard.html';
+        });
+
+        // Google Sign-Up Configuration
+        const GOOGLE_CLIENT_ID = '1099298645708-av54k0kbvnib0o4lqdtr1hb920hi126k.apps.googleusercontent.com';
 
         // Show notification function
         function showNotification(message, type) {
@@ -765,10 +968,23 @@
             }, 3000);
         }
 
-        // Google Sign-In Button Click Handler
-        document.getElementById('google-signin').addEventListener('click', function () {
+        // Google Sign Up
+        document.getElementById('google-signup').addEventListener('click', function () {
             if (typeof google !== 'undefined' && google.accounts) {
-                initializeGoogleSignIn();
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: (response) => {
+                        if (response.credential) {
+                            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                            localStorage.setItem('agrohub_user', JSON.stringify({
+                                name: payload.name, email: payload.email,
+                                picture: payload.picture, userType: 'owner', loginMethod: 'google'
+                            }));
+                            showNotification('Account created! Welcome, ' + payload.name + '!', 'success');
+                            setTimeout(() => { window.location.href = 'owner-dashboard.html'; }, 1500);
+                        }
+                    }
+                });
                 google.accounts.id.prompt((notification) => {
                     if (notification.isNotDisplayed()) {
                         const client = google.accounts.oauth2.initTokenClient({
@@ -785,45 +1001,20 @@
                                                 name: userInfo.name, email: userInfo.email,
                                                 picture: userInfo.picture, userType: 'owner', loginMethod: 'google'
                                             }));
-                                            showNotification('Welcome, ' + userInfo.name + '!', 'success');
+                                            showNotification('Account created! Welcome, ' + userInfo.name + '!', 'success');
                                             setTimeout(() => { window.location.href = 'owner-dashboard.html'; }, 1500);
                                         })
-                                        .catch(() => showNotification('Sign-in failed. Please try again.', 'error'));
+                                        .catch(() => showNotification('Sign-up failed. Please try again.', 'error'));
                                 }
                             },
-                            error_callback: () => showNotification('Sign-in was cancelled or failed.', 'error')
+                            error_callback: () => showNotification('Sign-up was cancelled or failed.', 'error')
                         });
                         client.requestAccessToken();
                     }
                 });
             } else {
-                showNotification('Google Sign-In is loading. Please try again.', 'error');
+                showNotification('Google Sign-Up is loading. Please try again.', 'error');
             }
-        });
-
-        // Password toggle
-        document.getElementById('toggle-password').addEventListener('click', function () {
-            const p = document.getElementById('password');
-            const t = p.type === 'password' ? 'text' : 'password';
-            p.type = t;
-            this.querySelector('.material-icons-outlined').textContent = t === 'password' ? 'visibility' : 'visibility_off';
-        });
-
-        // Form submission
-        document.getElementById('login-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            // Get the email entered by user
-            const email = document.getElementById('email').value;
-
-            // Store user info in localStorage
-            localStorage.setItem('agrohub_user', JSON.stringify({
-                email: email,
-                userType: 'owner',
-                loginMethod: 'email'
-            }));
-
-            console.log('Owner login');
-            window.location.href = 'owner-dashboard.html';
         });
     </script>
 </body>

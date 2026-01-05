@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AgroHub - Farmer Login</title>
+    <title>AgroHub - Farmer Sign Up</title>
     <meta name="description"
-        content="Login to your AgroHub farmer account. Access equipment rentals, hire workers, and grow your farm.">
+        content="Create your AgroHub farmer account. Access equipment rentals, hire workers, and grow your farm.">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +20,7 @@
 
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+
 
     <style>
         :root {
@@ -322,8 +323,8 @@
             color: var(--accent-gold);
         }
 
-        /* Right Panel - Login Form */
-        .login-panel {
+        /* Right Panel - Signup Form */
+        .signup-panel {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -332,9 +333,10 @@
             padding: 3rem;
             background: var(--white);
             position: relative;
+            overflow-y: auto;
         }
 
-        .login-panel::before {
+        .signup-panel::before {
             content: '';
             position: absolute;
             top: 0;
@@ -344,30 +346,30 @@
             background: linear-gradient(90deg, var(--primary-green), var(--accent-gold), var(--accent-orange));
         }
 
-        .login-container {
+        .signup-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 480px;
             animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
-        .login-header {
+        .signup-header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
-        .login-header h1 {
+        .signup-header h1 {
             font-family: var(--font-serif);
             font-size: 2rem;
             color: var(--text-dark);
             margin-bottom: 0.5rem;
         }
 
-        .login-header p {
+        .signup-header p {
             color: var(--text-gray);
             font-size: 0.95rem;
         }
 
-        /* Google Sign In Button */
+        /* Google Sign Up Button */
         .google-btn {
             width: 100%;
             display: flex;
@@ -383,7 +385,7 @@
             color: var(--text-dark);
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .google-btn:hover {
@@ -403,7 +405,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .divider::before,
@@ -422,8 +424,14 @@
         }
 
         /* Form Styles */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .form-group label {
@@ -471,6 +479,18 @@
             color: var(--primary-green);
         }
 
+        .form-input.icon-less {
+            padding-left: 1rem;
+        }
+
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23a0aec0' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+
         .password-toggle {
             position: absolute;
             right: 1rem;
@@ -487,42 +507,35 @@
             color: var(--primary-green);
         }
 
-        /* Remember & Forgot */
-        .form-options {
+        /* Terms & Conditions */
+        .terms-checkbox {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
 
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-        }
-
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+        .terms-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
             accent-color: var(--primary-green);
             cursor: pointer;
+            margin-top: 0.1rem;
         }
 
-        .remember-me span {
+        .terms-checkbox label {
             font-size: 0.875rem;
             color: var(--text-gray);
+            line-height: 1.5;
         }
 
-        .forgot-password {
-            font-size: 0.875rem;
+        .terms-checkbox label a {
             color: var(--primary-green);
             font-weight: 500;
-            transition: color 0.3s;
+            text-decoration: none;
         }
 
-        .forgot-password:hover {
-            color: var(--dark-green);
+        .terms-checkbox label a:hover {
             text-decoration: underline;
         }
 
@@ -571,66 +584,24 @@
             transform: translateY(0);
         }
 
-        /* Sign Up Link */
-        .signup-link {
+        /* Login Link */
+        .login-link {
             text-align: center;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
             font-size: 0.95rem;
             color: var(--text-gray);
         }
 
-        .signup-link a {
+        .login-link a {
             color: var(--primary-green);
             font-weight: 600;
+            text-decoration: none;
             transition: color 0.3s;
         }
 
-        .signup-link a:hover {
+        .login-link a:hover {
             color: var(--dark-green);
             text-decoration: underline;
-        }
-
-        /* Other Login Options */
-        .other-logins {
-            margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e5e7eb;
-            text-align: center;
-        }
-
-        .other-logins p {
-            font-size: 0.875rem;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-        }
-
-        .login-options {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .login-option {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.25rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            color: var(--text-gray);
-            transition: all 0.3s;
-        }
-
-        .login-option:hover {
-            border-color: var(--primary-green);
-            color: var(--primary-green);
-            background: var(--light-green);
-            transform: translateY(-2px);
-        }
-
-        .login-option .material-icons-outlined {
-            font-size: 1.1rem;
         }
 
         /* Back to Home */
@@ -653,6 +624,43 @@
             transform: translateX(-5px);
         }
 
+        /* Password Strength Indicator */
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            border-radius: 2px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .password-strength-bar.weak {
+            width: 33%;
+            background: #ef4444;
+        }
+
+        .password-strength-bar.medium {
+            width: 66%;
+            background: #f59e0b;
+        }
+
+        .password-strength-bar.strong {
+            width: 100%;
+            background: #22c55e;
+        }
+
+        .password-hint {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
         /* Responsive */
         @media (max-width: 992px) {
             body {
@@ -661,10 +669,10 @@
 
             .brand-panel {
                 padding: 3rem 2rem;
-                min-height: 40vh;
+                min-height: 35vh;
             }
 
-            .login-panel {
+            .signup-panel {
                 padding: 2.5rem 1.5rem;
             }
 
@@ -674,25 +682,18 @@
         }
 
         @media (max-width: 480px) {
-            .login-container {
+            .signup-container {
                 max-width: 100%;
             }
 
-            .form-options {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-
-            .login-options {
-                flex-direction: column;
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 
 <body>
-
     <!-- Left Branding Panel -->
     <div class="brand-panel">
         <!-- Animated Particles -->
@@ -719,46 +720,46 @@
                 <span class="material-icons-outlined">spa</span>
                 AgroHub
             </div>
-            <h2 class="brand-title">Welcome Back, Farmer!</h2>
-            <p class="brand-subtitle">Access quality equipment, hire skilled workers, and grow your farming operation
-                with AgroHub.</p>
+            <h2 class="brand-title">Join the Farming Revolution</h2>
+            <p class="brand-subtitle">Create your account and access premium agricultural services designed for modern
+                farmers.</p>
 
             <div class="user-type-badge">
                 <span class="material-icons-outlined">agriculture</span>
-                Farmer Portal
+                Farmer Registration
             </div>
 
             <div class="features-list">
                 <div class="feature-item">
                     <span class="material-icons-outlined">check_circle</span>
-                    <span>Rent equipment at competitive prices</span>
+                    <span>Access to 500+ equipment options</span>
                 </div>
                 <div class="feature-item">
                     <span class="material-icons-outlined">check_circle</span>
-                    <span>Connect with certified operators</span>
+                    <span>Connect with verified workers</span>
                 </div>
                 <div class="feature-item">
                     <span class="material-icons-outlined">check_circle</span>
-                    <span>Access learning resources & tutorials</span>
+                    <span>Free tutorials & learning resources</span>
                 </div>
                 <div class="feature-item">
                     <span class="material-icons-outlined">check_circle</span>
-                    <span>Track your rental history</span>
+                    <span>Secure digital agreements</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Right Login Panel -->
-    <div class="login-panel">
-        <div class="login-container">
-            <div class="login-header">
-                <h1>Sign in to your account</h1>
-                <p>Enter your credentials to access your farmer dashboard</p>
+    <!-- Right Signup Panel -->
+    <div class="signup-panel">
+        <div class="signup-container">
+            <div class="signup-header">
+                <h1>Create your account</h1>
+                <p>Fill in the details below to get started</p>
             </div>
 
-            <!-- Google Sign In -->
-            <button class="google-btn" id="google-signin">
+            <!-- Google Sign Up -->
+            <button class="google-btn" id="google-signup">
                 <svg viewBox="0 0 24 24">
                     <path fill="#4285F4"
                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -769,15 +770,31 @@
                     <path fill="#EA4335"
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
-                Continue with Google
+                Sign up with Google
             </button>
 
             <div class="divider">
                 <span>or</span>
             </div>
 
-            <!-- Login Form -->
-            <form id="login-form">
+            <!-- Signup Form -->
+            <form id="signup-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="firstName" class="form-input" placeholder="John" required>
+                            <span class="material-icons-outlined">person</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="lastName" class="form-input icon-less" placeholder="Doe" required>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <div class="input-wrapper">
@@ -787,101 +804,156 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="phone" class="form-input" placeholder="+91 9876543210" required>
+                        <span class="material-icons-outlined">phone</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Farm Location / District</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="location" class="form-input" placeholder="Enter your district" required>
+                        <span class="material-icons-outlined">location_on</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="farmSize">Farm Size (in acres)</label>
+                    <div class="input-wrapper">
+                        <select id="farmSize" class="form-input" required>
+                            <option value="">Select farm size</option>
+                            <option value="0-5">Less than 5 acres</option>
+                            <option value="5-10">5 - 10 acres</option>
+                            <option value="10-25">10 - 25 acres</option>
+                            <option value="25-50">25 - 50 acres</option>
+                            <option value="50+">More than 50 acres</option>
+                        </select>
+                        <span class="material-icons-outlined">landscape</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="password">Password</label>
                     <div class="input-wrapper">
-                        <input type="password" id="password" class="form-input" placeholder="Enter your password"
+                        <input type="password" id="password" class="form-input" placeholder="Create a strong password"
                             required>
                         <span class="material-icons-outlined">lock</span>
                         <button type="button" class="password-toggle" id="toggle-password">
                             <span class="material-icons-outlined">visibility</span>
                         </button>
                     </div>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strength-bar"></div>
+                    </div>
+                    <p class="password-hint">Use 8+ characters with a mix of letters, numbers & symbols</p>
                 </div>
 
-                <div class="form-options">
-                    <label class="remember-me">
-                        <input type="checkbox" id="remember">
-                        <span>Remember me</span>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" class="form-input"
+                            placeholder="Confirm your password" required>
+                        <span class="material-icons-outlined">lock</span>
+                    </div>
+                </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>, and consent
+                        to receive updates about AgroHub services.
                     </label>
-                    <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
                 </div>
 
                 <button type="submit" class="submit-btn">
-                    <span class="material-icons-outlined">login</span>
-                    Sign In
+                    <span class="material-icons-outlined">how_to_reg</span>
+                    Create Account
                 </button>
             </form>
 
-            <p class="signup-link">
-                Don't have an account? <a href="signup-farmer.html">Create one now</a>
+            <p class="login-link">
+                Already have an account? <a href="login-farmer.html">Sign in here</a>
             </p>
-
-            <!-- Other Login Options -->
-            <div class="other-logins">
-                <p>Are you an owner or admin?</p>
-                <div class="login-options">
-                    <a href="login-owner.html" class="login-option">
-                        <span class="material-icons-outlined">storefront</span>
-                        Owner Login
-                    </a>
-                    <a href="login-admin.html" class="login-option">
-                        <span class="material-icons-outlined">admin_panel_settings</span>
-                        Admin Login
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
-        // Configuration
-        const GOOGLE_CLIENT_ID = '1099298645708-av54k0kbvnib0o4lqdtr1hb920hi126k.apps.googleusercontent.com';
+        // Password visibility toggle
+        const togglePassword = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('password');
 
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('.material-icons-outlined').textContent =
+                type === 'password' ? 'visibility' : 'visibility_off';
+        });
 
-        let tokenClient;
+        // Password strength checker
+        const strengthBar = document.getElementById('strength-bar');
 
-        // Initialize Google Identity Services (OAuth2)
-        function initializeGoogleSignIn() {
-            if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
-                setTimeout(initializeGoogleSignIn, 100);
+        passwordInput.addEventListener('input', function () {
+            const password = this.value;
+            let strength = 0;
+
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password) && /[^a-zA-Z\d]/.test(password)) strength++;
+
+            strengthBar.className = 'password-strength-bar';
+            if (strength === 1) strengthBar.classList.add('weak');
+            else if (strength === 2) strengthBar.classList.add('medium');
+            else if (strength === 3) strengthBar.classList.add('strong');
+        });
+
+        // Form submission
+        document.getElementById('signup-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const phone = document.getElementById('phone').value;
+
+            // Basic Validation
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match!', 'error');
                 return;
             }
 
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: GOOGLE_CLIENT_ID,
-                scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-                callback: (tokenResponse) => {
-                    if (tokenResponse && tokenResponse.access_token) {
-                        handleGoogleAuthWithToken(tokenResponse.access_token);
-                    }
-                },
-            });
-        }
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
 
-        // Auto-initialize on load
-        window.onload = initializeGoogleSignIn;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons-outlined">sync</span> Creating Account...';
 
-        // Handle Google Auth with Access Token
-        async function handleGoogleAuthWithToken(accessToken) {
             try {
-                const res = await fetch('php/auth.php?action=google-auth', {
+                const response = await fetch('php/auth.php?action=signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        accessToken: accessToken,
-                        userType: 'farmer'
+                        name: `${firstName} ${lastName}`,
+                        email: email,
+                        password: password,
+                        userType: 'farmer',
+                        phone: phone // Note: Backend needs to be updated to handle phone if not already
                     })
                 });
 
-                // Check if response is ok (HTTP 200-299)
-                if (!res.ok) {
-                    throw new Error(`Server returned ${res.status} ${res.statusText}`);
+                // Check HTTP status
+                if (!response.ok) {
+                    throw new Error(`Server Error: ${response.status}`);
                 }
 
-                const result = await res.json();
+                const result = await response.json();
 
                 if (result.success) {
-                    showNotification('Welcome, ' + result.data.user.name + '!', 'success');
+                    showNotification('Account created successfully!', 'success');
+                    // Store session data
                     localStorage.setItem('agrohub_user', JSON.stringify(result.data.user));
                     localStorage.setItem('agrohub_token', result.data.token);
 
@@ -889,28 +961,19 @@
                         window.location.href = 'farmer-dashboard.html';
                     }, 1500);
                 } else {
-                    console.error('Server reported error:', result.message);
-                    showNotification(result.message, 'error');
+                    showNotification(result.message || 'Signup failed', 'error');
                 }
             } catch (error) {
-                console.error('Google Auth Error:', error);
-                showNotification('Google authentication failed. Check console for details.', 'error');
-            }
-        }
-
-        // Google Sign-In Button Click Handler
-        document.getElementById('google-signin')?.addEventListener('click', function () {
-            if (tokenClient) {
-                tokenClient.requestAccessToken();
-            } else {
-                initializeGoogleSignIn();
-                if (tokenClient) {
-                    tokenClient.requestAccessToken();
-                } else {
-                    showNotification('Google Sign-In is loading...', 'error');
-                }
+                console.error('Signup Error:', error);
+                showNotification('Connection error. Please check your PHP server.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         });
+
+        // Google Sign-Up Configuration
+        const GOOGLE_CLIENT_ID = '1099298645708-av54k0kbvnib0o4lqdtr1hb920hi126k.apps.googleusercontent.com';
 
         // Show notification function
         function showNotification(message, type) {
@@ -920,25 +983,13 @@
             const notification = document.createElement('div');
             notification.className = 'google-notification';
             notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 1rem 1.5rem;
-                border-radius: 12px;
-                color: white;
-                font-weight: 500;
-                z-index: 9999;
-                animation: slideIn 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem;
+                border-radius: 12px; color: white; font-weight: 500; z-index: 9999;
+                animation: slideIn 0.3s ease; display: flex; align-items: center;
+                gap: 0.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
                 background: ${type === 'success' ? 'linear-gradient(135deg, #22c55e, #16a34a)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
             `;
-            notification.innerHTML = `
-                <span class="material-icons-outlined">${type === 'success' ? 'check_circle' : 'error'}</span>
-                ${message}
-            `;
+            notification.innerHTML = `<span class="material-icons-outlined">${type === 'success' ? 'check_circle' : 'error'}</span>${message}`;
             document.body.appendChild(notification);
 
             if (!document.querySelector('#notification-styles')) {
@@ -954,50 +1005,64 @@
             }, 3000);
         }
 
-        // Password visibility toggle
-        document.getElementById('toggle-password')?.addEventListener('click', function () {
-            const passwordInput = document.getElementById('password');
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.querySelector('.material-icons-outlined').textContent = type === 'password' ? 'visibility' : 'visibility_off';
-        });
+        // Google Sign Up
+        // Initialize Google Sign-In
+        function initializeGoogleSignIn() {
+            if (typeof google === 'undefined' || !google.accounts) return;
 
-        // Form submission
-        document.getElementById('login-form').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const submitBtn = this.querySelector('button[type="submit"]');
+            google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: handleGoogleSignUpResponse,
+                auto_select: false,
+                cancel_on_tap_outside: true
+            });
+        }
 
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="material-icons-outlined">sync</span> Signing in...';
+        // Handle Google Sign-Up Response
+        async function handleGoogleSignUpResponse(response) {
+            if (response.credential) {
+                try {
+                    const res = await fetch('php/auth.php?action=google-auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            credential: response.credential,
+                            userType: 'farmer'
+                        })
+                    });
 
-            try {
-                const response = await fetch('php/auth.php?action=login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, userType: 'farmer' })
-                });
+                    const result = await res.json();
 
-                const result = await response.json();
+                    if (result.success) {
+                        showNotification('Account created! Welcome, ' + result.data.user.name + '!', 'success');
+                        localStorage.setItem('agrohub_user', JSON.stringify(result.data.user));
+                        localStorage.setItem('agrohub_token', result.data.token);
 
-                if (result.success) {
-                    showNotification('Login successful!', 'success');
-                    localStorage.setItem('agrohub_user', JSON.stringify(result.data.user));
-                    localStorage.setItem('agrohub_token', result.data.token);
-                    setTimeout(() => window.location.href = 'farmer-dashboard.html', 1000);
-                } else {
-                    showNotification(result.message, 'error');
+                        setTimeout(() => {
+                            window.location.href = 'farmer-dashboard.html';
+                        }, 1500);
+                    } else {
+                        showNotification(result.message, 'error');
+                    }
+                } catch (error) {
+                    showNotification('Google authentication failed.', 'error');
                 }
-            } catch (error) {
-                showNotification('Connection error. Please check your PHP server.', 'error');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span class="material-icons-outlined">login</span> Sign In';
+            }
+        }
+
+        // Google Sign-Up Button Click Handler
+        document.getElementById('google-signup').addEventListener('click', function () {
+            if (typeof google !== 'undefined' && google.accounts) {
+                initializeGoogleSignIn();
+                google.accounts.id.prompt();
+            } else {
+                showNotification('Google services are loading...', 'error');
             }
         });
-    </script>
 
+        // Initialize on load just in case
+        window.addEventListener('load', initializeGoogleSignIn);
+    </script>
 </body>
 
 </html>

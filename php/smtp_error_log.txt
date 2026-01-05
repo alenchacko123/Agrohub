@@ -1,0 +1,65 @@
+2025-12-20 07:29:48 - Error:
+Connected to smtp.gmail.com
+S: 220 smtp.gmail.com ESMTP d2e1a72fcca58-7ff7e88c8f0sm4201430b3a.62 - gsmtp
+C: EHLO smtp.gmail.com
+S: 250-smtp.gmail.com at your service, [117.193.79.225]
+C: STARTTLS
+S: 250-SIZE 35882577
+
+Exception: TLS negotiation failed
+
+2025-12-20 07:29:54 - Error:
+Connected to smtp.gmail.com
+S: 220 smtp.gmail.com ESMTP 98e67ed59e1d1-34e772e16c6sm2510019a91.12 - gsmtp
+C: EHLO smtp.gmail.com
+S: 250-smtp.gmail.com at your service, [117.193.79.225]
+C: STARTTLS
+S: 250-SIZE 35882577
+
+Exception: TLS negotiation failed
+
+2025-12-20 07:30:04 - Error:
+Connected to smtp.gmail.com
+S: 220 smtp.gmail.com ESMTP 98e67ed59e1d1-34e70d65653sm6962452a91.5 - gsmtp
+C: EHLO smtp.gmail.com
+S: 250-smtp.gmail.com at your service, [136.232.57.110]
+C: STARTTLS
+S: 250-SIZE 35882577
+
+Exception: TLS negotiation failed
+
+2025-12-20 07:30:18 - Error:
+Connected to smtp.gmail.com
+S: 220 smtp.gmail.com ESMTP d2e1a72fcca58-7ff7a84368dsm4214672b3a.2 - gsmtp
+C: EHLO smtp.gmail.com
+S: 250-smtp.gmail.com at your service, [136.232.57.110]
+C: STARTTLS
+S: 250-SIZE 35882577
+
+Exception: TLS negotiation failed
+
+2025-12-20 07:32:04 - Error:
+Connected to smtp.gmail.com
+S: 220 smtp.gmail.com ESMTP 41be03b00d2f7-c1e7c143aa8sm3713082a12.24 - gsmtp
+C: EHLO smtp.gmail.com
+S: 250-smtp.gmail.com at your service, [117.193.79.225]
+C: STARTTLS
+S: 250-SIZE 35882577
+
+Exception: TLS negotiation failed
+
+2025-12-20 07:34:24 - Error:
+Connected to ssl://smtp.gmail.com:465
+S: 220 smtp.gmail.com ESMTP d2e1a72fcca58-7ff7a93ab3csm4149417b3a.7 - gsmtp
+C: EHLO localhost
+S: 250-smtp.gmail.com at your service, [117.193.79.225]
+C: AUTH LOGIN
+S: 250-SIZE 35882577
+C: YWxlbmNoYWNrbzIwMjhAbWNhLmFqY2UuaW4=
+S: 250-8BITMIME
+C: c2ZyeG9samhuYXF6eWJwaQ==
+S: 250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+
+Exception: Auth Failed: 250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+
+
