@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hire Workers - AgroHub</title>
+    <meta name="description" content="Find and hire skilled agricultural workers and machine operators">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --dark-green: #1b4332;
+            --light-green: #d8f3dc;
+            --accent-gold: #ffd60a;
+            --accent-orange: #fb8500;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --text-light: #a0aec0;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 0.75rem;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border-color: var(--primary-green);
+        }
+
+        /* Filters */
+        .filters-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+        }
+
+        /* Worker Grid */
+        .worker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .worker-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .worker-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(45, 106, 79, 0.2);
+        }
+
+        .worker-header {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .worker-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .worker-info {
+            flex: 1;
+        }
+
+        .worker-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .worker-title {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .worker-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .worker-status.available {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .worker-status.busy {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .worker-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge.verified {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+        }
+
+        .badge.premium {
+            background: rgba(255, 214, 10, 0.2);
+            color: #d97706;
+        }
+
+        .worker-details {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--accent-gold);
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .skill-tag {
+            padding: 0.35rem 0.75rem;
+            background: linear-gradient(135deg, rgba(45, 106, 79, 0.1), rgba(45, 106, 79, 0.15));
+            color: var(--primary-green);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .worker-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .worker-rate {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rate-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .rate-label {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        .hire-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hire-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        .hire-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 24px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: var(--text-gray);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: var(--text-gray);
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.15));
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box h4 {
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .worker-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <a href="farmer-dashboard.html" class="back-btn">
+                <span class="material-icons-outlined">arrow_back</span>
+                Back to Dashboard
+            </a>
+            <h1 class="page-title">👥 Hire Workers</h1>
+            <p class="page-subtitle">Find skilled agricultural workers and professional machine operators</p>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="filterByCategory('all')">
+                <span class="material-icons-outlined">groups</span>
+                All Workers
+            </button>
+            <button class="tab-btn" onclick="filterByCategory('operator')">
+                <span class="material-icons-outlined">engineering</span>
+                Machine Operators
+            </button>
+            <button class="tab-btn" onclick="filterByCategory('laborer')">
+                <span class="material-icons-outlined">agriculture</span>
+                Farm Laborers
+            </button>
+            <button class="tab-btn" onclick="filterByCategory('specialist')">
+                <span class="material-icons-outlined">stars</span>
+                Specialists
+            </button>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Experience</label>
+                    <select id="experienceFilter">
+                        <option value="">All Levels</option>
+                        <option value="0-2">0-2 Years</option>
+                        <option value="2-5">2-5 Years</option>
+                        <option value="5+">5+ Years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Availability</label>
+                    <select id="availabilityFilter">
+                        <option value="">All</option>
+                        <option value="available">Available Now</option>
+                        <option value="busy">Currently Busy</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Daily Rate</label>
+                    <select id="rateFilter">
+                        <option value="">All Rates</option>
+                        <option value="0-500">Under ₹500/day</option>
+                        <option value="500-1000">₹500 - ₹1,000/day</option>
+                        <option value="1000+">₹1,000+/day</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Location</label>
+                    <select id="locationFilter">
+                        <option value="">All Locations</option>
+                        <option value="Bangalore">Bangalore</option>
+                        <option value="Mysore">Mysore</option>
+                        <option value="Hassan">Hassan</option>
+                        <option value="Mandya">Mandya</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Worker Grid -->
+        <div class="worker-grid" id="workerGrid"></div>
+    </div>
+
+    <!-- Hiring Modal -->
+    <div class="modal" id="hiringModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeHiringModal()">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalWorkerName">Hire Worker</h2>
+                <p class="modal-subtitle">Complete the hiring details</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-box">
+                    <h4>
+                        <span class="material-icons-outlined">info</span>
+                        Worker Details
+                    </h4>
+                    <p><strong>Rate:</strong> <span id="modalRate">₹0/day</span> | <strong>Experience:</strong> <span
+                            id="modalExperience">-</span> years</p>
+                </div>
+
+                <form id="hiringForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Date *</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>End Date (Optional)</label>
+                            <input type="date" id="endDate">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Work Type *</label>
+                        <select id="workType" required>
+                            <option value="">Select work type</option>
+                            <option value="harvesting">Harvesting</option>
+                            <option value="planting">Planting/Sowing</option>
+                            <option value="plowing">Plowing/Tilling</option>
+                            <option value="spraying">Spraying</option>
+                            <option value="irrigation">Irrigation</option>
+                            <option value="operation">Machine Operation</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Farm Location *</label>
+                        <textarea id="farmLocation" rows="2" placeholder="Enter your farm address" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Working Hours/Day *</label>
+                            <input type="number" id="workHours" value="8" min="4" max="12" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Estimated Days</label>
+                            <input type="number" id="estimatedDays" value="1" min="1" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Accommodation Provided?</label>
+                        <select id="accommodation">
+                            <option value="no">No</option>
+                            <option value="yes">Yes (Included)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Food Provided?</label>
+                        <select id="foodProvided">
+                            <option value="no">No</option>
+                            <option value="yes">Yes (Included)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Special Requirements (Optional)</label>
+                        <textarea id="specialRequirements" rows="2"
+                            placeholder="Any specific skills or requirements"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estimated Total Cost</label>
+                        <input type="text" id="totalCost" value="₹0" readonly
+                            style="font-size: 1.25rem; font-weight: 700; color: var(--primary-green);">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeHiringModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitHiring()">Confirm Hiring</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample worker data
+        const workerData = [
+            {
+                id: 1,
+                name: "Ramesh Kumar",
+                category: "operator",
+                title: "Certified Tractor Operator",
+                rating: 4.8,
+                reviews: 45,
+                experience: 8,
+                rate: 1200,
+                location: "Bangalore",
+                availability: "available",
+                verified: true,
+                premium: true,
+                skills: ["Tractor Operation", "Harvester", "Plowing", "Maintenance"],
+                languages: ["Hindi", "Kannada", "English"],
+                certifications: ["Heavy Equipment License", "Safety Training"]
+            },
+            {
+                id: 2,
+                name: "Suresh Patil",
+                category: "laborer",
+                title: "Experienced Farm Laborer",
+                rating: 4.6,
+                reviews: 32,
+                experience: 5,
+                rate: 600,
+                location: "Mysore",
+                availability: "available",
+                verified: true,
+                premium: false,
+                skills: ["Harvesting", "Planting", "Irrigation", "Weeding"],
+                languages: ["Kannada", "Tamil"],
+                certifications: []
+            },
+            {
+                id: 3,
+                name: "Prakash Reddy",
+                category: "operator",
+                title: "Harvester Specialist",
+                rating: 4.9,
+                reviews: 67,
+                experience: 12,
+                rate: 1500,
+                location: "Hassan",
+                availability: "busy",
+                verified: true,
+                premium: true,
+                skills: ["Combined Harvester", "Crop Cutting", "Quality Control"],
+                languages: ["Kannada", "Telugu", "English"],
+                certifications: ["Harvester License", "Advanced Operation"]
+            },
+            {
+                id: 4,
+                name: "Manjunath S",
+                category: "specialist",
+                title: "Irrigation Expert",
+                rating: 4.7,
+                reviews: 28,
+                experience: 10,
+                rate: 1000,
+                location: "Mandya",
+                availability: "available",
+                verified: true,
+                premium: true,
+                skills: ["Drip Irrigation", "Sprinkler Setup", "Water Management"],
+                languages: ["Kannada", "English"],
+                certifications: ["Irrigation Specialist", "Water Conservation"]
+            },
+            {
+                id: 5,
+                name: "Krishna Gowda",
+                category: "laborer",
+                title: "General Farm Worker",
+                rating: 4.4,
+                reviews: 21,
+                experience: 3,
+                rate: 500,
+                location: "Bangalore",
+                availability: "available",
+                verified: false,
+                premium: false,
+                skills: ["Planting", "Harvesting", "General Labor"],
+                languages: ["Kannada"],
+                certifications: []
+            },
+            {
+                id: 6,
+                name: "Venkatesh M",
+                category: "operator",
+                title: "Power Tiller Operator",
+                rating: 4.5,
+                reviews: 18,
+                experience: 4,
+                rate: 800,
+                location: "Mysore",
+                availability: "available",
+                verified: true,
+                premium: false,
+                skills: ["Power Tiller", "Rotavator", "Land Preparation"],
+                languages: ["Kannada", "Tamil"],
+                certifications: ["Equipment License"]
+            },
+            {
+                id: 7,
+                name: "Raghu N",
+                category: "specialist",
+                title: "Crop Protection Specialist",
+                rating: 4.8,
+                reviews: 35,
+                experience: 9,
+                rate: 1100,
+                location: "Hassan",
+                availability: "available",
+                verified: true,
+                premium: true,
+                skills: ["Pest Control", "Spraying", "Disease Management"],
+                languages: ["Kannada", "English"],
+                certifications: ["Pesticide License", "Safety Expert"]
+            },
+            {
+                id: 8,
+                name: "Basavaraj K",
+                category: "laborer",
+                title: "Harvest Team Leader",
+                rating: 4.6,
+                reviews: 40,
+                experience: 7,
+                rate: 700,
+                location: "Mandya",
+                availability: "available",
+                verified: true,
+                premium: false,
+                skills: ["Team Management", "Harvesting", "Quality Check"],
+                languages: ["Kannada", "Hindi"],
+                certifications: ["Team Lead Training"]
+            }
+        ];
+
+        let currentWorker = null;
+        let currentCategory = 'all';
+
+        // Render worker cards
+        function renderWorkers(data = workerData) {
+            const grid = document.getElementById('workerGrid');
+            grid.innerHTML = data.map(worker => {
+                const initials = worker.name.split(' ').map(n => n[0]).join('');
+                return `
+                <div class="worker-card" onclick="openHiringModal(${worker.id})">
+                    <div class="worker-header">
+                        <div class="worker-avatar">${initials}</div>
+                        <div class="worker-info">
+                            <h3 class="worker-name">${worker.name}</h3>
+                            <p class="worker-title">${worker.title}</p>
+                            <div class="worker-status ${worker.availability}">
+                                <span class="status-dot"></span>
+                                ${worker.availability === 'available' ? 'Available Now' : 'Currently Busy'}
+                            </div>
+                            <div class="worker-badges">
+                                ${worker.verified ? '<span class="badge verified"><span class="material-icons-outlined" style="font-size: 0.9rem;">verified</span> Verified</span>' : ''}
+                                ${worker.premium ? '<span class="badge premium"><span class="material-icons-outlined" style="font-size: 0.9rem;">star</span> Premium</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="worker-details">
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <span class="material-icons-outlined" style="font-size: 1rem;">star</span>
+                                Rating
+                            </span>
+                            <span class="detail-value">
+                                <span class="rating">${worker.rating} ★</span> (${worker.reviews} reviews)
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <span class="material-icons-outlined" style="font-size: 1rem;">work</span>
+                                Experience
+                            </span>
+                            <span class="detail-value">${worker.experience} years</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <span class="material-icons-outlined" style="font-size: 1rem;">location_on</span>
+                                Location
+                            </span>
+                            <span class="detail-value">${worker.location}</span>
+                        </div>
+                    </div>
+
+                    <div class="skills-list">
+                        ${worker.skills.slice(0, 4).map(skill => `
+                            <span class="skill-tag">${skill}</span>
+                        `).join('')}
+                    </div>
+
+                    <div class="worker-footer">
+                        <div class="worker-rate">
+                            <span class="rate-value">₹${worker.rate.toLocaleString()}</span>
+                            <span class="rate-label">per day</span>
+                        </div>
+                        <button class="hire-btn" ${worker.availability === 'busy' ? 'disabled' : ''}>
+                            ${worker.availability === 'busy' ? 'Not Available' : 'Hire Now'}
+                            ${worker.availability !== 'busy' ? '<span class="material-icons-outlined">arrow_forward</span>' : ''}
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // Filter by category
+        function filterByCategory(category) {
+            currentCategory = category;
+
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
+
+            applyFilters();
+        }
+
+        // Apply all filters
+        function applyFilters() {
+            const experience = document.getElementById('experienceFilter').value;
+            const availability = document.getElementById('availabilityFilter').value;
+            const rate = document.getElementById('rateFilter').value;
+            const location = document.getElementById('locationFilter').value;
+
+            let filtered = workerData.filter(worker => {
+                const matchesCategory = currentCategory === 'all' || worker.category === currentCategory;
+                const matchesAvailability = !availability || worker.availability === availability;
+                const matchesLocation = !location || worker.location === location;
+
+                let matchesExperience = true;
+                if (experience) {
+                    const [min, max] = experience.split('-').map(e => parseInt(e.replace('+', '')));
+                    matchesExperience = max ? (worker.experience >= min && worker.experience <= max) : worker.experience >= min;
+                }
+
+                let matchesRate = true;
+                if (rate) {
+                    const [min, max] = rate.split('-').map(r => parseInt(r.replace('+', '')));
+                    matchesRate = max ? (worker.rate >= min && worker.rate <= max) : worker.rate >= min;
+                }
+
+                return matchesCategory && matchesAvailability && matchesLocation && matchesExperience && matchesRate;
+            });
+
+            renderWorkers(filtered);
+        }
+
+        // Event listeners for filters
+        document.getElementById('experienceFilter').addEventListener('change', applyFilters);
+        document.getElementById('availabilityFilter').addEventListener('change', applyFilters);
+        document.getElementById('rateFilter').addEventListener('change', applyFilters);
+        document.getElementById('locationFilter').addEventListener('change', applyFilters);
+
+        // Open hiring modal
+        function openHiringModal(workerId) {
+            const worker = workerData.find(w => w.id === workerId);
+            if (!worker || worker.availability === 'busy') return;
+
+            currentWorker = worker;
+            document.getElementById('modalWorkerName').textContent = `Hire ${worker.name}`;
+            document.getElementById('modalRate').textContent = `₹${worker.rate.toLocaleString()}/day`;
+            document.getElementById('modalExperience').textContent = worker.experience;
+
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').min = today;
+            document.getElementById('endDate').min = today;
+
+            document.getElementById('hiringModal').classList.add('active');
+        }
+
+        // Close hiring modal
+        function closeHiringModal() {
+            document.getElementById('hiringModal').classList.remove('active');
+            document.getElementById('hiringForm').reset();
+            currentWorker = null;
+        }
+
+        // Calculate hiring cost
+        function calculateCost() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+
+            let days = 1;
+            if (startDate && endDate && endDate >= startDate) {
+                days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            }
+
+            document.getElementById('estimatedDays').value = days;
+
+            if (currentWorker) {
+                const total = currentWorker.rate * days;
+                document.getElementById('totalCost').value = `₹${total.toLocaleString()}`;
+            }
+        }
+
+        // Event listeners for cost calculation
+        document.getElementById('startDate').addEventListener('change', function () {
+            document.getElementById('endDate').min = this.value;
+            calculateCost();
+        });
+        document.getElementById('endDate').addEventListener('change', calculateCost);
+
+        // Submit hiring
+        function submitHiring() {
+            const form = document.getElementById('hiringForm');
+
+            if (!form.checkValidity()) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const hiringData = {
+                worker: currentWorker.name,
+                workerId: currentWorker.id,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value || 'Ongoing',
+                workType: document.getElementById('workType').value,
+                farmLocation: document.getElementById('farmLocation').value,
+                workHours: document.getElementById('workHours').value,
+                estimatedDays: document.getElementById('estimatedDays').value,
+                accommodation: document.getElementById('accommodation').value === 'yes',
+                foodProvided: document.getElementById('foodProvided').value === 'yes',
+                specialRequirements: document.getElementById('specialRequirements').value,
+                totalCost: document.getElementById('totalCost').value
+            };
+
+            console.log('Hiring Data:', hiringData);
+
+            alert(`Hiring request submitted successfully!\n\nWorker: ${hiringData.worker}\nWork Type: ${hiringData.workType}\nDuration: ${hiringData.estimatedDays} days\nTotal Cost: ${hiringData.totalCost}\n\nThe worker will contact you within 24 hours to confirm.`);
+
+            closeHiringModal();
+        }
+
+        // Initialize
+        renderWorkers();
+    </script>
+</body>
+
+</html>

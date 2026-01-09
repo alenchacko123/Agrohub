@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutorials & Guidelines - AgroHub</title>
+    <meta name="description"
+        content="Learn equipment operation and farming techniques with our comprehensive tutorials">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --dark-green: #1b4332;
+            --light-green: #d8f3dc;
+            --accent-gold: #ffd60a;
+            --accent-orange: #fb8500;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --text-light: #a0aec0;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 0.75rem;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border-color: var(--primary-green);
+        }
+
+        /* Search Bar */
+        .search-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+        }
+
+        .search-box .material-icons-outlined {
+            position: absolute;
+            left: 1.25rem;
+            color: var(--text-light);
+            font-size: 1.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+        }
+
+        .stat-icon.videos {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2));
+            color: var(--error);
+        }
+
+        .stat-icon.guides {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2));
+            color: var(--info);
+        }
+
+        .stat-icon.courses {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.2));
+            color: var(--success);
+        }
+
+        .stat-info h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Tutorial Grid */
+        .tutorial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tutorial-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .tutorial-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(45, 106, 79, 0.2);
+        }
+
+        .tutorial-thumbnail {
+            height: 200px;
+            background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tutorial-thumbnail .material-icons-outlined {
+            font-size: 64px;
+            color: var(--text-light);
+        }
+
+        .play-overlay {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(45, 106, 79, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .tutorial-card:hover .play-overlay {
+            transform: scale(1.2);
+            background: var(--primary-green);
+        }
+
+        .tutorial-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .tutorial-badge.beginner {
+            background: rgba(34, 197, 94, 0.9);
+            color: var(--white);
+        }
+
+        .tutorial-badge.intermediate {
+            background: rgba(245, 158, 11, 0.9);
+            color: var(--white);
+        }
+
+        .tutorial-badge.advanced {
+            background: rgba(239, 68, 68, 0.9);
+            color: var(--white);
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 0.35rem 0.75rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--white);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .tutorial-content {
+            padding: 1.5rem;
+        }
+
+        .tutorial-header {
+            margin-bottom: 1rem;
+        }
+
+        .tutorial-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .tutorial-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .meta-item .material-icons-outlined {
+            font-size: 1rem;
+        }
+
+        .tutorial-description {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .tutorial-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .topic-tag {
+            padding: 0.35rem 0.75rem;
+            background: linear-gradient(135deg, rgba(45, 106, 79, 0.1), rgba(45, 106, 79, 0.15));
+            color: var(--primary-green);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .tutorial-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .instructor {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .instructor-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .instructor-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 24px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-modal:hover {
+            background: var(--error);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            background: #000;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-header h2 {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-list {
+            margin-top: 1.5rem;
+        }
+
+        .lesson-item {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lesson-item:hover {
+            background: var(--light-green);
+        }
+
+        .lesson-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .lesson-duration {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tutorial-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-tabs {
+                overflow-x: auto;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <a href="farmer-dashboard.html" class="back-btn">
+                <span class="material-icons-outlined">arrow_back</span>
+                Back to Dashboard
+            </a>
+            <h1 class="page-title">📚 Tutorials & Guidelines</h1>
+            <p class="page-subtitle">Master agricultural equipment & farming techniques</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon videos">
+                    <span class="material-icons-outlined">play_circle</span>
+                </div>
+                <div class="stat-info">
+                    <h3>45+</h3>
+                    <p>Video Tutorials</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon guides">
+                    <span class="material-icons-outlined">menu_book</span>
+                </div>
+                <div class="stat-info">
+                    <h3>30+</h3>
+                    <p>PDF Guides</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon courses">
+                    <span class="material-icons-outlined">school</span>
+                </div>
+                <div class="stat-info">
+                    <h3>12</h3>
+                    <p>Full Courses</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-section">
+            <div class="search-box">
+                <span class="material-icons-outlined">search</span>
+                <input type="text" id="searchInput" placeholder="Search tutorials, equipment guides...">
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="filterByCategory('all')">
+                <span class="material-icons-outlined">apps</span>
+                All Tutorials
+            </button>
+            <button class="tab-btn" onclick="filterByCategory('equipment')">
+                <span class="material-icons-outlined">agriculture</span>
+                Equipment Operation
+            </button>
+            <button class="tab-btn" onclick="filterByCategory('maintenance')">
+                <span class="material-icons-outlined">build</span>
+                Maintenance
+            </button>
+            <button class="tab-btn" onclick="filterByCategory('safety')">
+                <span class="material-icons-outlined">verified_user</span>
+                Safety Guidelines
+            </button>
+            <button class="tab-btn" onclick="filterByCategory('farming')">
+                <span class="material-icons-outlined">grass</span>
+                Farming Techniques
+            </button>
+        </div>
+
+        <!-- Tutorial Grid -->
+        <div class="tutorial-grid" id="tutorialGrid"></div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div class="modal" id="tutorialModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeTutorialModal()">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="video-container">
+                <iframe id="videoFrame" src=""
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+            <div class="modal-body">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Tutorial Title</h2>
+                    <p id="modalDescription"></p>
+                </div>
+                <div class="lesson-list" id="lessonList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample tutorial data
+        const tutorialData = [
+            {
+                id: 1,
+                title: "Tractor Operation for Beginners",
+                category: "equipment",
+                level: "beginner",
+                description: "Learn the basics of tractor operation, controls, and safe driving practices.",
+                duration: "25 min",
+                instructor: "Ramesh Kumar",
+                rating: 4.8,
+                views: 1250,
+                topics: ["Controls", "Starting", "Driving", "Safety"],
+                videoId: "dQw4w9WgXcQ", // Replace with actual video ID
+                lessons: [
+                    { number: 1, title: "Introduction to Tractors", duration: "5 min" },
+                    { number: 2, title: "Understanding Controls", duration: "8 min" },
+                    { number: 3, title: "Starting & Operating", duration: "7 min" },
+                    { number: 4, title: "Safety Practices", duration: "5 min" }
+                ]
+            },
+            {
+                id: 2,
+                title: "Harvester Operation & Safety",
+                category: "equipment",
+                level: "intermediate",
+                description: "Master combined harvester operation with safety protocols and efficiency tips.",
+                duration: "40 min",
+                instructor: "Prakash Reddy",
+                rating: 4.9,
+                views: 890,
+                topics: ["Operation", "Adjustment", "Safety", "Maintenance"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Harvester Overview", duration: "8 min" },
+                    { number: 2, title: "Pre-operation Checks", duration: "10 min" },
+                    { number: 3, title: "Operating Procedures", duration: "15 min" },
+                    { number: 4, title: "Safety & Troubleshooting", duration: "7 min" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Rotavator Usage & Maintenance",
+                category: "equipment",
+                level: "beginner",
+                description: "Complete guide to rotavator operation, blade maintenance, and soil preparation.",
+                duration: "18 min",
+                instructor: "Suresh Patil",
+                rating: 4.7,
+                views: 1450,
+                topics: ["Setup", "Operation", "Blade Care", "Depth Control"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Rotavator Basics", duration: "4 min" },
+                    { number: 2, title: "Attachment & Setup", duration: "5 min" },
+                    { number: 3, title: "Operation Techniques", duration: "6 min" },
+                    { number: 4, title: "Maintenance Tips", duration: "3 min" }
+                ]
+            },
+            {
+                id: 4,
+                title: "Equipment Safety Fundamentals",
+                category: "safety",
+                level: "beginner",
+                description: "Essential safety guidelines for all agricultural equipment operators.",
+                duration: "22 min",
+                instructor: "Raghu N",
+                rating: 4.9,
+                views: 2100,
+                topics: ["PPE", "Emergency", "Fire Safety", "First Aid"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Personal Protective Equipment", duration: "6 min" },
+                    { number: 2, title: "Pre-operation Safety", duration: "5 min" },
+                    { number: 3, title: "Emergency Procedures", duration: "7 min" },
+                    { number: 4, title: "First Aid Basics", duration: "4 min" }
+                ]
+            },
+            {
+                id: 5,
+                title: "Tractor Maintenance Guide",
+                category: "maintenance",
+                level: "intermediate",
+                description: "Regular maintenance procedures to keep your tractor running smoothly.",
+                duration: "35 min",
+                instructor: "Venkatesh M",
+                rating: 4.6,
+                views: 780,
+                topics: ["Oil Change", "Filters", "Inspection", "Greasing"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Daily Inspections", duration: "8 min" },
+                    { number: 2, title: "Oil & Filter Change", duration: "12 min" },
+                    { number: 3, title: "Greasing Points", duration: "8 min" },
+                    { number: 4, title: "Seasonal Maintenance", duration: "7 min" }
+                ]
+            },
+            {
+                id: 6,
+                title: "Sprayer Operation & Calibration",
+                category: "equipment",
+                level: "intermediate",
+                description: "Learn proper sprayer operation, calibration, and pest control techniques.",
+                duration: "28 min",
+                instructor: "Raghu N",
+                rating: 4.8,
+                views: 920,
+                topics: ["Calibration", "Mixing", "Application", "Cleaning"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Sprayer Types & Parts", duration: "6 min" },
+                    { number: 2, title: "Calibration Process", duration: "10 min" },
+                    { number: 3, title: "Safe Application", duration: "8 min" },
+                    { number: 4, title: "Cleaning & Storage", duration: "4 min" }
+                ]
+            },
+            {
+                id: 7,
+                title: "Drip Irrigation Setup",
+                category: "farming",
+                level: "beginner",
+                description: "Complete guide to installing and managing drip irrigation systems.",
+                duration: "30 min",
+                instructor: "Manjunath S",
+                rating: 4.7,
+                views: 1340,
+                topics: ["Planning", "Installation", "Scheduling", "Maintenance"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "System Planning", duration: "8 min" },
+                    { number: 2, title: "Installation Steps", duration: "12 min" },
+                    { number: 3, title: "Irrigation Scheduling", duration: "6 min" },
+                    { number: 4, title: "Troubleshooting", duration: "4 min" }
+                ]
+            },
+            {
+                id: 8,
+                title: "Soil Preparation Techniques",
+                category: "farming",
+                level: "beginner",
+                description: "Master proper soil preparation for optimal crop growth and yield.",
+                duration: "32 min",
+                instructor: "Basavaraj K",
+                rating: 4.6,
+                views: 1560,
+                topics: ["Tillage", "Leveling", "pH Testing", "Amendments"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Soil Testing", duration: "8 min" },
+                    { number: 2, title: "Tillage Methods", duration: "10 min" },
+                    { number: 3, title: "Land Leveling", duration: "8 min" },
+                    { number: 4, title: "Soil Amendments", duration: "6 min" }
+                ]
+            },
+            {
+                id: 9,
+                title: "Seed Drill Operation",
+                category: "equipment",
+                level: "beginner",
+                description: "Learn to operate seed drills efficiently for uniform crop planting.",
+                duration: "20 min",
+                instructor: "Krishna Gowda",
+                rating: 4.5,
+                views: 670,
+                topics: ["Setup", "Spacing", "Depth", "Calibration"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Seed Drill Components", duration: "5 min" },
+                    { number: 2, title: "Seed Rate Calibration", duration: "7 min" },
+                    { number: 3, title: "Operating Procedures", duration: "6 min" },
+                    { number: 4, title: "Common Issues", duration: "2 min" }
+                ]
+            },
+            {
+                id: 10,
+                title: "Advanced Harvesting Techniques",
+                category: "farming",
+                level: "advanced",
+                description: "Optimize your harvest with advanced techniques and timing strategies.",
+                duration: "45 min",
+                instructor: "Prakash Reddy",
+                rating: 4.9,
+                views: 540,
+                topics: ["Timing", "Techniques", "Efficiency", "Quality"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Harvest Timing", duration: "10 min" },
+                    { number: 2, title: "Cutting Techniques", duration: "12 min" },
+                    { number: 3, title: "Loss Prevention", duration: "13 min" },
+                    { number: 4, title: "Quality Maintenance", duration: "10 min" }
+                ]
+            },
+            {
+                id: 11,
+                title: "Equipment Winterization",
+                category: "maintenance",
+                level: "intermediate",
+                description: "Prepare and store your equipment properly for the off-season.",
+                duration: "26 min",
+                instructor: "Venkatesh M",
+                rating: 4.7,
+                views: 450,
+                topics: ["Cleaning", "Storage", "Fuel Systems", "Battery Care"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Pre-storage Cleaning", duration: "7 min" },
+                    { number: 2, title: "Fuel System Care", duration: "8 min" },
+                    { number: 3, title: "Battery Maintenance", duration: "6 min" },
+                    { number: 4, title: "Proper Storage", duration: "5 min" }
+                ]
+            },
+            {
+                id: 12,
+                title: "Pest Control Best Practices",
+                category: "farming",
+                level: "intermediate",
+                description: "Integrated pest management strategies for healthy crops.",
+                duration: "38 min",
+                instructor: "Raghu N",
+                rating: 4.8,
+                views: 1120,
+                topics: ["IPM", "Identification", "Treatment", "Prevention"],
+                videoId: "dQw4w9WgXcQ",
+                lessons: [
+                    { number: 1, title: "Pest Identification", duration: "10 min" },
+                    { number: 2, title: "IPM Strategies", duration: "12 min" },
+                    { number: 3, title: "Safe Application Methods", duration: "10 min" },
+                    { number: 4, title: "Prevention & Monitoring", duration: "6 min" }
+                ]
+            }
+        ];
+
+        let currentCategory = 'all';
+
+        // Render tutorials
+        function renderTutorials(data = tutorialData) {
+            const grid = document.getElementById('tutorialGrid');
+            grid.innerHTML = data.map(tutorial => {
+                const instructorInitials = tutorial.instructor.split(' ').map(n => n[0]).join('');
+                return `
+                <div class="tutorial-card" onclick="openTutorialModal(${tutorial.id})">
+                    <div class="tutorial-thumbnail">
+                        <span class="material-icons-outlined">play_circle_filled</span>
+                        <div class="play-overlay">
+                            <span class="material-icons-outlined">play_arrow</span>
+                        </div>
+                        <div class="tutorial-badge ${tutorial.level}">${tutorial.level.toUpperCase()}</div>
+                        <div class="duration-badge">${tutorial.duration}</div>
+                    </div>
+                    <div class="tutorial-content">
+                        <div class="tutorial-header">
+                            <h3 class="tutorial-title">${tutorial.title}</h3>
+                            <div class="tutorial-meta">
+                                <div class="meta-item">
+                                    <span class="material-icons-outlined">visibility</span>
+                                    ${tutorial.views.toLocaleString()} views
+                                </div>
+                                <div class="meta-item">
+                                    <span class="material-icons-outlined">star</span>
+                                    ${tutorial.rating}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="tutorial-description">${tutorial.description}</p>
+                        <div class="tutorial-topics">
+                            ${tutorial.topics.map(topic => `
+                                <span class="topic-tag">${topic}</span>
+                            `).join('')}
+                        </div>
+                        <div class="tutorial-footer">
+                            <div class="instructor">
+                                <div class="instructor-avatar">${instructorInitials}</div>
+                                <span class="instructor-name">${tutorial.instructor}</span>
+                            </div>
+                        </div>
+                        <button class="start-btn">
+                            Start Learning
+                            <span class="material-icons-outlined">play_arrow</span>
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // Filter by category
+        function filterByCategory(category) {
+            currentCategory = category;
+
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
+
+            applyFilters();
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = tutorialData.filter(tutorial => {
+                const matchesCategory = currentCategory === 'all' || tutorial.category === currentCategory;
+                const matchesSearch = tutorial.title.toLowerCase().includes(searchTerm) ||
+                    tutorial.description.toLowerCase().includes(searchTerm) ||
+                    tutorial.topics.some(topic => topic.toLowerCase().includes(searchTerm));
+
+                return matchesCategory && matchesSearch;
+            });
+
+            renderTutorials(filtered);
+        }
+
+        // Search listener
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+        // Open tutorial modal
+        function openTutorialModal(tutorialId) {
+            const tutorial = tutorialData.find(t => t.id === tutorialId);
+            if (!tutorial) return;
+
+            document.getElementById('modalTitle').textContent = tutorial.title;
+            document.getElementById('modalDescription').textContent = tutorial.description;
+
+            // Set video (in production, use actual video URLs)
+            document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${tutorial.videoId}?autoplay=1`;
+
+            // Render lessons
+            const lessonList = document.getElementById('lessonList');
+            lessonList.innerHTML = `
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Course Contents</h3>
+                ${tutorial.lessons.map(lesson => `
+                    <div class="lesson-item">
+                        <div class="lesson-number">${lesson.number}</div>
+                        <div class="lesson-info">
+                            <div class="lesson-title">${lesson.title}</div>
+                            <div class="lesson-duration">${lesson.duration}</div>
+                        </div>
+                        <span class="material-icons-outlined" style="color: var(--text-light);">play_circle_outline</span>
+                    </div>
+                `).join('')}
+            `;
+
+            document.getElementById('tutorialModal').classList.add('active');
+        }
+
+        // Close tutorial modal
+        function closeTutorialModal() {
+            document.getElementById('tutorialModal').classList.remove('active');
+            document.getElementById('videoFrame').src = '';
+        }
+
+        // Initialize
+        renderTutorials();
+    </script>
+</body>
+
+</html>

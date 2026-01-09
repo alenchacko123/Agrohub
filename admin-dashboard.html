@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgroHub - Admin Dashboard</title>
+    <meta name="description"
+        content="AgroHub Admin Dashboard. Manage users, verify listings, overlook platform analytics.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Admin Theme - Purple/Violet */
+            --primary: #7c3aed;
+            --dark: #5b21b6;
+            --light: #ede9fe;
+            --accent-gold: #ffd60a;
+            --accent-orange: #fb8500;
+            --bg-grad-start: #ede9fe;
+            --bg-grad-mid: #ddd6fe;
+            --bg-grad-end: #c4b5fd;
+
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --text-light: #a0aec0;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --sidebar-width: 280px;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            line-height: 1.6;
+            background: linear-gradient(135deg, var(--bg-grad-start) 0%, var(--bg-grad-mid) 50%, var(--bg-grad-end) 100%);
+            min-height: 100vh;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #4c1d95 0%, #6d28d9 100%);
+            color: var(--white);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+            box-shadow: 4px 0 25px rgba(91, 33, 182, 0.4);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .sidebar-logo .material-icons-outlined {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-user {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            box-shadow: 0 4px 15px rgba(255, 214, 10, 0.3);
+        }
+
+        .user-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .user-info span {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Navigation */
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-section {
+            padding: 0.5rem 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            margin: 0.25rem 0.75rem;
+            border-radius: 12px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60%;
+            background: linear-gradient(180deg, var(--accent-gold), var(--accent-orange));
+            border-radius: 0 4px 4px 0;
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        /* Top Bar */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .topbar-left h1 {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            color: var(--text-dark);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-box input {
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            width: 280px;
+            font-size: 0.9rem;
+            background: #fafafa;
+        }
+
+        .icon-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--primary);
+            background: var(--light);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent-gold));
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="landingpage.html" class="sidebar-logo">
+                    <span class="material-icons-outlined">spa</span>
+                    AgroHub
+                </a>
+            </div>
+
+            <div class="sidebar-user">
+                <div class="user-avatar" id="admin-avatar">A</div>
+                <div class="user-info">
+                    <h4 id="admin-name">Admin User</h4>
+                    <span><span class="material-icons-outlined" style="font-size: 14px; color: #fbbf24;">verified</span>
+                        Super Admin</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Overview</div>
+                    <a href="#" class="nav-item active">
+                        <span class="material-icons-outlined">dashboard</span>
+                        Dashboard
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="material-icons-outlined">analytics</span>
+                        Analytics
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Management</div>
+                    <a href="#" class="nav-item">
+                        <span class="material-icons-outlined">people</span>
+                        Users
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="material-icons-outlined">verified_user</span>
+                        Verifications <span class="badge"
+                            style="background:#f59e0b; color:white; padding:2px 6px; border-radius:10px; font-size:10px; margin-left:auto;">5</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="material-icons-outlined">inventory_2</span>
+                        Listings
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="#" class="nav-item">
+                        <span class="material-icons-outlined">settings</span>
+                        Settings
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="logout()">
+                    <span class="material-icons-outlined">logout</span>
+                    Sign Out
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <h1>Admin Dashboard</h1>
+                    <div class="breadcrumb">Welcome back, Admin</div>
+                </div>
+                <div class="topbar-right">
+                    <button class="icon-btn">
+                        <span class="material-icons-outlined">notifications</span>
+                        <div class="notification-dot"
+                            style="position:absolute; top:8px; right:8px; width:8px; height:8px; background:red; border-radius:50%;">
+                        </div>
+                    </button>
+                    <button class="icon-btn">
+                        <span class="material-icons-outlined">settings</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon"><span class="material-icons-outlined">people</span></div>
+                    </div>
+                    <div class="stat-value">1,204</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon"><span class="material-icons-outlined">agriculture</span></div>
+                    </div>
+                    <div class="stat-value">450</div>
+                    <div class="stat-label">Active Listings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon"><span class="material-icons-outlined">pending_actions</span></div>
+                    </div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Pending Verifications</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon"><span class="material-icons-outlined">payments</span></div>
+                    </div>
+                    <div class="stat-value">$12.5k</div>
+                    <div class="stat-label">Platform Revenue</div>
+                </div>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="dashboard-view">
+                <div
+                    style="background:white; padding:2rem; border-radius:20px; text-align:center; color:#6b7280; margin-bottom: 2rem;">
+                    <span class="material-icons-outlined"
+                        style="font-size:4rem; margin-bottom:1rem; opacity:0.2;">construction</span>
+                    <h3>System Overview</h3>
+                    <p>Platform health and activity charts will appear here.</p>
+                </div>
+            </div>
+
+            <!-- Users Management View -->
+            <div id="view-users" class="dashboard-view" style="display: none;">
+                <div class="card"
+                    style="background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                    <div class="card-header"
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="font-family: var(--font-serif); font-size: 1.5rem;">User Management</h2>
+                        <div style="display: flex; gap: 1rem;">
+                            <input type="text" placeholder="Search users..."
+                                style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; border-radius: 8px;">
+                            <button
+                                style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer;">Export
+                                CSV</button>
+                        </div>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; background: var(--light); color: var(--primary);">
+                                <th style="padding: 1rem; border-radius: 8px 0 0 8px;">User</th>
+                                <th style="padding: 1rem;">Role</th>
+                                <th style="padding: 1rem;">Email Address</th>
+                                <th style="padding: 1rem;">Status</th>
+                                <th style="padding: 1rem; border-radius: 0 8px 8px 0;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Mock User Data
+        const mockUsers = [
+            { name: "John Doe", role: "Farmer", email: "john.doe@example.com", status: "Verified" },
+            { name: "Sarah Smith", role: "Owner", email: "sarah.smith@agri.com", status: "Verified" },
+            { name: "Michael Seed", role: "Farmer", email: "mike.seed@farm.net", status: "Pending" },
+            { name: "Green Acres Ltd", role: "Owner", email: "contact@greenacres.ie", status: "Verified" },
+            { name: "Robert Field", role: "Farmer", email: "bob.field@gmail.com", status: "Verified" },
+            { name: "Tractor Co.", role: "Owner", email: "sales@tractorco.com", status: "Creating..." }
+        ];
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('agrohub_user');
+                window.location.href = 'login-farmer.html'; // Check this redirect, might need to be login-admin or generic
+            }
+        }
+
+        // View Switching Logic
+        const navItems = document.querySelectorAll('.nav-item');
+        const views = document.querySelectorAll('.dashboard-view');
+
+        function switchView(viewName) {
+            // Hide all views
+            views.forEach(view => view.style.display = 'none');
+
+            // Show selected view
+            const selectedView = document.getElementById(`view-${viewName}`);
+            if (selectedView) selectedView.style.display = 'block';
+
+            // Update Nav State
+            navItems.forEach(item => item.classList.remove('active'));
+            // Very simple match for demo
+            navItems.forEach(item => {
+                if (item.textContent.trim().toLowerCase().includes(viewName)) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // Populate User Table
+        function renderUsers() {
+            const tbody = document.getElementById('user-table-body');
+            tbody.innerHTML = '';
+
+            mockUsers.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #f3f4f6';
+
+                const statusColor = user.status === 'Verified' ? 'var(--success)' : (user.status === 'Pending' ? 'var(--warning)' : '#9ca3af');
+                const badgeBg = user.status === 'Verified' ? '#dcfce7' : (user.status === 'Pending' ? '#fef3c7' : '#f3f4f6');
+                const badgeColor = user.status === 'Verified' ? '#166534' : (user.status === 'Pending' ? '#92400e' : '#374151');
+
+                tr.innerHTML = `
+                    <td style="padding: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <div style="width: 32px; height: 32px; background: #e0e7ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            ${user.name.charAt(0)}
+                        </div>
+                        <span style="font-weight: 500;">${user.name}</span>
+                    </td>
+                    <td style="padding: 1rem;">
+                        <span style="background: ${user.role === 'Farmer' ? '#dbeafe' : '#fae8ff'}; color: ${user.role === 'Farmer' ? '#1e40af' : '#86198f'}; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600;">
+                            ${user.role}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem; color: var(--text-gray);">${user.email}</td>
+                    <td style="padding: 1rem;">
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; font-weight: 500; color: ${badgeColor}; background: ${badgeBg}; padding: 0.2rem 0.6rem; border-radius: 6px;">
+                            <span style="width: 6px; height: 6px; background: ${statusColor}; border-radius: 50%;"></span>
+                            ${user.status}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem;">
+                        <button style="border: none; background: transparent; cursor: pointer; color: var(--text-light); transition: color 0.2s;">
+                            <span class="material-icons-outlined">more_vert</span>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('agrohub_user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                if (user.userType === 'admin') {
+                    document.getElementById('admin-name').textContent = user.name || 'Admin';
+                }
+            }
+
+            // Bind click events to sidebar for demo
+            navItems[0].addEventListener('click', () => switchView('dashboard'));
+            navItems[2].addEventListener('click', () => switchView('users')); // Index 2 is likely 'Users' based on the HTML structure
+
+            // Initial Render
+            renderUsers();
+
+            // Check if we arrived here just now login logic, default to Users view if requested or just Dashboard
+            // For this specific request, let's default to Users view to show the work immediately
+            switchView('users');
+        });
+    </script>
+</body>
+
+</html>

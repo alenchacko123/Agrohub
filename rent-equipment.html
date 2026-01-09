@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rent Equipment - AgroHub</title>
+    <meta name="description" content="Browse and rent agricultural equipment with real-time availability">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --dark-green: #1b4332;
+            --light-green: #d8f3dc;
+            --accent-gold: #ffd60a;
+            --accent-orange: #fb8500;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --text-light: #a0aec0;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 0.75rem;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            padding-left: 3rem;
+            width: 100%;
+        }
+
+        .search-box .material-icons-outlined {
+            position: absolute;
+            left: 1rem;
+            color: var(--text-light);
+        }
+
+        /* Equipment Grid */
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .equipment-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .equipment-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(45, 106, 79, 0.2);
+        }
+
+        .equipment-image {
+            height: 200px;
+            width: 100%;
+            background-color: #f1f5f9;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eq-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .equipment-card:hover .eq-img {
+            transform: scale(1.1);
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 2;
+        }
+
+        .stock-badge.available {
+            background: rgba(34, 197, 94, 0.95);
+            color: var(--white);
+        }
+
+        .stock-badge.limited {
+            background: rgba(245, 158, 11, 0.95);
+            color: var(--white);
+        }
+
+        .stock-badge.out {
+            background: rgba(239, 68, 68, 0.95);
+            color: var(--white);
+        }
+
+        .stock-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .equipment-content {
+            padding: 1.5rem;
+        }
+
+        .equipment-header {
+            margin-bottom: 1rem;
+        }
+
+        .equipment-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .equipment-category {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .equipment-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .spec-item .material-icons-outlined {
+            font-size: 1.1rem;
+            color: var(--primary-green);
+        }
+
+        .equipment-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .equipment-price {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .price-label {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        .rent-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rent-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        .rent-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 24px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: var(--text-gray);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: var(--text-gray);
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.15));
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box h4 {
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .equipment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <a href="farmer-dashboard.html" class="back-btn">
+                <span class="material-icons-outlined">arrow_back</span>
+                Back to Dashboard
+            </a>
+            <h1 class="page-title">🚜 Rent Equipment</h1>
+            <p class="page-subtitle">Browse available agricultural equipment with real-time stock updates</p>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <div class="search-box">
+                        <span class="material-icons-outlined">search</span>
+                        <input type="text" id="searchInput" placeholder="Search equipment...">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="tractor">Tractors</option>
+                        <option value="harvester">Harvesters</option>
+                        <option value="planter">Planters & Seeders</option>
+                        <option value="tiller">Tillers & Cultivators</option>
+                        <option value="sprayer">Sprayers</option>
+                        <option value="other">Other Equipment</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Availability</label>
+                    <select id="availabilityFilter">
+                        <option value="">All</option>
+                        <option value="available">Available Now</option>
+                        <option value="limited">Limited Stock</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Price Range</label>
+                    <select id="priceFilter">
+                        <option value="">All Prices</option>
+                        <option value="0-1000">₹0 - ₹1,000/day</option>
+                        <option value="1000-3000">₹1,000 - ₹3,000/day</option>
+                        <option value="3000+">₹3,000+/day</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Equipment Grid -->
+        <div class="equipment-grid" id="equipmentGrid">
+            <!-- Equipment cards will be dynamically generated here -->
+        </div>
+    </div>
+
+    <!-- Rental Modal -->
+    <div class="modal" id="rentalModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeRentalModal()">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalEquipmentName">Equipment Rental</h2>
+                <p class="modal-subtitle">Fill in your rental details</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-box">
+                    <h4>
+                        <span class="material-icons-outlined">info</span>
+                        Rental Information
+                    </h4>
+                    <p>Price: <strong id="modalPrice">₹0/day</strong> | Location: <strong id="modalLocation">-</strong>
+                    </p>
+                </div>
+
+                <form id="rentalForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Date *</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>End Date *</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Number of Days</label>
+                        <input type="number" id="numDays" value="1" min="1" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Total Amount</label>
+                        <input type="text" id="totalAmount" value="₹0" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Delivery Address *</label>
+                        <textarea id="deliveryAddress" rows="3" placeholder="Enter your farm or delivery address"
+                            required></textarea>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="needOperator">
+                        <label for="needOperator">Need a trained operator (+₹500/day)</label>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="needInsurance">
+                        <label for="needInsurance">Add insurance coverage (+₹200/day)</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Special Requirements (Optional)</label>
+                        <textarea id="specialRequirements" rows="2"
+                            placeholder="Any special instructions or requirements"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeRentalModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitRental()">Confirm Rental</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample equipment data with real-time stock status and images
+        const equipmentData = [
+            {
+                id: 1,
+                name: "John Deere 5050D",
+                category: "tractor",
+                description: "50 HP 4WD Tractor",
+                price: 2500,
+                location: "Bangalore, Karnataka",
+                stock: "available",
+                stockCount: 5,
+                image: "https://images.unsplash.com/photo-1595053826286-2e59efd9ff18?q=80&w=600&auto=format&fit=crop",
+                specs: {
+                    hp: "50 HP",
+                    fuel: "Diesel",
+                    year: "2021"
+                }
+            },
+            {
+                id: 2,
+                name: "Mahindra 575 DI",
+                category: "tractor",
+                description: "45 HP Tractor",
+                price: 2200,
+                location: "Mysore, Karnataka",
+                stock: "limited",
+                stockCount: 2,
+                image: "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=600&auto=format&fit=crop",
+                specs: {
+                    hp: "45 HP",
+                    fuel: "Diesel",
+                    year: "2020"
+                }
+            },
+            {
+                id: 3,
+                name: "Combined Harvester",
+                category: "harvester",
+                description: "Mahindra Arjun Ultra",
+                price: 5000,
+                location: "Hassan, Karnataka",
+                stock: "out",
+                stockCount: 0,
+                image: "https://images.unsplash.com/photo-1530210124570-666017645b71?q=80&w=600&auto=format&fit=crop",
+                specs: {
+                    hp: "100 HP",
+                    fuel: "Diesel",
+                    year: "2022"
+                }
+            },
+            {
+                id: 4,
+                name: "Rotavator 6ft",
+                category: "tiller",
+                description: "Heavy Duty Rotavator",
+                price: 800,
+                location: "Mandya, Karnataka",
+                stock: "available",
+                stockCount: 8,
+                image: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=600&auto=format&fit=crop",
+                specs: {
+                    width: "6 ft",
+                    type: "Heavy Duty",
+                    year: "2021"
+                }
+            },
+            {
+                id: 5,
+                name: "Seed Drill 9-Row",
+                category: "planter",
+                description: "Automatic Seed Planter",
+                price: 1200,
+                location: "Tumkur, Karnataka",
+                stock: "available",
+                stockCount: 4,
+                image: "https://images.unsplash.com/photo-1622383563227-0440378c608a?q=80&w=600&auto=format&fit=crop",
+                specs: {
+                    rows: "9 Rows",
+                    type: "Automatic",
+                    year: "2022"
+                }
+            },
+            {
+                id: 6,
+                name: "Power Sprayer",
+                category: "sprayer",
+                description: "Agricultural Sprayer 200L",
+                price: 600,
+                location: "Bangalore, Karnataka",
+                stock: "limited",
+                stockCount: 1,
+                image: "https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=600&auto=format&fit=crop",
+                specs: {
+                    capacity: "200L",
+                    type: "Power",
+                    year: "2021"
+                }
+            },
+            {
+                id: 7,
+                name: "Cultivator 11-Tyne",
+                category: "tiller",
+                description: "Heavy Duty Cultivator",
+                price: 900,
+                location: "Bangalore, Karnataka",
+                stock: "available",
+                stockCount: 6,
+                image: "https://images.unsplash.com/photo-1550147760-44c9966d6bc7?q=80&w=600&auto=format&fit=crop",
+                specs: {
+                    tynes: "11 Tyne",
+                    type: "Heavy Duty",
+                    year: "2021"
+                }
+            },
+            {
+                id: 8,
+                name: "Potato Planter",
+                category: "planter",
+                description: "2-Row Potato Planter",
+                price: 1500,
+                location: "Hassan, Karnataka",
+                stock: "available",
+                stockCount: 3,
+                image: "https://images.unsplash.com/photo-1444858291040-58f756a3bcd6?q=80&w=600&auto=format&fit=crop",
+                specs: {
+                    rows: "2 Rows",
+                    type: "Automatic",
+                    year: "2022"
+                }
+            }
+        ];
+
+        let currentEquipment = null;
+
+        // Render equipment cards
+        function renderEquipment(data = equipmentData) {
+            const grid = document.getElementById('equipmentGrid');
+            grid.innerHTML = data.map(item => `
+                <div class="equipment-card" onclick="openRentalModal(${item.id})">
+                    <div class="equipment-image">
+                        <img src="${item.image}" alt="${item.name}" class="eq-img" 
+                             onerror="this.src='https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=400&fit=crop'">
+                        <div class="stock-badge ${item.stock}">
+                            <span class="stock-indicator"></span>
+                            ${item.stock === 'available' ? `${item.stockCount} Available` :
+                    item.stock === 'limited' ? `Only ${item.stockCount} Left` :
+                        'Out of Stock'}
+                        </div>
+                    </div>
+                    <div class="equipment-content">
+                        <div class="equipment-header">
+                            <h3 class="equipment-title">${item.name}</h3>
+                            <div class="equipment-category">
+                                <span class="material-icons-outlined">category</span>
+                                ${item.description}
+                            </div>
+                        </div>
+                        <div class="equipment-specs">
+                            ${Object.entries(item.specs).map(([key, value]) => `
+                                <div class="spec-item">
+                                    <span class="material-icons-outlined">check_circle</span>
+                                    ${value}
+                                </div>
+                            `).join('')}
+                            <div class="spec-item">
+                                <span class="material-icons-outlined">location_on</span>
+                                ${item.location}
+                            </div>
+                        </div>
+                        <div class="equipment-footer">
+                            <div class="equipment-price">
+                                <span class="price-value">₹${item.price.toLocaleString()}</span>
+                                <span class="price-label">per day</span>
+                            </div>
+                            <button class="rent-btn" ${item.stock === 'out' ? 'disabled' : ''}>
+                                ${item.stock === 'out' ? 'Out of Stock' : 'Rent Now'}
+                                ${item.stock !== 'out' ? '<span class="material-icons-outlined">arrow_forward</span>' : ''}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter functionality
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const availability = document.getElementById('availabilityFilter').value;
+            const priceRange = document.getElementById('priceFilter').value;
+
+            let filtered = equipmentData.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
+                    item.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || item.category === category;
+                const matchesAvailability = !availability || item.stock === availability;
+
+                let matchesPrice = true;
+                if (priceRange) {
+                    const [min, max] = priceRange.split('-').map(p => parseInt(p.replace('+', '')));
+                    matchesPrice = max ? (item.price >= min && item.price <= max) : item.price >= min;
+                }
+
+                return matchesSearch && matchesCategory && matchesAvailability && matchesPrice;
+            });
+
+            renderEquipment(filtered);
+        }
+
+        // Event listeners for filters
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+        document.getElementById('availabilityFilter').addEventListener('change', applyFilters);
+        document.getElementById('priceFilter').addEventListener('change', applyFilters);
+
+        // Open rental modal
+        function openRentalModal(equipmentId) {
+            const equipment = equipmentData.find(e => e.id === equipmentId);
+            if (!equipment || equipment.stock === 'out') return;
+
+            currentEquipment = equipment;
+            document.getElementById('modalEquipmentName').textContent = `Rent ${equipment.name}`;
+            document.getElementById('modalPrice').textContent = `₹${equipment.price.toLocaleString()}/day`;
+            document.getElementById('modalLocation').textContent = equipment.location;
+
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').min = today;
+            document.getElementById('endDate').min = today;
+
+            document.getElementById('rentalModal').classList.add('active');
+        }
+
+        // Close rental modal
+        function closeRentalModal() {
+            document.getElementById('rentalModal').classList.remove('active');
+            document.getElementById('rentalForm').reset();
+            currentEquipment = null;
+        }
+
+        // Calculate rental details
+        function calculateRental() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+
+            if (startDate && endDate && endDate >= startDate) {
+                const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('numDays').value = days;
+
+                let total = currentEquipment.price * days;
+
+                if (document.getElementById('needOperator').checked) {
+                    total += 500 * days;
+                }
+
+                if (document.getElementById('needInsurance').checked) {
+                    total += 200 * days;
+                }
+
+                document.getElementById('totalAmount').value = `₹${total.toLocaleString()}`;
+            }
+        }
+
+        // Event listeners for rental calculation
+        document.getElementById('startDate').addEventListener('change', function () {
+            document.getElementById('endDate').min = this.value;
+            calculateRental();
+        });
+        document.getElementById('endDate').addEventListener('change', calculateRental);
+        document.getElementById('needOperator').addEventListener('change', calculateRental);
+        document.getElementById('needInsurance').addEventListener('change', calculateRental);
+
+        // Submit rental
+        function submitRental() {
+            const form = document.getElementById('rentalForm');
+
+            if (!form.checkValidity()) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const rentalData = {
+                equipment: currentEquipment.name,
+                equipmentId: currentEquipment.id,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                days: document.getElementById('numDays').value,
+                totalAmount: document.getElementById('totalAmount').value,
+                deliveryAddress: document.getElementById('deliveryAddress').value,
+                needOperator: document.getElementById('needOperator').checked,
+                needInsurance: document.getElementById('needInsurance').checked,
+                specialRequirements: document.getElementById('specialRequirements').value
+            };
+
+            console.log('Rental Data:', rentalData);
+
+            // Here you would send this data to your backend
+            alert(`Rental request submitted successfully!\n\nEquipment: ${rentalData.equipment}\nDuration: ${rentalData.days} days\nTotal: ${rentalData.totalAmount}\n\nYou will receive a confirmation email shortly.`);
+
+            closeRentalModal();
+        }
+
+        // Initialize
+        renderEquipment();
+    </script>
+</body>
+
+</html>

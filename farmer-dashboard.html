@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,1013 +18,7 @@
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
-    <style>
-        :root {
-            --primary-green: #2d6a4f;
-            --dark-green: #1b4332;
-            --light-green: #d8f3dc;
-            --accent-gold: #ffd60a;
-            --accent-orange: #fb8500;
-            --farmer-accent: #40916c;
-            --farmer-light: #b7e4c7;
-            --text-dark: #1a1a2e;
-            --text-gray: #4a5568;
-            --text-light: #a0aec0;
-            --white: #ffffff;
-            --cream: #fdfbf7;
-            --error: #ef4444;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --info: #3b82f6;
-            --sidebar-width: 280px;
-            --font-serif: 'Playfair Display', serif;
-            --font-sans: 'Inter', sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--font-sans);
-            color: var(--text-dark);
-            line-height: 1.6;
-            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
-            min-height: 100vh;
-        }
-
-        /* Dashboard Layout */
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--dark-green) 0%, var(--primary-green) 100%);
-            color: var(--white);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-            transition: transform 0.3s ease;
-            box-shadow: 4px 0 25px rgba(27, 67, 50, 0.3);
-        }
-
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-family: var(--font-serif);
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .sidebar-logo .material-icons-outlined {
-            font-size: 2rem;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        .sidebar-user {
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: var(--text-dark);
-            box-shadow: 0 4px 15px rgba(255, 214, 10, 0.3);
-        }
-
-        .user-info h4 {
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-
-        .user-info span {
-            font-size: 0.75rem;
-            opacity: 0.8;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .user-info .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: blink 2s infinite;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        /* Navigation */
-        .sidebar-nav {
-            padding: 1rem 0;
-        }
-
-        .nav-section {
-            padding: 0.5rem 1.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .nav-section-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0.5;
-            margin-bottom: 0.75rem;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.85rem 1.5rem;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            position: relative;
-            margin: 0.25rem 0.75rem;
-            border-radius: 12px;
-        }
-
-        .nav-item:hover,
-        .nav-item.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--white);
-        }
-
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 60%;
-            background: linear-gradient(180deg, var(--accent-gold), var(--accent-orange));
-            border-radius: 0 4px 4px 0;
-        }
-
-        .nav-item .material-icons-outlined {
-            font-size: 1.25rem;
-        }
-
-        .nav-item .badge {
-            margin-left: auto;
-            background: var(--accent-orange);
-            color: var(--white);
-            font-size: 0.7rem;
-            padding: 0.15rem 0.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-
-        .sidebar-footer {
-            padding: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: auto;
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            width: 100%;
-            padding: 0.85rem 1rem;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: rgba(239, 68, 68, 0.5);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            padding: 2rem;
-        }
-
-        /* Top Bar */
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            background: var(--white);
-            padding: 1rem 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .topbar-left h1 {
-            font-family: var(--font-serif);
-            font-size: 1.75rem;
-            color: var(--text-dark);
-        }
-
-        .topbar-left .breadcrumb {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.25rem;
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            padding: 0.75rem 1rem 0.75rem 2.75rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 50px;
-            width: 280px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            background: #fafafa;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--primary-green);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
-        }
-
-        .search-box .material-icons-outlined {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light);
-        }
-
-        .icon-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            border: 2px solid #e5e7eb;
-            background: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .icon-btn:hover {
-            border-color: var(--primary-green);
-            background: var(--light-green);
-        }
-
-        .icon-btn .notification-dot {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 10px;
-            height: 10px;
-            background: var(--error);
-            border-radius: 50%;
-            border: 2px solid var(--white);
-        }
-
-        /* Quick Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(45, 106, 79, 0.15);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-green), var(--accent-gold));
-        }
-
-        .stat-card.rental::before {
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
-        }
-
-        .stat-card.workers::before {
-            background: linear-gradient(90deg, #f59e0b, #fbbf24);
-        }
-
-        .stat-card.agreements::before {
-            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-        }
-
-        .stat-card.tutorials::before {
-            background: linear-gradient(90deg, #22c55e, #4ade80);
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .stat-card.rental .stat-icon {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.2));
-            color: #3b82f6;
-        }
-
-        .stat-card.workers .stat-icon {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.2));
-            color: #f59e0b;
-        }
-
-        .stat-card.agreements .stat-icon {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.2));
-            color: #8b5cf6;
-        }
-
-        .stat-card.tutorials .stat-icon {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(74, 222, 128, 0.2));
-            color: #22c55e;
-        }
-
-        .stat-trend {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-
-        .stat-trend.up {
-            background: rgba(34, 197, 94, 0.1);
-            color: #22c55e;
-        }
-
-        .stat-trend.down {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-gray);
-        }
-
-        /* Quick Actions & Services */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-header h2 {
-            font-family: var(--font-serif);
-            font-size: 1.25rem;
-            color: var(--text-dark);
-        }
-
-        .card-header .view-all {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-size: 0.85rem;
-            color: var(--primary-green);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .card-header .view-all:hover {
-            gap: 0.5rem;
-        }
-
-        /* Services Grid */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-        }
-
-        .service-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2px solid transparent;
-            text-decoration: none;
-            color: var(--text-dark);
-        }
-
-        .service-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary-green);
-            box-shadow: 0 15px 35px rgba(45, 106, 79, 0.15);
-            background: var(--white);
-        }
-
-        .service-icon {
-            width: 65px;
-            height: 65px;
-            margin: 0 auto 1rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .service-card:nth-child(1) .service-icon {
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: var(--white);
-        }
-
-        .service-card:nth-child(2) .service-icon {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: var(--white);
-        }
-
-        .service-card:nth-child(3) .service-icon {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: var(--white);
-        }
-
-        .service-card:nth-child(4) .service-icon {
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            color: var(--white);
-        }
-
-        .service-card:nth-child(5) .service-icon {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: var(--white);
-        }
-
-        .service-card:nth-child(6) .service-icon {
-            background: linear-gradient(135deg, #ec4899, #be185d);
-            color: var(--white);
-        }
-
-        .service-card:hover .service-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .service-icon .material-icons-outlined {
-            font-size: 28px;
-        }
-
-        .service-card h3 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .service-card p {
-            font-size: 0.8rem;
-            color: var(--text-gray);
-        }
-
-        /* Recent Activity */
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 1rem;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .activity-item:hover {
-            background: var(--light-green);
-        }
-
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .activity-icon.rental {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-        }
-
-        .activity-icon.purchase {
-            background: rgba(34, 197, 94, 0.1);
-            color: #22c55e;
-        }
-
-        .activity-icon.booking {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-content h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .activity-content p {
-            font-size: 0.8rem;
-            color: var(--text-gray);
-        }
-
-        .activity-time {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            white-space: nowrap;
-        }
-
-        /* Quick Actions Panel */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-
-        .quick-action-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1rem;
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: var(--white);
-            border: none;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .quick-action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
-        }
-
-        .quick-action-btn.secondary {
-            background: var(--white);
-            color: var(--primary-green);
-            border: 2px solid var(--primary-green);
-        }
-
-        .quick-action-btn.secondary:hover {
-            background: var(--light-green);
-        }
-
-        /* Equipment Listing Section */
-        .equipment-section {
-            margin-top: 1.5rem;
-        }
-
-        .equipment-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-        }
-
-        .equipment-card {
-            background: var(--white);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .equipment-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(45, 106, 79, 0.15);
-        }
-
-        .equipment-image {
-            height: 140px;
-            background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .equipment-image .material-icons-outlined {
-            font-size: 48px;
-            color: var(--text-light);
-        }
-
-        .equipment-badge {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: var(--success);
-            color: var(--white);
-            font-size: 0.7rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-
-        .equipment-badge.out {
-            background: var(--error);
-        }
-
-        .equipment-info {
-            padding: 1rem;
-        }
-
-        .equipment-info h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .equipment-info p {
-            font-size: 0.8rem;
-            color: var(--text-gray);
-            margin-bottom: 0.5rem;
-        }
-
-        .equipment-price {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary-green);
-        }
-
-        .equipment-price span {
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: var(--text-light);
-        }
-
-        /* Mobile Sidebar Toggle */
-        .mobile-toggle {
-            display: none;
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            border-radius: 50%;
-            border: none;
-            color: var(--white);
-            cursor: pointer;
-            z-index: 150;
-            box-shadow: 0 8px 25px rgba(45, 106, 79, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .mobile-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        /* Weather Widget */
-        .weather-widget {
-            background: linear-gradient(135deg, #0ea5e9, #0284c7);
-            border-radius: 16px;
-            padding: 1.5rem;
-            color: var(--white);
-            margin-bottom: 1rem;
-        }
-
-        .weather-widget h4 {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-bottom: 0.5rem;
-        }
-
-        .weather-main {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .weather-temp {
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-
-        .weather-desc {
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-
-        .weather-icon {
-            font-size: 3rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1280px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .services-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .equipment-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .mobile-toggle {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .topbar {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-
-            .topbar-right {
-                width: 100%;
-            }
-
-            .search-box input {
-                width: 100%;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .equipment-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .stat-card,
-        .service-card,
-        .card {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        .stat-card:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .stat-card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .stat-card:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .stat-card:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        /* Floating Elements */
-        .floating-elements {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .floating-leaf {
-            position: absolute;
-            font-size: 2rem;
-            opacity: 0.1;
-            animation: floatLeaf 15s ease-in-out infinite;
-            color: var(--primary-green);
-        }
-
-        .floating-leaf:nth-child(1) {
-            left: 30%;
-            top: 20%;
-            animation-delay: 0s;
-        }
-
-        .floating-leaf:nth-child(2) {
-            left: 60%;
-            top: 40%;
-            animation-delay: 3s;
-        }
-
-        .floating-leaf:nth-child(3) {
-            left: 80%;
-            top: 70%;
-            animation-delay: 6s;
-        }
-
-        @keyframes floatLeaf {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.1;
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(15deg);
-                opacity: 0.2;
-            }
-        }
-
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-        }
-
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--text-dark);
-            color: var(--white);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .tooltip:hover::after {
-            opacity: 1;
-            visibility: visible;
-        }
-    </style>
+    <link rel="stylesheet" href="css/farmer-dashboard.css">
 </head>
 
 <body>
@@ -1057,75 +51,38 @@
                 <div class="nav-section">
                     <span class="nav-section-title">Main Menu</span>
                 </div>
-                <a href="#" class="nav-item active">
+                <a href="javascript:void(0)" class="nav-item active" onclick="switchView('overview', this)">
                     <span class="material-icons-outlined">dashboard</span>
-                    Dashboard
-                </a>
-                <a href="#" class="nav-item">
-                    <span class="material-icons-outlined">agriculture</span>
-                    Rent Equipment
-                    <span class="badge">New</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <span class="material-icons-outlined">shopping_cart</span>
-                    Buy Equipment
-                </a>
-                <a href="#" class="nav-item">
-                    <span class="material-icons-outlined">inventory_2</span>
-                    Stock Availability
+                    Overview
                 </a>
 
                 <div class="nav-section">
-                    <span class="nav-section-title">Workforce</span>
+                    <span class="nav-section-title">Essential Services</span>
                 </div>
-                <a href="#" class="nav-item">
+                <a href="javascript:void(0)" class="nav-item" onclick="switchView('machinery', this)">
+                    <span class="material-icons-outlined">agriculture</span>
+                    Get Machinery
+                </a>
+                <a href="javascript:void(0)" class="nav-item" onclick="switchView('workers', this)">
                     <span class="material-icons-outlined">groups</span>
                     Hire Workers
                 </a>
-                <a href="#" class="nav-item">
-                    <span class="material-icons-outlined">engineering</span>
-                    Machine Operators
-                </a>
-                <a href="#" class="nav-item">
-                    <span class="material-icons-outlined">support_agent</span>
-                    Tractor Support
-                </a>
-
-                <div class="nav-section">
-                    <span class="nav-section-title">Resources</span>
-                </div>
-                <a href="#" class="nav-item">
+                <a href="javascript:void(0)" class="nav-item" onclick="switchView('skills', this)">
                     <span class="material-icons-outlined">school</span>
-                    Tutorials
-                </a>
-                <a href="#" class="nav-item">
-                    <span class="material-icons-outlined">menu_book</span>
-                    Equipment Guides
+                    Skill Center
                 </a>
 
                 <div class="nav-section">
-                    <span class="nav-section-title">Documents</span>
+                    <span class="nav-section-title">Support</span>
                 </div>
-                <a href="#" class="nav-item">
+                <a href="javascript:void(0)" class="nav-item" onclick="switchView('contracts', this)">
                     <span class="material-icons-outlined">description</span>
-                    Rental Agreements
+                    My Contracts
                     <span class="badge">3</span>
                 </a>
-                <a href="#" class="nav-item">
-                    <span class="material-icons-outlined">verified_user</span>
-                    Insurance Policies
-                </a>
-
-                <div class="nav-section">
-                    <span class="nav-section-title">Account</span>
-                </div>
-                <a href="#" class="nav-item">
+                <a href="javascript:void(0)" class="nav-item" onclick="switchView('profile', this)">
                     <span class="material-icons-outlined">person</span>
                     My Profile
-                </a>
-                <a href="#" class="nav-item">
-                    <span class="material-icons-outlined">settings</span>
-                    Settings
                 </a>
             </nav>
 
@@ -1163,260 +120,440 @@
                 </div>
             </div>
 
-            <!-- Stats Overview -->
-            <div class="stats-grid">
-                <div class="stat-card rental">
-                    <div class="stat-header">
-                        <div class="stat-icon">
-                            <span class="material-icons-outlined">agriculture</span>
-                        </div>
-                        <span class="stat-trend up">
-                            <span class="material-icons-outlined" style="font-size: 1rem;">trending_up</span>
-                            +12%
-                        </span>
+            <!-- Compact Overview Header -->
+            <div class="dashboard-overview-bar"
+                style="display: flex; gap: 1rem; margin-bottom: 2rem; overflow-x: auto; padding-bottom: 0.5rem;">
+                <div class="overview-chip"
+                    style="background: var(--surface-white); padding: 0.75rem 1.25rem; border-radius: 50px; display: flex; align-items: center; gap: 0.75rem; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); white-space: nowrap;">
+                    <div
+                        style="width: 32px; height: 32px; background: #eff6ff; color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span class="material-icons-outlined" style="font-size: 1.2rem;">agriculture</span>
                     </div>
-                    <div class="stat-value">5</div>
-                    <div class="stat-label">Active Rentals</div>
+                    <div><span style="font-weight: 700; font-size: 1.1rem;">5</span> <span
+                            style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 2px;">Rentals</span>
+                    </div>
                 </div>
-
-                <div class="stat-card workers">
-                    <div class="stat-header">
-                        <div class="stat-icon">
-                            <span class="material-icons-outlined">groups</span>
-                        </div>
-                        <span class="stat-trend up">
-                            <span class="material-icons-outlined" style="font-size: 1rem;">trending_up</span>
-                            +8%
-                        </span>
+                <div class="overview-chip"
+                    style="background: var(--surface-white); padding: 0.75rem 1.25rem; border-radius: 50px; display: flex; align-items: center; gap: 0.75rem; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); white-space: nowrap;">
+                    <div
+                        style="width: 32px; height: 32px; background: #fffbeb; color: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span class="material-icons-outlined" style="font-size: 1.2rem;">groups</span>
                     </div>
-                    <div class="stat-value">12</div>
-                    <div class="stat-label">Hired Workers</div>
+                    <div><span style="font-weight: 700; font-size: 1.1rem;">12</span> <span
+                            style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 2px;">Workers</span>
+                    </div>
                 </div>
-
-                <div class="stat-card agreements">
-                    <div class="stat-header">
-                        <div class="stat-icon">
-                            <span class="material-icons-outlined">description</span>
-                        </div>
-                        <span class="stat-trend down">
-                            <span class="material-icons-outlined" style="font-size: 1rem;">trending_down</span>
-                            -2%
-                        </span>
+                <div class="overview-chip"
+                    style="background: var(--surface-white); padding: 0.75rem 1.25rem; border-radius: 50px; display: flex; align-items: center; gap: 0.75rem; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); white-space: nowrap;">
+                    <div
+                        style="width: 32px; height: 32px; background: #f5f3ff; color: #8b5cf6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span class="material-icons-outlined" style="font-size: 1.2rem;">history_edu</span>
                     </div>
-                    <div class="stat-value">3</div>
-                    <div class="stat-label">Pending Agreements</div>
+                    <div><span style="font-weight: 700; font-size: 1.1rem;">3</span> <span
+                            style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 2px;">Pending</span>
+                    </div>
                 </div>
-
-                <div class="stat-card tutorials">
-                    <div class="stat-header">
-                        <div class="stat-icon">
-                            <span class="material-icons-outlined">school</span>
-                        </div>
-                        <span class="stat-trend up">
-                            <span class="material-icons-outlined" style="font-size: 1rem;">trending_up</span>
-                            +25%
-                        </span>
+                <div class="overview-chip"
+                    style="background: var(--surface-white); padding: 0.75rem 1.25rem; border-radius: 50px; display: flex; align-items: center; gap: 0.75rem; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); white-space: nowrap;">
+                    <div
+                        style="width: 32px; height: 32px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span class="material-icons-outlined" style="font-size: 1.2rem;">school</span>
                     </div>
-                    <div class="stat-value">8</div>
-                    <div class="stat-label">Completed Tutorials</div>
+                    <div><span style="font-weight: 700; font-size: 1.1rem;">8</span> <span
+                            style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 2px;">Learnt</span>
+                    </div>
+                </div>
+                <!-- Mini Weather Chip -->
+                <div class="overview-chip weather-chip"
+                    style="background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: white; padding: 0.75rem 1.25rem; border-radius: 50px; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2); white-space: nowrap; margin-left: auto;">
+                    <span style="font-size: 1.2rem;">⛅</span>
+                    <span style="font-weight: 600;">28°C</span>
+                    <span style="font-size: 0.8rem; opacity: 0.9;">Partly Cloudy</span>
                 </div>
             </div>
 
-            <!-- Main Dashboard Grid -->
-            <div class="dashboard-grid">
-                <!-- Services Section -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2>🌾 Quick Services</h2>
-                        <a href="#" class="view-all">
-                            View All
-                            <span class="material-icons-outlined">arrow_forward</span>
-                        </a>
-                    </div>
-
-                    <div class="services-grid">
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">agriculture</span>
-                            </div>
-                            <h3>Rent Machines</h3>
-                            <p>Browse & rent farm equipment</p>
-                        </a>
-
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">shopping_bag</span>
-                            </div>
-                            <h3>Buy Equipment</h3>
-                            <p>Purchase second-hand tools</p>
-                        </a>
-
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">groups</span>
-                            </div>
-                            <h3>Hire Workers</h3>
-                            <p>Find skilled farm laborers</p>
-                        </a>
-
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">engineering</span>
-                            </div>
-                            <h3>Operators</h3>
-                            <p>Certified machine operators</p>
-                        </a>
-
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">play_circle</span>
-                            </div>
-                            <h3>Tutorials</h3>
-                            <p>Learn equipment usage</p>
-                        </a>
-
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">description</span>
-                            </div>
-                            <h3>Agreements</h3>
-                            <p>Digital rental contracts</p>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Right Column -->
-                <div>
-                    <!-- Weather Widget -->
-                    <div class="weather-widget">
-                        <h4>📍 Your Farm Location</h4>
-                        <div class="weather-main">
-                            <div>
-                                <div class="weather-temp">28°C</div>
-                                <div class="weather-desc">Partly Cloudy</div>
-                            </div>
-                            <span class="weather-icon">⛅</span>
-                        </div>
-                    </div>
-
-                    <!-- Recent Activity -->
+            <!-- View: Overview -->
+            <div id="view-overview" class="dashboard-view active">
+                <div class="dashboard-grid">
+                    <!-- Simplified Hub Section -->
                     <div class="card">
                         <div class="card-header">
-                            <h2>📋 Recent Activity</h2>
-                            <a href="#" class="view-all">View All</a>
+                            <h2>🚀 Quick Access</h2>
                         </div>
-
-                        <div class="activity-list">
-                            <div class="activity-item">
-                                <div class="activity-icon rental">
-                                    <span class="material-icons-outlined">agriculture</span>
+                        <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                            <!-- Group 1: Machinery Hub -->
+                            <div class="service-hub">
+                                <div class="service-hub-image-container"
+                                    style="height: 280px; overflow: hidden; position: relative;">
+                                    <img src="images/machinery-center-updated.png" class="service-hub-image"
+                                        style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <div class="activity-content">
-                                    <h4>Tractor Rented</h4>
-                                    <p>John Deere 5050D - 7 days</p>
+                                <div style="padding: 1.25rem;">
+                                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Machinery
+                                        Center</h3>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                        Rent or buy tractors, tillers, and harvesters easier.</p>
+                                    <div style="display: flex; gap: 0.75rem;">
+                                        <button class="quick-action-btn primary"
+                                            onclick="window.location.href='rent-equipment.html'"
+                                            style="flex: 1; font-size: 0.8rem; padding: 0.6rem;">Rent Now</button>
+                                        <button class="quick-action-btn secondary"
+                                            onclick="window.location.href='buy-equipment.html'"
+                                            style="flex: 1; font-size: 0.8rem; padding: 0.6rem;">Buy Used</button>
+                                    </div>
                                 </div>
-                                <span class="activity-time">2h ago</span>
                             </div>
-
-                            <div class="activity-item">
-                                <div class="activity-icon booking">
-                                    <span class="material-icons-outlined">person_add</span>
+                            <!-- Group 2: Workers Hub -->
+                            <div class="service-hub">
+                                <div class="service-hub-image-container"
+                                    style="height: 280px; overflow: hidden; position: relative;">
+                                    <img src="images/dashboard-labor.png" class="service-hub-image"
+                                        style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <div class="activity-content">
-                                    <h4>Worker Hired</h4>
-                                    <p>Ramesh Kumar - Harvesting</p>
+                                <div style="padding: 1.25rem;">
+                                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Farm Labor
+                                        Hub</h3>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                        Hire skilled workers and machine operators today.</p>
+                                    <div style="display: flex; gap: 0.75rem;">
+                                        <button class="quick-action-btn primary"
+                                            onclick="window.location.href='hire-workers.html'"
+                                            style="flex: 1; font-size: 0.8rem; padding: 0.6rem;">Find Labor</button>
+                                        <button class="quick-action-btn secondary"
+                                            onclick="window.location.href='hire-workers.html'"
+                                            style="flex: 1; font-size: 0.8rem; padding: 0.6rem;">Operators</button>
+                                    </div>
                                 </div>
-                                <span class="activity-time">5h ago</span>
                             </div>
-
-                            <div class="activity-item">
-                                <div class="activity-icon purchase">
-                                    <span class="material-icons-outlined">verified</span>
+                            <!-- Group 3: Learn & Protect -->
+                            <div class="service-hub">
+                                <div class="service-hub-image-container"
+                                    style="height: 280px; overflow: hidden; position: relative;">
+                                    <img src="images/dashboard-learn-updated.png" class="service-hub-image"
+                                        style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <div class="activity-content">
-                                    <h4>Agreement Signed</h4>
-                                    <p>Rotavator rental contract</p>
+                                <div style="padding: 1.25rem;">
+                                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Learn &
+                                        Protect</h3>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                        Video tutorials and easy rental agreements.</p>
+                                    <div style="display: flex; gap: 0.75rem;">
+                                        <button class="quick-action-btn primary"
+                                            onclick="window.location.href='tutorials.html'"
+                                            style="flex: 1; font-size: 0.8rem; padding: 0.6rem;">Watch Tips</button>
+                                        <button class="quick-action-btn secondary"
+                                            onclick="window.location.href='agreements.html'"
+                                            style="flex: 1; font-size: 0.8rem; padding: 0.6rem;">Agreements</button>
+                                    </div>
                                 </div>
-                                <span class="activity-time">1d ago</span>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="quick-actions">
-                            <button class="quick-action-btn">
-                                <span class="material-icons-outlined">add</span>
-                                New Rental
-                            </button>
-                            <button class="quick-action-btn secondary">
-                                <span class="material-icons-outlined">person_search</span>
-                                Find Worker
-                            </button>
+                    <!-- Right Column: Status -->
+                    <div class="card" style="padding: 1.5rem;">
+                        <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">📋 Status</h2>
+                        <div class="activity-feed">
+                            <div class="feed-item"
+                                style="border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1rem;">
+                                <div style="font-size: 0.85rem; font-weight: 600;">Active Rental</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">Tractor - 3 days left
+                                </div>
+                            </div>
+                            <div class="feed-item" style="border-left: 2px solid #10b981; padding-left: 1rem;">
+                                <div style="font-size: 0.85rem; font-weight: 600;">Hired Workers</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">2 helpers arriving
+                                    tomorrow</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Available Equipment Section -->
-            <section class="equipment-section">
-                <div class="card">
+            <!-- View: Machinery -->
+            <div id="view-machinery" class="dashboard-view">
+                <div class="card" style="margin-bottom: 2rem;">
                     <div class="card-header">
-                        <h2>🚜 Available Equipment</h2>
-                        <a href="#" class="view-all">
-                            Browse All
-                            <span class="material-icons-outlined">arrow_forward</span>
-                        </a>
+                        <h2>🚜 Machinery Center</h2>
                     </div>
-
-                    <div class="equipment-grid">
-                        <div class="equipment-card">
-                            <div class="equipment-image">
-                                <span class="material-icons-outlined">agriculture</span>
-                                <span class="equipment-badge">Available</span>
+                    <div class="services-grid"
+                        style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                        <div class="service-hub">
+                            <div class="service-hub-image-container"
+                                style="height: 280px; overflow: hidden; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=500&q=80"
+                                    class="service-hub-image" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <div class="equipment-info">
-                                <h4>John Deere 5050D</h4>
-                                <p>50 HP Tractor</p>
-                                <div class="equipment-price">₹2,500 <span>/day</span></div>
-                            </div>
-                        </div>
-
-                        <div class="equipment-card">
-                            <div class="equipment-image">
-                                <span class="material-icons-outlined">agriculture</span>
-                                <span class="equipment-badge">Available</span>
-                            </div>
-                            <div class="equipment-info">
-                                <h4>Rotavator 6ft</h4>
-                                <p>Heavy Duty</p>
-                                <div class="equipment-price">₹800 <span>/day</span></div>
+                            <div style="padding: 1.25rem;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Rent Equipment</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Daily
+                                    rentals for all farm needs.</p>
+                                <button class="quick-action-btn primary"
+                                    onclick="window.location.href='rent-equipment.html'"
+                                    style="width: 100%; border-radius: 8px;">View Rentals</button>
                             </div>
                         </div>
-
-                        <div class="equipment-card">
-                            <div class="equipment-image">
-                                <span class="material-icons-outlined">agriculture</span>
-                                <span class="equipment-badge out">Rented</span>
+                        <div class="service-hub">
+                            <div class="service-hub-image-container"
+                                style="height: 280px; overflow: hidden; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1599933334295-06183e37c5a4?w=500&q=80"
+                                    class="service-hub-image" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <div class="equipment-info">
-                                <h4>Combined Harvester</h4>
-                                <p>Mahindra Arjun</p>
-                                <div class="equipment-price">₹5,000 <span>/day</span></div>
-                            </div>
-                        </div>
-
-                        <div class="equipment-card">
-                            <div class="equipment-image">
-                                <span class="material-icons-outlined">agriculture</span>
-                                <span class="equipment-badge">Available</span>
-                            </div>
-                            <div class="equipment-info">
-                                <h4>Seed Drill Machine</h4>
-                                <p>9 Row Automatic</p>
-                                <div class="equipment-price">₹1,200 <span>/day</span></div>
+                            <div style="padding: 1.25rem;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Buy Used Equipment</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                    Quality verified second-hand units.</p>
+                                <button class="quick-action-btn secondary"
+                                    onclick="window.location.href='buy-equipment.html'"
+                                    style="width: 100%; border-radius: 8px;">Browse Shop</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+
+            <!-- View: Workers -->
+            <div id="view-workers" class="dashboard-view">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>👥 Farm Labor Center</h2>
+                    </div>
+                    <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                        <div class="service-hub">
+                            <div class="service-hub-image-container"
+                                style="height: 280px; overflow: hidden; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=400"
+                                    class="service-hub-image" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h3>Manual Labor</h3>
+                                <p>Find workers for seeding, weeding, etc.</p>
+                                <button class="quick-action-btn primary"
+                                    onclick="window.location.href='hire-workers.html'"
+                                    style="width: 100%; margin-top: 1rem;">Hire Now</button>
+                            </div>
+                        </div>
+                        <div class="service-hub">
+                            <div class="service-hub-image-container"
+                                style="height: 280px; overflow: hidden; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=400"
+                                    class="service-hub-image" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h3>Machine Operators</h3>
+                                <p>Expert drivers for your heavy machinery.</p>
+                                <button class="quick-action-btn secondary"
+                                    onclick="window.location.href='hire-workers.html'"
+                                    style="width: 100%; margin-top: 1rem;">Find Operators</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Skills -->
+            <div id="view-skills" class="dashboard-view">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📚 Skill Learning Center</h2>
+                    </div>
+                    <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                        <div class="service-hub">
+                            <div class="service-hub-image-container"
+                                style="height: 220px; overflow: hidden; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=400"
+                                    class="service-hub-image" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h3>Tutorial Library</h3>
+                                <p>Learn how to use modern farming tech.</p>
+                                <button class="quick-action-btn primary" onclick="window.location.href='tutorials.html'"
+                                    style="width: 100%; margin-top: 1rem;">Watch Videos</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Contracts -->
+            <div id="view-contracts" class="dashboard-view">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📄 My Contracts & Policies</h2>
+                    </div>
+                    <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                        <div class="service-hub">
+                            <div class="service-hub-image-container"
+                                style="height: 220px; overflow: hidden; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400"
+                                    class="service-hub-image" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h3>Rental Agreements</h3>
+                                <p>View and sign your digital contracts.</p>
+                                <button class="quick-action-btn primary"
+                                    onclick="window.location.href='agreements.html'"
+                                    style="width: 100%; margin-top: 1rem;">Open My Documents</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Profile -->
+            <div id="view-profile" class="dashboard-view">
+                <div class="profile-card-premium">
+                    <h2 style="font-family: var(--font-serif); font-size: 2rem; margin-bottom: 2rem; text-align: left;">
+                        Profile Settings</h2>
+
+                    <div class="profile-avatar-section">
+                        <div class="avatar-edit-wrapper">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400"
+                                id="profile-display-img">
+                            <label for="avatar-input" class="avatar-upload-icon">
+                                <span class="material-icons-outlined">photo_camera</span>
+                            </label>
+                            <input type="file" id="avatar-input" hidden accept="image/*"
+                                onchange="previewAvatar(event)">
+                        </div>
+                    </div>
+
+                    <form class="profile-premium-form" id="profileForm">
+                        <div class="form-premium-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="profile-name-input" value="" placeholder="Your Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="profile-email-input" value="" placeholder="Your Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Change Password (leave blank to keep current)</label>
+                            <div class="pass-input-container">
+                                <input type="password" id="profile-pass-input" value="" placeholder="••••••••">
+                                <span class="material-icons-outlined toggle-pass"
+                                    onclick="toggleProfilePassword(this)">visibility</span>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-update-profile" onclick="handleProfileUpdate()">
+                            <span class="material-icons-outlined">save</span>
+                            UPDATE PROFILE DETAILS
+                        </button>
+
+                        <p class="premium-form-footer">Changes will be saved permanently to your account.</p>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+                function toggleProfilePassword(icon) {
+                    const input = document.getElementById('profile-pass-input');
+                    if (!input) return;
+
+                    if (!icon) icon = document.querySelector('.toggle-pass');
+
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.textContent = 'visibility_off';
+                    } else {
+                        input.type = 'password';
+                        icon.textContent = 'visibility';
+                    }
+                }
+
+                function previewAvatar(event) {
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        const output = document.getElementById('profile-display-img');
+                        output.src = reader.result;
+                        // Also update sidebar avatar if possible
+                        document.getElementById('user-avatar').innerHTML = `<img src="${reader.result}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                    }
+                    reader.readAsDataURL(event.target.files[0]);
+                }
+
+                async function handleProfileUpdate() {
+                    const btn = document.querySelector('.btn-update-profile');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<span class="material-icons-outlined">sync</span> UPDATING...';
+                    btn.disabled = true;
+
+                    const newName = document.getElementById('profile-name-input').value;
+                    const newEmail = document.getElementById('profile-email-input').value;
+                    const newPassword = document.getElementById('profile-pass-input').value;
+                    const profileImg = document.getElementById('profile-display-img').src;
+
+                    const token = localStorage.getItem('agrohub_token');
+
+                    try {
+                        const payload = {
+                            name: newName,
+                            email: newEmail,
+                            password: newPassword,
+                            picture: profileImg.startsWith('data:image') ? profileImg : null
+                        };
+
+                        const response = await fetch('php/update_profile.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // Update local storage for immediate persistence on refresh
+                            const userDataStr = localStorage.getItem('agrohub_user');
+                            if (userDataStr) {
+                                try {
+                                    const userData = JSON.parse(userDataStr);
+                                    userData.name = newName;
+                                    userData.email = newEmail;
+                                    if (payload.picture) {
+                                        userData.picture = payload.picture;
+                                    }
+                                    localStorage.setItem('agrohub_user', JSON.stringify(userData));
+
+                                    // Update sidebar and other UI elements
+                                    updateUserUI(userData);
+                                } catch (e) {
+                                    console.error('Error updating local storage:', e);
+                                }
+                            }
+
+                            btn.innerHTML = '<span class="material-icons-outlined">done</span> UPDATED SUCCESSFULLY';
+                            btn.style.background = '#10b981';
+                            btn.style.color = '#fff';
+
+                            // Clear password field
+                            document.getElementById('profile-pass-input').value = '';
+                        } else {
+                            btn.innerHTML = '<span class="material-icons-outlined">error</span> ' + (result.message || 'Update failed');
+                            btn.style.background = '#ef4444';
+                            btn.style.color = '#fff';
+                        }
+                    } catch (error) {
+                        console.error('Update error:', error);
+                        btn.innerHTML = '<span class="material-icons-outlined">error</span> CONNECTION FAILED';
+                        btn.style.background = '#ef4444';
+                        btn.style.color = '#fff';
+                    }
+
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                        btn.style.color = '';
+                        btn.disabled = false;
+                    }, 3000);
+                }
+            </script>
         </main>
     </div>
 
@@ -1452,14 +589,60 @@
         let dashboardData = null;
 
         /**
+         * Switches the dashboard view based on sidebar selection
+         */
+        function switchView(viewId, element) {
+            // Hide all views
+            document.querySelectorAll('.dashboard-view').forEach(view => {
+                view.classList.remove('active');
+            });
+
+            // Show selected view
+            const targetView = document.getElementById('view-' + viewId);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
+
+            // Update sidebar active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            if (element) {
+                element.classList.add('active');
+            } else {
+                // If called from a hub card, find the sidebar item to highlight
+                const sidebarItem = document.querySelector(`.nav-item[onclick*="'${viewId}'"]`);
+                if (sidebarItem) sidebarItem.classList.add('active');
+            }
+
+            // Update breadcrumb
+            const breadcrumb = document.querySelector('.breadcrumb');
+            if (breadcrumb) {
+                let viewName = viewId.charAt(0).toUpperCase() + viewId.slice(1);
+                if (viewId === 'overview') viewName = 'Overview';
+                if (viewId === 'machinery') viewName = 'Machinery';
+                if (viewId === 'workers') viewName = 'Hire Workers';
+                if (viewId === 'skills') viewName = 'Skills';
+                if (viewId === 'contracts') viewName = 'My Documents';
+
+                breadcrumb.innerHTML = `<span class="material-icons-outlined" style="font-size: 1rem;">home</span> Dashboard / ${viewName}`;
+            }
+        }
+
+        /**
          * Load user info and dashboard data from PHP Backend
          */
         async function loadDashboardData() {
             const token = localStorage.getItem('agrohub_token');
             const userDataStr = localStorage.getItem('agrohub_user');
 
+            // Allow dashboard to work without authentication for testing
             if (!token || !userDataStr) {
-                window.location.href = 'login-farmer.html';
+                console.log('No authentication found, using default user');
+                // Don't redirect, just use default values
+                updateUserUI({ name: 'Guest Farmer', email: 'guest@agrohub.com' });
+                // Keep the static HTML service cards working
                 return;
             }
 
@@ -1480,21 +663,30 @@
                     dashboardData = result.data.services;
 
                     updateUserUI(currentUser);
-                    renderServices(dashboardData);
+                    // Only render services if we have data from backend
+                    if (dashboardData && dashboardData.length > 0) {
+                        renderServices(dashboardData);
+                    }
                 } else {
                     // Session might be expired
                     console.error('Session error:', result.message);
-                    showNotification(result.message + '. Please log in again.', 'error');
                     localStorage.removeItem('agrohub_token');
                     localStorage.removeItem('agrohub_user');
-                    // window.location.href = 'login-farmer.html'; // Commented out to debug
+                    // Keep static cards working, don't redirect
                 }
             } catch (error) {
                 console.error('Fetch error:', error);
                 // Fallback to local data if server is down (for development)
-                const userData = JSON.parse(userDataStr);
-                updateUserUI(userData);
-                showNotification('Running in offline mode', 'error');
+                if (userDataStr) {
+                    try {
+                        const userData = JSON.parse(userDataStr);
+                        updateUserUI(userData);
+                    } catch (e) {
+                        console.error('Error parsing user data:', e);
+                    }
+                }
+                // Keep the static HTML service cards working
+                console.log('Running in offline mode - using static service cards');
             }
         }
 
@@ -1523,7 +715,7 @@
                 if (user.picture) {
                     avatarEl.style.backgroundImage = `url(${user.picture})`;
                     avatarEl.style.backgroundSize = 'cover';
-                    avatarEl.style.textContent = '';
+                    avatarEl.innerHTML = ''; // Clear initials and any existing img tags
                 } else {
                     avatarEl.textContent = initials;
                     avatarEl.style.backgroundImage = 'none';
@@ -1532,6 +724,20 @@
 
             if (nameEl) nameEl.textContent = userName;
             if (welcomeEl) welcomeEl.textContent = `Welcome back, ${firstName}! 👋`;
+
+            // Update Profile View Inputs
+            const profileNameInput = document.getElementById('profile-name-input');
+            const profileEmailInput = document.getElementById('profile-email-input');
+            const profileDisplayImg = document.getElementById('profile-display-img');
+
+            if (profileNameInput) profileNameInput.value = user.name || '';
+            if (profileEmailInput) profileEmailInput.value = user.email || '';
+
+            if (profileDisplayImg) {
+                if (user.picture) {
+                    profileDisplayImg.src = user.picture;
+                }
+            }
         }
 
         /**
@@ -1539,19 +745,57 @@
          */
         function renderServices(services) {
             const servicesGrid = document.querySelector('.services-grid');
-            if (!servicesGrid || !services) return;
+            if (!servicesGrid || !services || !Array.isArray(services) || services.length === 0) {
+                console.log('No valid services data, keeping static HTML service cards');
+                return;
+            }
 
-            servicesGrid.innerHTML = services.map(service => `
-                <a href="${service.link}" class="service-card">
-                    <div class="service-icon">
-                        <span class="material-icons-outlined">${service.icon}</span>
+            // Define the three main hubs
+            const hubs = [
+                {
+                    title: 'Machinery Center',
+                    desc: 'Rent or buy tractors, tillers, and harvesters easier.',
+                    img: 'images/machinery-center-updated.png',
+                    actions: [
+                        { label: 'Rent Now', link: 'rent-equipment.html', type: 'primary' },
+                        { label: 'Buy Used', link: 'buy-equipment.html', type: 'secondary' }
+                    ]
+                },
+                {
+                    title: 'Farm Labor Hub',
+                    desc: 'Hire skilled workers and machine operators today.',
+                    img: 'images/dashboard-labor.png',
+                    actions: [
+                        { label: 'Find Labor', link: 'hire-workers.html', type: 'primary' },
+                        { label: 'Operators', link: 'hire-workers.html', type: 'secondary' }
+                    ]
+                },
+                {
+                    title: 'Learn & Protect',
+                    desc: 'Video tutorials and easy rental agreements.',
+                    img: 'images/dashboard-learn-updated.png',
+                    actions: [
+                        { label: 'Watch Tips', link: 'tutorials.html', type: 'primary' },
+                        { label: 'Agreements', link: 'agreements.html', type: 'secondary' }
+                    ]
+                }
+            ];
+
+            servicesGrid.innerHTML = hubs.map(hub => `
+                <div class="service-hub">
+                    <div class="service-hub-image-container" style="height: 280px; overflow: hidden; position: relative; border-radius: 20px 20px 0 0;">
+                        <img src="${hub.img}" class="service-hub-image" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-                    <div>
-                        <h3>${service.title}</h3>
-                        <p>${service.description}</p>
+                    <div style="padding: 1.5rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">${hub.title}</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">${hub.desc}</p>
+                        <div style="display: flex; gap: 0.75rem;">
+                            ${hub.actions.map(action => `
+                                <button class="quick-action-btn ${action.type}" onclick="window.location.href='${action.link}'" style="flex: 1; font-size: 0.8rem; padding: 0.6rem;">${action.label}</button>
+                            `).join('')}
+                        </div>
                     </div>
-                    ${service.badge_text ? `<span class="badge ${service.badge_type || ''}" style="position: absolute; top: 10px; right: 10px;">${service.badge_text}</span>` : ''}
-                </a>
+                </div>
             `).join('');
         }
 
@@ -1567,7 +811,9 @@
             }
         }
 
-        // Active nav item handler
+        // Active nav item handler - Disabled to prevent interference with navigation
+        // The active class should be managed server-side or on page load
+        /*
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
             item.addEventListener('click', function (e) {
@@ -1577,6 +823,7 @@
                 this.classList.add('active');
             });
         });
+        */
 
         // Search functionality (placeholder)
         const searchInput = document.querySelector('.search-box input');
@@ -1612,14 +859,16 @@
         // Run counter animation on page load
         window.addEventListener('load', animateCounters);
 
-        // Service card click handlers
-        const serviceCards = document.querySelectorAll('.service-card');
-        serviceCards.forEach(card => {
-            card.addEventListener('click', function (e) {
-                e.preventDefault();
-                const serviceName = this.querySelector('h3').textContent;
-                console.log('Service clicked:', serviceName);
-                // Add your navigation logic here
+        // Quick action button handlers
+        const quickActionButtons = document.querySelectorAll('.quick-action-btn');
+        quickActionButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const buttonText = this.textContent.trim();
+                if (buttonText.includes('New Rental')) {
+                    window.location.href = 'rent-equipment.html';
+                } else if (buttonText.includes('Find Worker')) {
+                    window.location.href = 'hire-workers.html';
+                }
             });
         });
     </script>

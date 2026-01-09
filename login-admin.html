@@ -846,7 +846,27 @@
         // Form submission
         document.getElementById('login-form').addEventListener('submit', function (e) {
             e.preventDefault();
-            console.log('Admin login');
+
+            const email = document.getElementById('email').value;
+            // In a real app, validation and API call would go here
+
+            // Mock success
+            localStorage.setItem('agrohub_user', JSON.stringify({
+                name: 'Admin User',
+                email: email,
+                userType: 'admin',
+                loginMethod: 'email'
+            }));
+
+            // Show success animation or notification
+            const btn = this.querySelector('.submit-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-icons-outlined">check_circle</span> Success!';
+            btn.style.background = 'var(--success)';
+
+            setTimeout(() => {
+                window.location.href = 'admin-dashboard.html';
+            }, 500);
         });
     </script>
 </body>

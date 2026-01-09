@@ -19,6 +19,7 @@ ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
 require_once 'config.php';
+require_once 'logger.php';
 
 try {
     $action = isset($_GET['action']) ? sanitize($_GET['action']) : '';
@@ -51,6 +52,7 @@ try {
 } catch (Exception $e) {
     // Clear any buffered output including warnings
     ob_end_clean();
+    logDebug("Exception: " . $e->getMessage());
     jsonResponse(false, 'Server Error: ' . $e->getMessage());
 }
 
@@ -166,43 +168,75 @@ function handleGoogleAuth($data) {
     } 
     // Case 2: Access Token provided (via oauth2 client)
     elseif (isset($data['accessToken'])) {
+        logDebug("Google Auth: Access Token provided");
         $accessToken = $data['accessToken'];
         $url = "https://www.googleapis.com/oauth2/v3/userinfo";
         
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For local dev environments
+        $response = false;
         
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
-        if (curl_errno($ch)) {
-             jsonResponse(false, 'Google API Request Error: ' . curl_error($ch));
+        // Try cURL first
+        if (function_exists('curl_init')) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); 
+            
+            $response = curl_exec($ch);
+            
+            if (curl_errno($ch)) {
+                logDebug('Google Auth cURL Error: ' . curl_error($ch));
+                $response = false; 
+            }
+            curl_close($ch);
         }
-        curl_close($ch);
+        
+        // Fallback to file_get_contents
+        if ($response === false) {
+            logDebug("Google Auth: Falling back to file_get_contents");
+            $opts = [
+                "http" => [
+                    "method" => "GET",
+                    "header" => "Authorization: Bearer " . $accessToken . "\r\n" .
+                                "User-Agent: AgroHub/1.0\r\n"
+                ],
+                "ssl" => [
+                    "verify_peer" => false,
+                    "verify_peer_name" => false
+                ]
+            ];
+            $context = stream_context_create($opts);
+            $response = @file_get_contents($url, false, $context);
+        }
 
-        if ($httpCode !== 200) {
-            jsonResponse(false, 'Failed to verify access token with Google');
+        if ($response === false) {
+            logDebug("Google Auth: All methods failed to contact Google API");
+            jsonResponse(false, 'Failed to connect to Google API. Check server internet connection.');
         }
 
         $googleUser = json_decode($response, true);
         if (!$googleUser) {
-            jsonResponse(false, 'Invalid response from Google');
+            logDebug("Google Auth: Failed to decode response: " . substr($response, 0, 100));
+            jsonResponse(false, 'Invalid response from Google API');
         }
 
         $googleId = isset($googleUser['sub']) ? $googleUser['sub'] : '';
         $email = isset($googleUser['email']) ? $googleUser['email'] : '';
         $name = isset($googleUser['name']) ? $googleUser['name'] : '';
         $picture = isset($googleUser['picture']) ? $googleUser['picture'] : '';
+        
+        logDebug("Google Auth: Got user data - " . $email);
+        
     } else {
+        logDebug("Google Auth: No credentials provided in request");
         jsonResponse(false, 'No Google credential or access token provided');
     }
 
     $userType = isset($data['userType']) ? sanitize($data['userType']) : 'farmer';
 
     if (empty($email)) {
+        logDebug("Google Auth: Email empty in retrieved data");
         jsonResponse(false, 'Google account missing email address');
     }
 
@@ -221,6 +255,7 @@ function handleGoogleAuth($data) {
 
     if ($result->num_rows > 0) {
         // User exists, log them in
+        logDebug("Google Auth: User exists, logging in");
         $user = $result->fetch_assoc();
         
         // Update their picture if it changed
@@ -231,6 +266,7 @@ function handleGoogleAuth($data) {
         }
     } else {
         // Create new user
+        logDebug("Google Auth: Creating new user");
         // Generate a random secure password
         try {
             $randomBytes = random_bytes(16);
@@ -243,6 +279,7 @@ function handleGoogleAuth($data) {
         $stmt->bind_param("sssss", $name, $email, $placeholderPass, $userType, $picture);
         
         if (!$stmt->execute()) {
+            logDebug("Google Auth: Database Error - " . $stmt->error);
             throw new Exception("Database error creating user: " . $stmt->error);
         }
         
@@ -257,6 +294,8 @@ function handleGoogleAuth($data) {
     }
 
     $session = createSession($user['id']);
+    logDebug("Google Auth: Session created, success");
+
     
     // Flush buffer before outputting JSON
     if (ob_get_length()) ob_clean();
@@ -277,6 +316,7 @@ function handleGoogleAuth($data) {
  * Create a session for the user
  */
 function createSession($userId) {
+    logDebug("createSession called for user " . $userId);
     if (!$userId) {
         throw new Exception("Cannot create session for invalid user ID");
     }
@@ -295,9 +335,14 @@ function createSession($userId) {
     $ua = $_SERVER['HTTP_USER_AGENT'];
 
     $stmt = $conn->prepare("INSERT INTO user_sessions (user_id, session_token, ip_address, user_agent, expires_at) VALUES (?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        logDebug("createSession prepare failed: " . $conn->error);
+        throw new Exception("Database error: " . $conn->error);
+    }
     $stmt->bind_param("issss", $userId, $token, $ip, $ua, $expires);
     
     if (!$stmt->execute()) {
+        logDebug("createSession execute failed: " . $stmt->error);
         throw new Exception("Failed to create session: " . $stmt->error);
     }
 

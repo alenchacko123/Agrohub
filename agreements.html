@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rental Agreements & Insurance - AgroHub</title>
+    <meta name="description" content="Manage your digital rental agreements and insurance policies">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --dark-green: #1b4332;
+            --light-green: #d8f3dc;
+            --accent-gold: #ffd60a;
+            --accent-orange: #fb8500;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --text-light: #a0aec0;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 0.75rem;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--white);
+            padding: 0.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Agreement Cards */
+        .agreements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .agreement-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .agreement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(45, 106, 79, 0.2);
+        }
+
+        .agreement-card.pending {
+            border-left-color: var(--warning);
+        }
+
+        .agreement-card.active {
+            border-left-color: var(--success);
+        }
+
+        .agreement-card.expired {
+            border-left-color: var(--text-light);
+        }
+
+        .agreement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .agreement-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .agreement-id {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge.expired {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--text-light);
+        }
+
+        .agreement-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .agreement-footer {
+            display: flex;
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(45, 106, 79, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Insurance Cards */
+        .insurance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .insurance-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .insurance-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(45, 106, 79, 0.2);
+        }
+
+        .insurance-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .insurance-type {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .insurance-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .insurance-price {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .insurance-price span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .insurance-content {
+            padding: 1.5rem;
+        }
+
+        .insurance-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .insurance-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .insurance-features li:last-child {
+            border-bottom: none;
+        }
+
+        .insurance-features .material-icons-outlined {
+            color: var(--success);
+            font-size: 1.25rem;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: var(--accent-gold);
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255, 214, 10, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 24px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: var(--text-gray);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        .agreement-document {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+
+        .agreement-document h3 {
+            font-family: var(--font-serif);
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .agreement-document .section {
+            margin-bottom: 1.5rem;
+        }
+
+        .agreement-document .section-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-decoration: underline;
+        }
+
+        .signature-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .signature-box {
+            text-align: center;
+        }
+
+        .signature-line {
+            border-bottom: 2px solid #000;
+            margin-bottom: 0.5rem;
+            height: 50px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.15));
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box h4 {
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+
+            .agreements-grid,
+            .insurance-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .agreement-details {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <a href="farmer-dashboard.html" class="back-btn">
+                <span class="material-icons-outlined">arrow_back</span>
+                Back to Dashboard
+            </a>
+            <h1 class="page-title">📄 Agreements & Insurance</h1>
+            <p class="page-subtitle">Manage your rental agreements and insurance policies</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('agreements')">
+                <span class="material-icons-outlined">description</span>
+                Rental Agreements
+            </button>
+            <button class="tab-btn" onclick="switchTab('insurance')">
+                <span class="material-icons-outlined">verified_user</span>
+                Insurance Plans
+            </button>
+        </div>
+
+        <!-- Agreements Tab -->
+        <div id="agreements-tab" class="tab-content active">
+            <div class="agreements-grid" id="agreementsGrid"></div>
+        </div>
+
+        <!-- Insurance Tab -->
+        <div id="insurance-tab" class="tab-content">
+            <div class="insurance-grid" id="insuranceGrid"></div>
+        </div>
+    </div>
+
+    <!-- Agreement Details Modal -->
+    <div class="modal" id="agreementModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('agreementModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="agreementModalTitle">Rental Agreement</h2>
+                <p class="modal-subtitle">Agreement ID: <span id="agreementModalId"></span></p>
+            </div>
+            <div class="modal-body">
+                <div class="agreement-document" id="agreementDocument"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="downloadAgreement()">
+                    <span class="material-icons-outlined">download</span>
+                    Download PDF
+                </button>
+                <button type="button" class="btn btn-primary" onclick="closeModal('agreementModal')">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insurance Purchase Modal -->
+    <div class="modal" id="insuranceModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('insuranceModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="insuranceModalTitle">Purchase Insurance</h2>
+                <p class="modal-subtitle">Protect your equipment and operations</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-box">
+                    <h4>
+                        <span class="material-icons-outlined">info</span>
+                        Coverage Details
+                    </h4>
+                    <p id="insuranceCoverage"></p>
+                </div>
+
+                <form id="insuranceForm">
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Equipment to Insure
+                            *</label>
+                        <select id="equipmentSelect" required
+                            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 0.9rem;">
+                            <option value="">Select equipment</option>
+                            <option value="John Deere 5050D">John Deere 5050D - Tractor</option>
+                            <option value="Rotavator 6ft">Rotavator 6ft</option>
+                            <option value="Combined Harvester">Combined Harvester</option>
+                            <option value="Seed Drill">Seed Drill</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Coverage Period
+                            *</label>
+                        <select id="coveragePeriod" required
+                            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 0.9rem;">
+                            <option value="1">1 Month</option>
+                            <option value="3">3 Months</option>
+                            <option value="6">6 Months</option>
+                            <option value="12">1 Year</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Full Name *</label>
+                        <input type="text" id="buyerName" required
+                            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Phone Number *</label>
+                        <input type="tel" id="buyerPhone" required
+                            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Total Premium</label>
+                        <input type="text" id="totalPremium" readonly
+                            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 1.25rem; font-weight: 700; color: var(--primary-green);">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('insuranceModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="purchaseInsurance()">Purchase Insurance</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample agreement data
+        const agreements = [
+            {
+                id: 'AGR-2024-001',
+                title: 'John Deere 5050D Tractor',
+                status: 'active',
+                startDate: '2024-01-15',
+                endDate: '2024-02-15',
+                amount: 75000,
+                owner: 'Rajesh Equipment Rentals',
+                deposit: 15000
+            },
+            {
+                id: 'AGR-2024-002',
+                title: 'Rotavator 6ft Rental',
+                status: 'pending',
+                startDate: '2024-01-20',
+                endDate: '2024-01-27',
+                amount: 5600,
+                owner: 'Kumar Agri Services',
+                deposit: 2000
+            },
+            {
+                id: 'AGR-2023-089',
+                title: 'Combined Harvester',
+                status: 'expired',
+                startDate: '2023-11-10',
+                endDate: '2023-11-20',
+                amount: 50000,
+                owner: 'Hassan Machinery',
+                deposit: 10000
+            }
+        ];
+
+        // Sample insurance plans
+        const insurancePlans = [
+            {
+                id: 1,
+                name: 'Basic Protection',
+                type: 'Basic Coverage',
+                price: 499,
+                period: 'month',
+                features: [
+                    'Theft Protection',
+                    'Accidental Damage Cover',
+                    '24/7 Customer Support',
+                    'Up to ₹50,000 coverage',
+                    'Instant claim processing'
+                ],
+                popular: false
+            },
+            {
+                id: 2,
+                name: 'Premium Shield',
+                type: 'Comprehensive Coverage',
+                price: 999,
+                period: 'month',
+                features: [
+                    'All Basic features',
+                    'Fire & Natural Disasters',
+                    'Third-party Liability',
+                    'Up to ₹2,00,000 coverage',
+                    'Zero deductible',
+                    'Free annual maintenance'
+                ],
+                popular: true
+            },
+            {
+                id: 3,
+                name: 'Enterprise Plus',
+                type: 'Premium Coverage',
+                price: 1999,
+                period: 'month',
+                features: [
+                    'All Premium features',
+                    'Equipment Breakdown',
+                    'Business Interruption',
+                    'Unlimited coverage',
+                    'Legal assistance',
+                    'Replacement equipment',
+                    'Premium support'
+                ],
+                popular: false
+            }
+        ];
+
+        let currentInsurance = null;
+
+        // Render agreements
+        function renderAgreements() {
+            const grid = document.getElementById('agreementsGrid');
+            grid.innerHTML = agreements.map(agreement => {
+                const statusText = agreement.status === 'active' ? 'Active' :
+                    agreement.status === 'pending' ? 'Pending Signature' :
+                        'Expired';
+                return `
+                <div class="agreement-card ${agreement.status}" onclick="viewAgreement('${agreement.id}')">
+                    <div class="agreement-header">
+                        <div>
+                            <h3 class="agreement-title">${agreement.title}</h3>
+                            <p class="agreement-id">${agreement.id}</p>
+                        </div>
+                        <span class="status-badge ${agreement.status}">
+                            <span class="material-icons-outlined" style="font-size: 1rem;">${agreement.status === 'active' ? 'check_circle' :
+                        agreement.status === 'pending' ? 'pending' :
+                            'cancel'
+                    }</span>
+                            ${statusText}
+                        </span>
+                    </div>
+                    
+                    <div class="agreement-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Start Date</span>
+                            <span class="detail-value">${new Date(agreement.startDate).toLocaleDateString()}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">End Date</span>
+                            <span class="detail-value">${new Date(agreement.endDate).toLocaleDateString()}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Rental Amount</span>
+                            <span class="detail-value">₹${agreement.amount.toLocaleString()}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Owner</span>
+                            <span class="detail-value">${agreement.owner}</span>
+                        </div>
+                    </div>
+
+                    <div class="agreement-footer">
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); viewAgreement('${agreement.id}')">
+                            <span class="material-icons-outlined">visibility</span>
+                            View Details
+                        </button>
+                        <button class="btn btn-secondary" onclick="event.stopPropagation(); downloadAgreement('${agreement.id}')">
+                            <span class="material-icons-outlined">download</span>
+                            Download
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // Render insurance plans
+        function renderInsurance() {
+            const grid = document.getElementById('insuranceGrid');
+            grid.innerHTML = insurancePlans.map(plan => `
+                <div class="insurance-card" style="position: relative;">
+                    ${plan.popular ? '<div class="popular-badge">⭐ MOST POPULAR</div>' : ''}
+                    <div class="insurance-header">
+                        <div class="insurance-type">${plan.type}</div>
+                        <div class="insurance-name">${plan.name}</div>
+                        <div class="insurance-price">₹${plan.price}<span>/${plan.period}</span></div>
+                    </div>
+                    <div class="insurance-content">
+                        <ul class="insurance-features">
+                            ${plan.features.map(feature => `
+                                <li>
+                                    <span class="material-icons-outlined">check_circle</span>
+                                    ${feature}
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openInsuranceModal(${plan.id})">
+                            <span class="material-icons-outlined">shopping_cart</span>
+                            Get Coverage
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        // View agreement details
+        function viewAgreement(agreementId) {
+            const agreement = agreements.find(a => a.id === agreementId);
+            if (!agreement) return;
+
+            document.getElementById('agreementModalTitle').textContent = agreement.title;
+            document.getElementById('agreementModalId').textContent = agreement.id;
+
+            const documentHTML = `
+                <h3>EQUIPMENT RENTAL AGREEMENT</h3>
+                
+                <div class="section">
+                    <div class="section-title">1. PARTIES</div>
+                    <p>This agreement is made on ${new Date(agreement.startDate).toLocaleDateString()} between:</p>
+                    <p><strong>LESSOR:</strong> ${agreement.owner}</p>
+                    <p><strong>LESSEE:</strong> [Your Name]</p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">2. EQUIPMENT DESCRIPTION</div>
+                    <p><strong>Equipment:</strong> ${agreement.title}</p>
+                    <p><strong>Agreement ID:</strong> ${agreement.id}</p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">3. RENTAL PERIOD</div>
+                    <p><strong>Start Date:</strong> ${new Date(agreement.startDate).toLocaleDateString()}</p>
+                    <p><strong>End Date:</strong> ${new Date(agreement.endDate).toLocaleDateString()}</p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">4. RENTAL CHARGES</div>
+                    <p><strong>Rental Amount:</strong> ₹${agreement.amount.toLocaleString()}</p>
+                    <p><strong>Security Deposit:</strong> ₹${agreement.deposit.toLocaleString()}</p>
+                    <p><strong>Total:</strong> ₹${(agreement.amount + agreement.deposit).toLocaleString()}</p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">5. TERMS & CONDITIONS</div>
+                    <p>• The lessee shall use the equipment for agricultural purposes only.</p>
+                    <p>• The lessee is responsible for daily maintenance and fuel costs.</p>
+                    <p>• Any damage to the equipment must be reported immediately.</p>
+                    <p>• The security deposit will be refunded upon return in good condition.</p>
+                    <p>• Late returns may incur additional charges of ₹500 per day.</p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">6. LIABILITY</div>
+                    <p>The lessee assumes full responsibility for the equipment during the rental period and agrees to return it in the same condition as received, normal wear and tear excepted.</p>
+                </div>
+
+                <div class="signature-section">
+                    <div class="signature-box">
+                        <div class="signature-line"></div>
+                        <p><strong>Lessor Signature</strong></p>
+                        <p>${agreement.owner}</p>
+                    </div>
+                    <div class="signature-box">
+                        <div class="signature-line"></div>
+                        <p><strong>Lessee Signature</strong></p>
+                        <p>Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('agreementDocument').innerHTML = documentHTML;
+            document.getElementById('agreementModal').classList.add('active');
+        }
+
+        // Open insurance modal
+        function openInsuranceModal(planId) {
+            const plan = insurancePlans.find(p => p.id === planId);
+            if (!plan) return;
+
+            currentInsurance = plan;
+            document.getElementById('insuranceModalTitle').textContent = `Purchase ${plan.name}`;
+            document.getElementById('insuranceCoverage').textContent = plan.features.join(' • ');
+            document.getElementById('totalPremium').value = `₹${plan.price}/month`;
+
+            document.getElementById('insuranceModal').classList.add('active');
+        }
+
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Download agreement
+        function downloadAgreement(agreementId) {
+            console.log('Downloading agreement:', agreementId || 'current');
+            alert('Agreement PDF download will start shortly. In production, this would generate and download a PDF file.');
+        }
+
+        // Purchase insurance
+        function purchaseInsurance() {
+            const form = document.getElementById('insuranceForm');
+
+            if (!form.checkValidity()) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const purchaseData = {
+                plan: currentInsurance.name,
+                equipment: document.getElementById('equipmentSelect').value,
+                period: document.getElementById('coveragePeriod').value,
+                name: document.getElementById('buyerName').value,
+                phone: document.getElementById('buyerPhone').value,
+                premium: currentInsurance.price
+            };
+
+            console.log('Insurance Purchase:', purchaseData);
+
+            alert(`Insurance purchased successfully!\n\nPlan: ${purchaseData.plan}\nEquipment: ${purchaseData.equipment}\nCoverage: ${purchaseData.period} month(s)\n\nYour policy documents will be sent to your email.`);
+
+            closeModal('insuranceModal');
+            form.reset();
+        }
+
+        // Initialize
+        renderAgreements();
+        renderInsurance();
+    </script>
+</body>
+
+</html>

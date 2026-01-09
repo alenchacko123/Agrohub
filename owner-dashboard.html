@@ -165,6 +165,97 @@
             margin-left: 0.25rem;
         }
 
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .sidebar-logo .material-icons-outlined {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .sidebar-user {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            box-shadow: 0 4px 15px rgba(255, 214, 10, 0.3);
+        }
+
+        .user-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .user-info span {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .user-info .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        .user-info .badge-verified {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            padding: 0.1rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-left: 0.25rem;
+        }
+
         @keyframes blink {
 
             0%,
@@ -1300,7 +1391,7 @@
                             +12%
                         </span>
                     </div>
-                    <div class="stat-value">45</div>
+                    <div class="stat-value">156</div>
                     <div class="stat-label">Total Bookings</div>
                 </div>
 
@@ -1309,13 +1400,10 @@
                         <div class="stat-icon">
                             <span class="material-icons-outlined">agriculture</span>
                         </div>
-                        <span class="stat-trend up">
-                            <span class="material-icons-outlined" style="font-size: 1rem;">trending_up</span>
-                            +2
-                        </span>
+                        <span class="stat-trend neutral">0%</span>
                     </div>
                     <div class="stat-value">12</div>
-                    <div class="stat-label">Listed Equipment</div>
+                    <div class="stat-label">Active Listings</div>
                 </div>
 
                 <div class="stat-card reviews">
@@ -1325,7 +1413,7 @@
                         </div>
                         <span class="stat-trend up">
                             <span class="material-icons-outlined" style="font-size: 1rem;">trending_up</span>
-                            +0.2
+                            +5%
                         </span>
                     </div>
                     <div class="stat-value">4.8</div>
@@ -1333,271 +1421,746 @@
                 </div>
             </div>
 
-            <!-- Main Dashboard Grid -->
+            <!-- Dashboard Content -->
             <div class="dashboard-grid">
-                <!-- Services Section -->
-                <div class="card">
+                <!-- Quick Actions -->
+                <div class="card" style="margin-bottom: 2rem;">
                     <div class="card-header">
-                        <h2>🏪 Quick Actions</h2>
-                        <a href="#" class="view-all">
-                            View All
-                            <span class="material-icons-outlined">arrow_forward</span>
-                        </a>
+                        <h2 class="card-title">⚡ Quick Actions</h2>
+                        <a href="#" class="view-all"><span class="material-icons-outlined">arrow_forward</span></a>
                     </div>
-
-                    <div class="services-grid">
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">add_circle</span>
+                    <div class="services-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                        <a href="#" class="service-card"
+                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
+                            onclick="openModal('addEquipmentModal')">
+                            <img src="https://images.unsplash.com/photo-1595053826286-2e59efd9ff18?q=80&w=400&fit=crop"
+                                style="width: 100%; height: 120px; object-fit: cover;">
+                            <div style="padding: 1.5rem; text-align: center;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Add Equipment</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-gray);">List new machinery</p>
                             </div>
-                            <h3>Add Equipment</h3>
-                            <p>List new equipment for rent</p>
                         </a>
 
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">fact_check</span>
+                        <a href="#" class="service-card"
+                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
+                            onclick="openModal('bookingsModal')">
+                            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=400&fit=crop"
+                                style="width: 100%; height: 120px; object-fit: cover;">
+                            <div style="padding: 1.5rem; text-align: center;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Manage Bookings</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-gray);">Track rental requests</p>
                             </div>
-                            <h3>Manage Bookings</h3>
-                            <p>Review & approve requests</p>
                         </a>
 
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">payments</span>
+                        <a href="#" class="service-card"
+                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
+                            onclick="openModal('earningsModal')">
+                            <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=400&fit=crop"
+                                style="width: 100%; height: 120px; object-fit: cover;">
+                            <div style="padding: 1.5rem; text-align: center;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Earnings</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-gray);">View revenue reports</p>
                             </div>
-                            <h3>View Earnings</h3>
-                            <p>Track your revenue</p>
                         </a>
 
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">description</span>
+                        <a href="#" class="service-card"
+                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
+                            onclick="openModal('analyticsModal')">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&fit=crop"
+                                style="width: 100%; height: 120px; object-fit: cover;">
+                            <div style="padding: 1.5rem; text-align: center;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Analytics</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-gray);">Business performance</p>
                             </div>
-                            <h3>Agreements</h3>
-                            <p>Digital rental contracts</p>
                         </a>
 
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">bar_chart</span>
+                        <a href="#" class="service-card"
+                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
+                            onclick="window.location.href='agreements.html'">
+                            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=400&fit=crop"
+                                style="width: 100%; height: 120px; object-fit: cover;">
+                            <div style="padding: 1.5rem; text-align: center;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Agreements</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-gray);">Digital rental contracts</p>
                             </div>
-                            <h3>Analytics</h3>
-                            <p>Business insights</p>
                         </a>
 
-                        <a href="#" class="service-card">
-                            <div class="service-icon">
-                                <span class="material-icons-outlined">support_agent</span>
+                        <a href="#" class="service-card"
+                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
+                            onclick="alert('Insurance portal coming soon!')">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=400&fit=crop"
+                                style="width: 100%; height: 120px; object-fit: cover;">
+                            <div style="padding: 1.5rem; text-align: center;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Insurance</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-gray);">Protect your machines</p>
                             </div>
-                            <h3>Support</h3>
-                            <p>Get help & assistance</p>
                         </a>
                     </div>
                 </div>
 
-                <!-- Right Column -->
-                <div>
-                    <!-- Earnings Widget -->
-                    <div class="earnings-widget">
-                        <h4>💰 This Week's Earnings</h4>
-                        <div class="earnings-main">
-                            <div class="earnings-amount">₹32,450</div>
-                            <span class="earnings-growth">
-                                <span class="material-icons-outlined" style="font-size: 1rem;">trending_up</span>
-                                +24%
-                            </span>
+                <!-- Recent Bookings and Listings Row -->
+                <div class="dashboard-row"
+                    style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <!-- Recent Bookings -->
+                    <div class="card"
+                        style="background: var(--white); padding: 1.5rem; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2 style="font-size: 1.25rem;">Recent Bookings</h2>
+                            <a href="#" class="view-all"
+                                style="text-decoration: none; color: var(--primary-blue); font-size: 0.9rem;">View
+                                All</a>
                         </div>
-                        <div class="earnings-chart">
-                            <div class="chart-bar" style="height: 40%;"></div>
-                            <div class="chart-bar" style="height: 60%;"></div>
-                            <div class="chart-bar" style="height: 45%;"></div>
-                            <div class="chart-bar" style="height: 80%;"></div>
-                            <div class="chart-bar" style="height: 55%;"></div>
-                            <div class="chart-bar" style="height: 90%;"></div>
-                            <div class="chart-bar" style="height: 100%;"></div>
+                        <div class="bookings-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="booking-item"
+                                style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #f1f5f9; border-radius: 16px;">
+                                <div
+                                    style="width: 45px; height: 45px; border-radius: 12px; background: var(--light-blue); color: var(--primary-blue); display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                                    RK</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600;">Rajesh Kumar</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-gray);">Mahindra 575 DI</div>
+                                </div>
+                                <div
+                                    style="padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(34,197,94,0.1); color: var(--success);">
+                                    Confirmed</div>
+                            </div>
+                            <div class="booking-item"
+                                style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #f1f5f9; border-radius: 16px;">
+                                <div
+                                    style="width: 45px; height: 45px; border-radius: 12px; background: rgba(245,158,11,0.1); color: var(--warning); display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                                    AS</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600;">Arun Singh</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-gray);">Rotavator 6ft</div>
+                                </div>
+                                <div
+                                    style="padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(245,158,11,0.1); color: var(--warning);">
+                                    Pending</div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Recent Bookings -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>📋 Recent Bookings</h2>
-                            <a href="#" class="view-all">View All</a>
+                    <!-- Equipment Status -->
+                    <div class="card"
+                        style="background: var(--white); padding: 1.5rem; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2 style="font-size: 1.25rem;">Availability</h2>
+                            <span class="material-icons-outlined" style="color: var(--text-light);">more_horiz</span>
                         </div>
-
-                        <div class="booking-list">
-                            <div class="booking-item">
-                                <div class="booking-avatar">JD</div>
-                                <div class="booking-content">
-                                    <h4>John Deere 5050D</h4>
-                                    <p>Requested by Suresh Kumar</p>
-                                </div>
-                                <div class="booking-meta">
-                                    <div class="booking-price">₹17,500</div>
-                                    <span class="booking-status pending">Pending</span>
-                                </div>
+                        <div style="margin-top: 1rem;">
+                            <div
+                                style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                <span>Rented</span>
+                                <span style="font-weight: 600;">15%</span>
                             </div>
-
-                            <div class="booking-item">
-                                <div class="booking-avatar">RV</div>
-                                <div class="booking-content">
-                                    <h4>Rotavator 6ft</h4>
-                                    <p>Booked by Ramesh Verma</p>
-                                </div>
-                                <div class="booking-meta">
-                                    <div class="booking-price">₹5,600</div>
-                                    <span class="booking-status active">Active</span>
-                                </div>
+                            <div
+                                style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; margin-bottom: 1rem;">
+                                <div style="width: 15%; height: 100%; background: var(--accent-orange);"></div>
                             </div>
-
-                            <div class="booking-item">
-                                <div class="booking-avatar">PK</div>
-                                <div class="booking-content">
-                                    <h4>Seed Drill Machine</h4>
-                                    <p>Booked by Prakash Kumar</p>
-                                </div>
-                                <div class="booking-meta">
-                                    <div class="booking-price">₹8,400</div>
-                                    <span class="booking-status confirmed">Confirmed</span>
-                                </div>
+                            <div
+                                style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                <span>Available</span>
+                                <span style="font-weight: 600;">75%</span>
+                            </div>
+                            <div
+                                style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; margin-bottom: 1rem;">
+                                <div style="width: 75%; height: 100%; background: var(--success);"></div>
+                            </div>
+                            <div
+                                style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                <span>Maintenance</span>
+                                <span style="font-weight: 600;">10%</span>
+                            </div>
+                            <div style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
+                                <div style="width: 10%; height: 100%; background: var(--error);"></div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="quick-actions">
-                            <button class="quick-action-btn">
-                                <span class="material-icons-outlined">add</span>
-                                New Listing
-                            </button>
-                            <button class="quick-action-btn secondary">
-                                <span class="material-icons-outlined">visibility</span>
-                                View All
-                            </button>
+                <!-- Equipment Section -->
+                <section class="equipment-section">
+                    <div class="section-header"
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 class="section-title">🚜 My Equipment Listings</h2>
+                        <a href="#" class="view-all"
+                            style="text-decoration: none; color: var(--primary-blue); font-size: 0.9rem;">Manage All
+                            <span class="material-icons-outlined">arrow_forward</span></a>
+                    </div>
+                    <div class="equipment-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+                        <div class="equipment-card"
+                            style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                            <div style="height: 180px; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1595053826286-2e59efd9ff18?q=80&w=400&fit=crop"
+                                    style="width:100%; height:100%; object-fit:cover;">
+                                <span
+                                    style="position: absolute; top: 12px; left: 12px; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(245,158,11,0.2); color: var(--accent-orange); font-weight: 600; backdrop-filter: blur(4px);">Rented</span>
+                            </div>
+                            <div style="padding: 1.25rem;">
+                                <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">John Deere 5050D</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 1rem;">50 HP
+                                    Tractor</p>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="font-weight: 700; color: var(--primary-blue);">₹2,500 <span
+                                            style="font-weight: 400; font-size: 0.8rem; color: var(--text-gray);">/day</span>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button
+                                            style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;"><span
+                                                class="material-icons-outlined"
+                                                style="font-size: 18px;">edit</span></button>
+                                        <button
+                                            style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;"><span
+                                                class="material-icons-outlined"
+                                                style="font-size: 18px;">visibility</span></button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="equipment-card"
+                            style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                            <div style="height: 180px; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=400&fit=crop"
+                                    style="width:100%; height:100%; object-fit:cover;">
+                                <span
+                                    style="position: absolute; top: 12px; left: 12px; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(34,197,94,0.2); color: var(--success); font-weight: 600; backdrop-filter: blur(4px);">Available</span>
+                            </div>
+                            <div style="padding: 1.25rem;">
+                                <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Rotavator 6ft</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 1rem;">Heavy Duty
+                                    Tiller</p>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="font-weight: 700; color: var(--primary-blue);">₹800 <span
+                                            style="font-weight: 400; font-size: 0.8rem; color: var(--text-gray);">/day</span>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button
+                                            style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;"><span
+                                                class="material-icons-outlined"
+                                                style="font-size: 18px;">edit</span></button>
+                                        <button
+                                            style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;"><span
+                                                class="material-icons-outlined"
+                                                style="font-size: 18px;">visibility</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Equipment Modal -->
+    <div class="modal" id="addEquipmentModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <button class="close-modal" onclick="closeModal('addEquipmentModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">📦 List New Equipment</h2>
+                <p class="modal-subtitle">Fill in the details to attract potential renters/buyers</p>
+            </div>
+            <div class="modal-body">
+                <form id="addEquipmentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Equipment Name *</label>
+                            <input type="text" placeholder="e.g. John Deere 5050D" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category *</label>
+                            <select required>
+                                <option value="">Select Category</option>
+                                <option value="tractor">Tractor</option>
+                                <option value="harvester">Harvester</option>
+                                <option value="tiller">Tiller/Cultivator</option>
+                                <option value="seeder">Seeder/Planter</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price per Day (₹) *</label>
+                            <input type="number" placeholder="Enter amount" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Condition *</label>
+                            <select required>
+                                <option value="new">Brand New</option>
+                                <option value="excellent">Excellent</option>
+                                <option value="good">Good</option>
+                                <option value="fair">Fair</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Availability Status</label>
+                        <select>
+                            <option value="available">Available Now</option>
+                            <option value="booked">Already Booked</option>
+                            <option value="maintenance">Under Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Machine Images</label>
+                        <div class="image-upload-box"
+                            style="border: 2px dashed #cbd5e1; padding: 2rem; text-align: center; border-radius: 12px; cursor: pointer;"
+                            onclick="document.getElementById('fileInput').click()">
+                            <span class="material-icons-outlined"
+                                style="font-size: 3rem; color: var(--text-light);">add_a_photo</span>
+                            <p style="color: var(--text-gray); margin-top: 0.5rem;">Click or drag images here</p>
+                            <input type="file" id="fileInput" style="display: none;" multiple accept="image/*">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description & Features *</label>
+                        <textarea rows="4" placeholder="Mention specifications (HP, Year, Fuel type, etc.)"
+                            required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                    onclick="closeModal('addEquipmentModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitNewListing()">Publish Listing</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookings Modal -->
+    <div class="modal" id="bookingsModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <button class="close-modal" onclick="closeModal('bookingsModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">📅 Manage Bookings</h2>
+                <p class="modal-subtitle">Review and manage your incoming rental requests</p>
+            </div>
+            <div class="modal-body">
+                <div class="booking-table-container">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 2px solid #f1f5f9;">
+                                <th style="padding: 1rem;">Farmer</th>
+                                <th style="padding: 1rem;">Equipment</th>
+                                <th style="padding: 1rem;">Duration</th>
+                                <th style="padding: 1rem;">Amount</th>
+                                <th style="padding: 1rem;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 1rem;">
+                                    <div style="font-weight: 600;">Suresh Kumar</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-gray);">⭐ 4.5 Rating</div>
+                                </td>
+                                <td style="padding: 1rem;">John Deere 5050D</td>
+                                <td style="padding: 1rem;">Jan 10 - Jan 17 (7 days)</td>
+                                <td style="padding: 1rem; font-weight: 700; color: var(--success);">₹17,500</td>
+                                <td style="padding: 1rem;">
+                                    <button onclick="alert('Booking Approved!')"
+                                        style="background: var(--success); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; margin-right: 0.5rem;">Approve</button>
+                                    <button onclick="alert('Booking Rejected!')"
+                                        style="background: var(--error); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer;">Reject</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Rentals Modal -->
+    <div class="modal" id="activeRentalsModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <button class="close-modal" onclick="closeModal('activeRentalsModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">✅ Active Rentals</h2>
+                <p class="modal-subtitle">Currently rented out equipment and their status</p>
+            </div>
+            <div class="modal-body">
+                <div class="booking-table-container">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 2px solid #f1f5f9;">
+                                <th style="padding: 1rem;">Machine</th>
+                                <th style="padding: 1rem;">Farmer</th>
+                                <th style="padding: 1rem;">Return Date</th>
+                                <th style="padding: 1rem;">Condition</th>
+                                <th style="padding: 1rem;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 1rem; font-weight: 600;">John Deere 5050D</td>
+                                <td style="padding: 1rem;">Murugan M.</td>
+                                <td style="padding: 1rem;">Jan 15, 2026</td>
+                                <td style="padding: 1rem;"><span class="badge success">Excellent</span></td>
+                                <td style="padding: 1rem;"><button class="btn btn-secondary"
+                                        onclick="alert('Contacting Farmer...')">Message</button></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 1rem; font-weight: 600;">Seed Drill</td>
+                                <td style="padding: 1rem;">John Doe</td>
+                                <td style="padding: 1rem;">Jan 12, 2026</td>
+                                <td style="padding: 1rem;"><span class="badge success">Good</span></td>
+                                <td style="padding: 1rem;"><button class="btn btn-secondary"
+                                        onclick="alert('Contacting Farmer...')">Message</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rental History Modal -->
+    <div class="modal" id="rentalHistoryModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <button class="close-modal" onclick="closeModal('rentalHistoryModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">⏳ Rental History</h2>
+                <p class="modal-subtitle">Review your past successful rentals and earnings</p>
+            </div>
+            <div class="modal-body">
+                <div class="booking-table-container">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 2px solid #f1f5f9;">
+                                <th style="padding: 1rem;">Equipment</th>
+                                <th style="padding: 1rem;">Farmer</th>
+                                <th style="padding: 1rem;">Date</th>
+                                <th style="padding: 1rem;">Status</th>
+                                <th style="padding: 1rem;">Earnings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 1rem;">Mahindra 575 DI</td>
+                                <td style="padding: 1rem;">Rajesh Kumar</td>
+                                <td style="padding: 1rem;">Dec 20 - Dec 25</td>
+                                <td style="padding: 1rem;"><span class="booking-status confirmed">Completed</span></td>
+                                <td style="padding: 1rem; font-weight: 700;">₹12,500</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 1rem;">Rotavator 6ft</td>
+                                <td style="padding: 1rem;">Suresh Singh</td>
+                                <td style="padding: 1rem;">Dec 15 - Dec 18</td>
+                                <td style="padding: 1rem;"><span class="booking-status confirmed">Completed</span></td>
+                                <td style="padding: 1rem; font-weight: 700;">₹2,400</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings Modal -->
+    <div class="modal" id="earningsModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <button class="close-modal" onclick="closeModal('earningsModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">💰 Financial Overview</h2>
+                <p class="modal-subtitle">Detailed breakdown of your machine rental income</p>
+            </div>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div
+                        style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--success);">
+                        <div style="color: var(--text-gray); font-size: 0.9rem;">Wallet Balance</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-dark);">₹45,200</div>
+                    </div>
+                    <div
+                        style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--primary-blue);">
+                        <div style="color: var(--text-gray); font-size: 0.9rem;">Pending Payouts</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-dark);">₹12,400</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;"
+                    onclick="alert('Withdrawal request sent!')">Withdraw to Bank</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Modal -->
+    <div class="modal" id="analyticsModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <button class="close-modal" onclick="closeModal('analyticsModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">📊 Business Analytics</h2>
+                <p class="modal-subtitle">Track your machine usage and popularity trends</p>
+            </div>
+            <div class="modal-body">
+                <div
+                    style="background: #f1f5f9; padding: 2rem; border-radius: 16px; text-align: center; margin-bottom: 1.5rem;">
+                    <span class="material-icons-outlined"
+                        style="font-size: 4rem; color: var(--primary-blue);">insights</span>
+                    <h3 style="margin-top: 1rem;">Profile Visibility +15%</h3>
+                    <p style="color: var(--text-gray);">Your equipment was viewed 245 times this week.</p>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: space-around;">
+                    <div style="text-align: center;">
+                        <div style="font-weight: 700; font-size: 1.5rem;">85%</div>
+                        <div style="font-size: 0.8rem; color: var(--text-gray);">Utilization</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-weight: 700; font-size: 1.5rem;">4.8</div>
+                        <div style="font-size: 0.8rem; color: var(--text-gray);">Avg Rating</div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- My Equipment Section -->
-            <section class="equipment-section">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>🚜 My Equipment Listings</h2>
-                        <a href="#" class="view-all">
-                            Manage All
-                            <span class="material-icons-outlined">arrow_forward</span>
-                        </a>
+    <!-- Reviews Modal -->
+    <div class="modal" id="reviewsModal">
+        <div class="modal-content" style="max-width: 700px;">
+            <button class="close-modal" onclick="closeModal('reviewsModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">⭐ Reviews & Ratings</h2>
+                <p class="modal-subtitle">Feedback from farmers who used your machines</p>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="padding: 1rem; border: 1px solid #f1f5f9; border-radius: 12px; background: #fff;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="font-weight: 600;">Amit Patel</span>
+                            <span style="color: #fbbf24;">★★★★★</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--text-gray);">"The tractor was in excellent condition.
+                            Suresh was very helpful with the guidelines."</p>
                     </div>
-
-                    <div class="equipment-grid">
-                        <div class="equipment-card">
-                            <div class="equipment-image">
-                                <span class="material-icons-outlined">agriculture</span>
-                                <span class="equipment-badge rented">Rented</span>
-                                <div class="equipment-actions">
-                                    <button class="equipment-action-btn tooltip" data-tooltip="Edit">
-                                        <span class="material-icons-outlined">edit</span>
-                                    </button>
-                                    <button class="equipment-action-btn tooltip" data-tooltip="View">
-                                        <span class="material-icons-outlined">visibility</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="equipment-info">
-                                <h4>John Deere 5050D</h4>
-                                <p>50 HP Tractor</p>
-                                <div class="equipment-stats">
-                                    <div class="equipment-price">₹2,500 <span>/day</span></div>
-                                    <div class="equipment-rentals">
-                                        <span class="material-icons-outlined" style="font-size: 14px;">event</span>
-                                        23 rentals
-                                    </div>
-                                </div>
-                            </div>
+                    <div style="padding: 1rem; border: 1px solid #f1f5f9; border-radius: 12px; background: #fff;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="font-weight: 600;">Vikram Singh</span>
+                            <span style="color: #fbbf24;">★★★★☆</span>
                         </div>
-
-                        <div class="equipment-card">
-                            <div class="equipment-image">
-                                <span class="material-icons-outlined">agriculture</span>
-                                <span class="equipment-badge">Available</span>
-                                <div class="equipment-actions">
-                                    <button class="equipment-action-btn tooltip" data-tooltip="Edit">
-                                        <span class="material-icons-outlined">edit</span>
-                                    </button>
-                                    <button class="equipment-action-btn tooltip" data-tooltip="View">
-                                        <span class="material-icons-outlined">visibility</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="equipment-info">
-                                <h4>Rotavator 6ft</h4>
-                                <p>Heavy Duty Tiller</p>
-                                <div class="equipment-stats">
-                                    <div class="equipment-price">₹800 <span>/day</span></div>
-                                    <div class="equipment-rentals">
-                                        <span class="material-icons-outlined" style="font-size: 14px;">event</span>
-                                        18 rentals
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="equipment-card">
-                            <div class="equipment-image">
-                                <span class="material-icons-outlined">agriculture</span>
-                                <span class="equipment-badge maintenance">Maintenance</span>
-                                <div class="equipment-actions">
-                                    <button class="equipment-action-btn tooltip" data-tooltip="Edit">
-                                        <span class="material-icons-outlined">edit</span>
-                                    </button>
-                                    <button class="equipment-action-btn tooltip" data-tooltip="View">
-                                        <span class="material-icons-outlined">visibility</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="equipment-info">
-                                <h4>Combined Harvester</h4>
-                                <p>Mahindra Arjun Nova</p>
-                                <div class="equipment-stats">
-                                    <div class="equipment-price">₹5,000 <span>/day</span></div>
-                                    <div class="equipment-rentals">
-                                        <span class="material-icons-outlined" style="font-size: 14px;">event</span>
-                                        15 rentals
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="equipment-card">
-                            <div class="equipment-image">
-                                <span class="material-icons-outlined">agriculture</span>
-                                <span class="equipment-badge rented">Rented</span>
-                                <div class="equipment-actions">
-                                    <button class="equipment-action-btn tooltip" data-tooltip="Edit">
-                                        <span class="material-icons-outlined">edit</span>
-                                    </button>
-                                    <button class="equipment-action-btn tooltip" data-tooltip="View">
-                                        <span class="material-icons-outlined">visibility</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="equipment-info">
-                                <h4>Seed Drill Machine</h4>
-                                <p>9 Row Automatic</p>
-                                <div class="equipment-stats">
-                                    <div class="equipment-price">₹1,200 <span>/day</span></div>
-                                    <div class="equipment-rentals">
-                                        <span class="material-icons-outlined" style="font-size: 14px;">event</span>
-                                        12 rentals
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <p style="font-size: 0.9rem; color: var(--text-gray);">"Good machine, but fuel tank was half
+                            empty when delivered. Otherwise, everything fine."</p>
                     </div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </div>
     </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="close-modal" onclick="closeModal('profileModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">👤 My Profile</h2>
+                <p class="modal-subtitle">Update your personal and business details</p>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" value="ALEN CHACKO">
+                    </div>
+                    <div class="form-group">
+                        <label>Business Name</label>
+                        <input type="text" value="Alen's Agri Rentals">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" value="+91 98765 43210">
+                    </div>
+                    <button type="button" class="btn btn-primary" style="width: 100%;"
+                        onclick="alert('Profile Updated!')">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="close-modal" onclick="closeModal('settingsModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">⚙️ Settings</h2>
+                <p class="modal-subtitle">Manage notifications and account security</p>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600;">Email Notifications</div>
+                            <div style="font-size: 0.8rem; color: var(--text-gray);">Receive alerts for new bookings
+                            </div>
+                        </div>
+                        <input type="checkbox" checked style="width: auto;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600;">SMS Alerts</div>
+                            <div style="font-size: 0.8rem; color: var(--text-gray);">Instant updates on mobile</div>
+                        </div>
+                        <input type="checkbox" checked style="width: auto;">
+                    </div>
+                    <hr style="border: 0; border-top: 1px solid #e5e7eb;">
+                    <button class="btn btn-secondary" style="color: var(--error);"
+                        onclick="alert('Password reset link sent!')">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 24px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: var(--text-gray);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: var(--text-gray);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 
     <!-- Mobile Toggle Button -->
     <button class="mobile-toggle" id="mobileToggle">
@@ -1659,6 +2222,10 @@
                 document.getElementById('user-avatar').textContent = initials;
                 document.getElementById('user-name').innerHTML = userName + ' <span class="badge-verified">✓ Verified</span>';
                 document.getElementById('welcome-message').textContent = 'Welcome back, ' + firstName + '! 👋';
+
+                // Update Profile Modal fields
+                const profileNameInput = document.querySelector('#profileModal input[type="text"]');
+                if (profileNameInput) profileNameInput.value = userName;
 
                 // If user has a Google profile picture, use it
                 if (userData.picture) {
@@ -1795,14 +2362,114 @@
             });
         });
 
-        // Quick action buttons
+        // Modal and UI Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function submitNewListing() {
+            const form = document.getElementById('addEquipmentForm');
+            if (form.checkValidity()) {
+                alert('Success! Your equipment listing has been submitted for review.');
+                closeModal('addEquipmentModal');
+                form.reset();
+            } else {
+                alert('Please fill in all required fields.');
+            }
+        }
+
         const quickActionBtns = document.querySelectorAll('.quick-action-btn');
         quickActionBtns.forEach(btn => {
             btn.addEventListener('click', function () {
-                const actionText = this.textContent.trim();
-                console.log('Quick action:', actionText);
+                const actionText = this.textContent.trim().toLowerCase();
+                if (actionText.includes('new listing') || actionText.includes('add')) {
+                    openModal('addEquipmentModal');
+                } else if (actionText.includes('view all')) {
+                    window.scrollTo({ top: document.querySelector('.equipment-section').offsetTop - 100, behavior: 'smooth' });
+                }
             });
         });
+
+        const serviceCardsFull = document.querySelectorAll('.service-card');
+        serviceCardsFull.forEach(card => {
+            card.addEventListener('click', function (e) {
+                e.preventDefault();
+                const title = this.querySelector('h3').textContent.toLowerCase();
+                if (title.includes('add equipment')) {
+                    openModal('addEquipmentModal');
+                } else if (title.includes('manage bookings') || title.includes('requests')) {
+                    openModal('bookingsModal');
+                } else if (title.includes('agreements')) {
+                    window.location.href = 'agreements.html';
+                } else if (title.includes('earnings') || title.includes('revenue')) {
+                    openModal('earningsModal');
+                } else if (title.includes('analytics')) {
+                    openModal('analyticsModal');
+                } else if (title.includes('insurance')) {
+                    alert('Insurance Portal: View and manage machine insurance policies. Feature coming soon!');
+                } else if (title.includes('support')) {
+                    alert('Support: Connecting you to an agent...');
+                }
+            });
+        });
+
+        // Top bar action handlers
+        document.querySelector('[data-tooltip="Messages"]').addEventListener('click', () => {
+            alert('Messages: Opening chat with farmers... Feature coming soon!');
+        });
+
+        document.querySelector('[data-tooltip="Notifications"]').addEventListener('click', () => {
+            alert('Notifications: You have 3 new rental requests!');
+        });
+
+        const sidebarItemsList = document.querySelectorAll('.sidebar-nav .nav-item');
+        sidebarItemsList.forEach(item => {
+            item.addEventListener('click', function (e) {
+                const text = this.textContent.toLowerCase().trim();
+
+                // For direct links, don't prevent default
+                if (text.includes('dashboard')) return;
+
+                e.preventDefault();
+
+                if (text.includes('add new listing')) {
+                    openModal('addEquipmentModal');
+                } else if (text.includes('booking requests')) {
+                    openModal('bookingsModal');
+                } else if (text.includes('active rentals')) {
+                    openModal('activeRentalsModal');
+                } else if (text.includes('rental history')) {
+                    openModal('rentalHistoryModal');
+                } else if (text.includes('earnings')) {
+                    openModal('earningsModal');
+                } else if (text.includes('analytics')) {
+                    openModal('analyticsModal');
+                } else if (text.includes('agreements')) {
+                    window.location.href = 'agreements.html';
+                } else if (text.includes('reviews')) {
+                    openModal('reviewsModal');
+                } else if (text.includes('my equipment')) {
+                    window.scrollTo({ top: document.querySelector('.equipment-section').offsetTop - 100, behavior: 'smooth' });
+                } else if (text.includes('profile')) {
+                    openModal('profileModal');
+                } else if (text.includes('settings')) {
+                    openModal('settingsModal');
+                }
+            });
+        });
+
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
     </script>
 </body>
 

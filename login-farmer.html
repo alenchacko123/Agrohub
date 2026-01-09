@@ -824,10 +824,6 @@
                         <span class="material-icons-outlined">storefront</span>
                         Owner Login
                     </a>
-                    <a href="login-admin.html" class="login-option">
-                        <span class="material-icons-outlined">admin_panel_settings</span>
-                        Admin Login
-                    </a>
                 </div>
             </div>
         </div>
@@ -890,11 +886,11 @@
                     }, 1500);
                 } else {
                     console.error('Server reported error:', result.message);
-                    showNotification(result.message, 'error');
+                    showNotification('Error: ' + result.message, 'error');
                 }
             } catch (error) {
                 console.error('Google Auth Error:', error);
-                showNotification('Google authentication failed. Check console for details.', 'error');
+                showNotification('Google authentication failed. See console for details.', 'error');
             }
         }
 
@@ -907,7 +903,8 @@
                 if (tokenClient) {
                     tokenClient.requestAccessToken();
                 } else {
-                    showNotification('Google Sign-In is loading...', 'error');
+                    console.error('Google token client not initialized');
+                    showNotification('Google Sign-In is loading... try again in a moment.', 'error');
                 }
             }
         });
@@ -972,6 +969,20 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="material-icons-outlined">sync</span> Signing in...';
 
+            // Hidden Admin Login Check
+            if (email === 'admin@agrohub.com' && password === 'admin123') {
+                setTimeout(() => {
+                    localStorage.setItem('agrohub_user', JSON.stringify({
+                        name: 'Super Admin',
+                        email: email,
+                        userType: 'admin'
+                    }));
+                    showNotification('Admin Verified. Redirecting...', 'success');
+                    setTimeout(() => window.location.href = 'admin-dashboard.html', 1000);
+                }, 800);
+                return;
+            }
+
             try {
                 const response = await fetch('php/auth.php?action=login', {
                     method: 'POST',
@@ -992,8 +1003,11 @@
             } catch (error) {
                 showNotification('Connection error. Please check your PHP server.', 'error');
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span class="material-icons-outlined">login</span> Sign In';
+                // Only re-enable if not redirecting (for admin we return early so this doesn't matter much)
+                if (email !== 'admin@agrohub.com') {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="material-icons-outlined">login</span> Sign In';
+                }
             }
         });
     </script>

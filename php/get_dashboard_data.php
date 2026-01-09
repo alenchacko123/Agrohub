@@ -29,7 +29,7 @@ if (empty($token)) {
 $conn = getDBConnection();
 
 // Validate Token
-$stmt = $conn->prepare("SELECT u.id, u.name, u.email, u.user_type, u.profile_picture 
+$stmt = $conn->prepare("SELECT u.id, u.name, u.email, u.user_type, u.profile_picture AS picture 
                         FROM user_sessions s 
                         JOIN users u ON s.user_id = u.id 
                         WHERE s.session_token = ? AND s.expires_at > NOW()");

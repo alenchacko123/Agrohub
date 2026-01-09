@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Button Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        .test-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2d6a4f;
+        }
+
+        h2 {
+            color: #1b4332;
+            margin-top: 30px;
+        }
+
+        .test-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .test-button:hover {
+            background: #1b4332;
+            transform: translateX(5px);
+        }
+
+        .status {
+            padding: 10px;
+            background: #d8f3dc;
+            border-left: 4px solid #22c55e;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-section">
+        <h1>🧪 Farmer Dashboard Button Test</h1>
+
+        <div class="status">
+            <strong>Status:</strong> All buttons below should redirect to their corresponding pages
+        </div>
+
+        <h2>Quick Services Tests</h2>
+        <button class="test-button" onclick="window.location.href='rent-equipment.html'">
+            🚜 Test: Rent Equipment Button
+        </button>
+        <button class="test-button" onclick="window.location.href='buy-equipment.html'">
+            🛒 Test: Buy Equipment Button
+        </button>
+        <button class="test-button" onclick="window.location.href='hire-workers.html'">
+            👥 Test: Hire Workers Button
+        </button>
+        <button class="test-button" onclick="window.location.href='tutorials.html'">
+            📚 Test: Tutorials Button
+        </button>
+        <button class="test-button" onclick="window.location.href='agreements.html'">
+            📄 Test: Agreements Button
+        </button>
+
+        <h2>Navigation Test</h2>
+        <button class="test-button" onclick="window.location.href='farmer-dashboard.html'">
+            🏠 Back to Farmer Dashboard
+        </button>
+    </div>
+
+    <script>
+        console.log('Button test page loaded');
+        console.log('All buttons use onclick="window.location.href=..." for direct navigation');
+    </script>
+</body>
+
+</html>

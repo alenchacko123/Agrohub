@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Dashboard Links</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f0f0f0;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2d6a4f;
+            margin-bottom: 30px;
+        }
+
+        .test-link {
+            display: block;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: #2d6a4f;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .test-link:hover {
+            background: #1b4332;
+            transform: translateX(5px);
+        }
+
+        .status {
+            padding: 10px;
+            background: #d8f3dc;
+            border-left: 4px solid #2d6a4f;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1>🧪 Link Test Page</h1>
+
+        <div class="status">
+            <strong>Status:</strong> Click each link below to test navigation
+        </div>
+
+        <h2>Service Pages</h2>
+        <a href="rent-equipment.html" class="test-link">→ Rent Equipment</a>
+        <a href="buy-equipment.html" class="test-link">→ Buy Equipment</a>
+        <a href="hire-workers.html" class="test-link">→ Hire Workers</a>
+        <a href="tutorials.html" class="test-link">→ Tutorials</a>
+        <a href="agreements.html" class="test-link">→ Agreements</a>
+
+        <h2 style="margin-top: 30px;">Dashboard</h2>
+        <a href="farmer-dashboard.html" class="test-link">→ Farmer Dashboard</a>
+    </div>
+
+    <script>
+        // Log click events
+        document.querySelectorAll('.test-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                console.log('Link clicked:', this.href);
+                console.log('Navigation allowed:', !e.defaultPrevented);
+            });
+        });
+    </script>
+</body>
+
+</html>
