@@ -741,29 +741,51 @@
         }
 
         // Handle Google Sign-In Response
-        function handleGoogleSignIn(response) {
+        async function handleGoogleSignIn(response) {
             if (response.credential) {
                 const payload = JSON.parse(atob(response.credential.split('.')[1]));
 
-                console.log('Google Sign-In Successful!');
+                console.log('Google Sign-In Successful! Sending to backend...');
 
-                localStorage.setItem('agrohub_user', JSON.stringify({
-                    name: payload.name,
-                    email: payload.email,
-                    picture: payload.picture,
-                    userType: 'admin',
-                    loginMethod: 'google',
-                    token: response.credential
-                }));
+                try {
+                    // Send to backend for database storage
+                    const backendResponse = await fetch('php/auth.php?action=google-auth', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            credential: response.credential,
+                            userType: 'admin'  // Specify that this is an admin
+                        })
+                    });
 
-                showNotification('Welcome, ' + payload.name + '!', 'success');
+                    const data = await backendResponse.json();
 
-                // For admin, you might want to verify admin privileges here
-                setTimeout(() => {
-                    // Redirect to admin dashboard (you can create one later)
-                    alert('Admin login successful! Redirecting to admin panel...');
-                    // window.location.href = 'admin-dashboard.html';
-                }, 1500);
+                    if (data.success) {
+                        // Store complete user info in localStorage
+                        localStorage.setItem('agrohub_user', JSON.stringify({
+                            id: data.user.id,
+                            name: data.user.name,
+                            email: data.user.email,
+                            picture: payload.picture,
+                            userType: 'admin',
+                            loginMethod: 'google',
+                            token: data.token
+                        }));
+
+                        showNotification('Welcome, ' + data.user.name + '!', 'success');
+
+                        setTimeout(() => {
+                            window.location.href = 'admin-dashboard.html';
+                        }, 1500);
+                    } else {
+                        showNotification('Login failed: ' + (data.error || 'Unknown error'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showNotification('Network error. Please try again.', 'error');
+                }
             } else {
                 showNotification('Sign-in failed. Please try again.', 'error');
             }
@@ -799,37 +821,11 @@
             }, 3000);
         }
 
-        // Google Sign-In Button Click Handler
+        // Google Sign-In Button Click Handler  
         document.getElementById('google-signin').addEventListener('click', function () {
             if (typeof google !== 'undefined' && google.accounts) {
                 initializeGoogleSignIn();
-                google.accounts.id.prompt((notification) => {
-                    if (notification.isNotDisplayed()) {
-                        const client = google.accounts.oauth2.initTokenClient({
-                            client_id: GOOGLE_CLIENT_ID,
-                            scope: 'email profile',
-                            callback: (tokenResponse) => {
-                                if (tokenResponse.access_token) {
-                                    fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                                        headers: { 'Authorization': 'Bearer ' + tokenResponse.access_token }
-                                    })
-                                        .then(response => response.json())
-                                        .then(userInfo => {
-                                            localStorage.setItem('agrohub_user', JSON.stringify({
-                                                name: userInfo.name, email: userInfo.email,
-                                                picture: userInfo.picture, userType: 'admin', loginMethod: 'google'
-                                            }));
-                                            showNotification('Welcome, ' + userInfo.name + '!', 'success');
-                                            setTimeout(() => { alert('Admin login successful!'); }, 1500);
-                                        })
-                                        .catch(() => showNotification('Sign-in failed. Please try again.', 'error'));
-                                }
-                            },
-                            error_callback: () => showNotification('Sign-in was cancelled or failed.', 'error')
-                        });
-                        client.requestAccessToken();
-                    }
-                });
+                google.accounts.id.prompt();
             } else {
                 showNotification('Google Sign-In is loading. Please try again.', 'error');
             }

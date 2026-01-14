@@ -545,7 +545,7 @@
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">
-            <a href="farmer-dashboard.html" class="back-btn">
+            <a href="#" id="backBtn" class="back-btn" onclick="goBackToDashboard(); return false;">
                 <span class="material-icons-outlined">arrow_back</span>
                 Back to Dashboard
             </a>
@@ -673,137 +673,104 @@
     </div>
 
     <script>
-        // Sample equipment data with real-time stock status and images
-        const equipmentData = [
-            {
-                id: 1,
-                name: "John Deere 5050D",
-                category: "tractor",
-                description: "50 HP 4WD Tractor",
-                price: 2500,
-                location: "Bangalore, Karnataka",
-                stock: "available",
-                stockCount: 5,
-                image: "https://images.unsplash.com/photo-1595053826286-2e59efd9ff18?q=80&w=600&auto=format&fit=crop",
-                specs: {
-                    hp: "50 HP",
-                    fuel: "Diesel",
-                    year: "2021"
-                }
-            },
-            {
-                id: 2,
-                name: "Mahindra 575 DI",
-                category: "tractor",
-                description: "45 HP Tractor",
-                price: 2200,
-                location: "Mysore, Karnataka",
-                stock: "limited",
-                stockCount: 2,
-                image: "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=600&auto=format&fit=crop",
-                specs: {
-                    hp: "45 HP",
-                    fuel: "Diesel",
-                    year: "2020"
-                }
-            },
-            {
-                id: 3,
-                name: "Combined Harvester",
-                category: "harvester",
-                description: "Mahindra Arjun Ultra",
-                price: 5000,
-                location: "Hassan, Karnataka",
-                stock: "out",
-                stockCount: 0,
-                image: "https://images.unsplash.com/photo-1530210124570-666017645b71?q=80&w=600&auto=format&fit=crop",
-                specs: {
-                    hp: "100 HP",
-                    fuel: "Diesel",
-                    year: "2022"
-                }
-            },
-            {
-                id: 4,
-                name: "Rotavator 6ft",
-                category: "tiller",
-                description: "Heavy Duty Rotavator",
-                price: 800,
-                location: "Mandya, Karnataka",
-                stock: "available",
-                stockCount: 8,
-                image: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=600&auto=format&fit=crop",
-                specs: {
-                    width: "6 ft",
-                    type: "Heavy Duty",
-                    year: "2021"
-                }
-            },
-            {
-                id: 5,
-                name: "Seed Drill 9-Row",
-                category: "planter",
-                description: "Automatic Seed Planter",
-                price: 1200,
-                location: "Tumkur, Karnataka",
-                stock: "available",
-                stockCount: 4,
-                image: "https://images.unsplash.com/photo-1622383563227-0440378c608a?q=80&w=600&auto=format&fit=crop",
-                specs: {
-                    rows: "9 Rows",
-                    type: "Automatic",
-                    year: "2022"
-                }
-            },
-            {
-                id: 6,
-                name: "Power Sprayer",
-                category: "sprayer",
-                description: "Agricultural Sprayer 200L",
-                price: 600,
-                location: "Bangalore, Karnataka",
-                stock: "limited",
-                stockCount: 1,
-                image: "https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=600&auto=format&fit=crop",
-                specs: {
-                    capacity: "200L",
-                    type: "Power",
-                    year: "2021"
-                }
-            },
-            {
-                id: 7,
-                name: "Cultivator 11-Tyne",
-                category: "tiller",
-                description: "Heavy Duty Cultivator",
-                price: 900,
-                location: "Bangalore, Karnataka",
-                stock: "available",
-                stockCount: 6,
-                image: "https://images.unsplash.com/photo-1550147760-44c9966d6bc7?q=80&w=600&auto=format&fit=crop",
-                specs: {
-                    tynes: "11 Tyne",
-                    type: "Heavy Duty",
-                    year: "2021"
-                }
-            },
-            {
-                id: 8,
-                name: "Potato Planter",
-                category: "planter",
-                description: "2-Row Potato Planter",
-                price: 1500,
-                location: "Hassan, Karnataka",
-                stock: "available",
-                stockCount: 3,
-                image: "https://images.unsplash.com/photo-1444858291040-58f756a3bcd6?q=80&w=600&auto=format&fit=crop",
-                specs: {
-                    rows: "2 Rows",
-                    type: "Automatic",
-                    year: "2022"
-                }
+        // Function to redirect to the appropriate dashboard based on referrer or sessionStorage
+        function goBackToDashboard() {
+            // First check sessionStorage for the dashboard type
+            const dashboardType = sessionStorage.getItem('dashboardType');
+
+            if (dashboardType === 'owner') {
+                window.location.href = 'owner-dashboard.html';
+                return;
+            } else if (dashboardType === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+                return;
+            } else if (dashboardType === 'farmer') {
+                window.location.href = 'farmer-dashboard.html';
+                return;
             }
-        ];
+
+            // Fallback: Check the referrer URL
+            const referrer = document.referrer;
+            if (referrer.includes('owner-dashboard.html')) {
+                window.location.href = 'owner-dashboard.html';
+            } else if (referrer.includes('admin-dashboard.html')) {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                // Default to farmer dashboard
+                window.location.href = 'farmer-dashboard.html';
+            }
+        }
+
+        // Store dashboard type when page loads (based on referrer)
+        window.addEventListener('DOMContentLoaded', function () {
+            const referrer = document.referrer;
+            if (referrer.includes('owner-dashboard.html')) {
+                sessionStorage.setItem('dashboardType', 'owner');
+            } else if (referrer.includes('admin-dashboard.html')) {
+                sessionStorage.setItem('dashboardType', 'admin');
+            } else if (referrer.includes('farmer-dashboard.html')) {
+                sessionStorage.setItem('dashboardType', 'farmer');
+            }
+        });
+
+        // Equipment data - will be populated from database
+        let equipmentData = [];
+
+        // Fetch equipment from database
+        async function loadEquipment() {
+            try {
+                const grid = document.getElementById('equipmentGrid');
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;"><span class="material-icons-outlined" style="font-size: 3rem; color: var(--text-light); animation: spin 1s linear infinite;">sync</span><p style="margin-top: 1rem; color: var(--text-gray);">Loading equipment...</p></div>';
+
+                const response = await fetch('php/get_equipment.php');
+                const data = await response.json();
+
+                if (data.success && data.equipment && data.equipment.length > 0) {
+                    // Transform database data to match our format
+                    equipmentData = data.equipment.map(item => ({
+                        id: item.id,
+                        name: item.equipment_name,
+                        category: item.category,
+                        description: item.description.substring(0, 50) + '...',
+                        price: parseFloat(item.price_per_day),
+                        location: item.owner_name || 'Karnataka',
+                        stock: item.availability_status,
+                        stockCount: item.availability_status === 'available' ? 5 : item.availability_status === 'booked' ? 0 : 2,
+                        image: item.image_url,
+                        specs: {
+                            condition: item.equipment_condition,
+                            category: item.category
+                        }
+                    }));
+
+                    renderEquipment();
+                } else {
+                    // No equipment found - show empty state
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 20px;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">inventory_2</span>
+                            <h3 style="margin: 1rem 0; color: var(--text-dark);">No Equipment Available</h3>
+                            <p style="color: var(--text-gray);">Check back soon! Owners are adding new equipment regularly.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading equipment:', error);
+                const grid = document.getElementById('equipmentGrid');
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: rgba(239, 68, 68, 0.1); border-radius: 20px; border: 2px dashed #ef4444;">
+                        <span class="material-icons-outlined" style="font-size: 3rem; color: var(--error);">error_outline</span>
+                        <h3 style="margin: 1rem 0; color: var(--error);">Error Loading Equipment</h3>
+                        <p style="color: var(--text-gray);">Could not connect to server. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Add spin animation
+        const spinStyle = document.createElement('style');
+        spinStyle.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+        document.head.appendChild(spinStyle);
 
         let currentEquipment = null;
 
@@ -975,8 +942,8 @@
             closeRentalModal();
         }
 
-        // Initialize
-        renderEquipment();
+        // Initialize - load equipment from database
+        loadEquipment();
     </script>
 </body>
 

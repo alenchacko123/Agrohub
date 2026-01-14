@@ -1434,8 +1434,7 @@
                         <a href="#" class="service-card"
                             style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
                             onclick="openModal('addEquipmentModal')">
-                            <img src="https://images.unsplash.com/photo-1595053826286-2e59efd9ff18?q=80&w=400&fit=crop"
-                                style="width: 100%; height: 120px; object-fit: cover;">
+                            <img src="images/add-equipment.png" style="width: 100%; height: 120px; object-fit: cover;">
                             <div style="padding: 1.5rem; text-align: center;">
                                 <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Add Equipment</h3>
                                 <p style="font-size: 0.85rem; color: var(--text-gray);">List new machinery</p>
@@ -1590,66 +1589,13 @@
                             style="text-decoration: none; color: var(--primary-blue); font-size: 0.9rem;">Manage All
                             <span class="material-icons-outlined">arrow_forward</span></a>
                     </div>
-                    <div class="equipment-grid"
+                    <div class="equipment-grid" id="ownerEquipmentGrid"
                         style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
-                        <div class="equipment-card"
-                            style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
-                            <div style="height: 180px; position: relative;">
-                                <img src="https://images.unsplash.com/photo-1595053826286-2e59efd9ff18?q=80&w=400&fit=crop"
-                                    style="width:100%; height:100%; object-fit:cover;">
-                                <span
-                                    style="position: absolute; top: 12px; left: 12px; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(245,158,11,0.2); color: var(--accent-orange); font-weight: 600; backdrop-filter: blur(4px);">Rented</span>
-                            </div>
-                            <div style="padding: 1.25rem;">
-                                <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">John Deere 5050D</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 1rem;">50 HP
-                                    Tractor</p>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="font-weight: 700; color: var(--primary-blue);">₹2,500 <span
-                                            style="font-weight: 400; font-size: 0.8rem; color: var(--text-gray);">/day</span>
-                                    </div>
-                                    <div style="display: flex; gap: 0.5rem;">
-                                        <button
-                                            style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;"><span
-                                                class="material-icons-outlined"
-                                                style="font-size: 18px;">edit</span></button>
-                                        <button
-                                            style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;"><span
-                                                class="material-icons-outlined"
-                                                style="font-size: 18px;">visibility</span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="equipment-card"
-                            style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
-                            <div style="height: 180px; position: relative;">
-                                <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=400&fit=crop"
-                                    style="width:100%; height:100%; object-fit:cover;">
-                                <span
-                                    style="position: absolute; top: 12px; left: 12px; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(34,197,94,0.2); color: var(--success); font-weight: 600; backdrop-filter: blur(4px);">Available</span>
-                            </div>
-                            <div style="padding: 1.25rem;">
-                                <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Rotavator 6ft</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 1rem;">Heavy Duty
-                                    Tiller</p>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="font-weight: 700; color: var(--primary-blue);">₹800 <span
-                                            style="font-weight: 400; font-size: 0.8rem; color: var(--text-gray);">/day</span>
-                                    </div>
-                                    <div style="display: flex; gap: 0.5rem;">
-                                        <button
-                                            style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;"><span
-                                                class="material-icons-outlined"
-                                                style="font-size: 18px;">edit</span></button>
-                                        <button
-                                            style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;"><span
-                                                class="material-icons-outlined"
-                                                style="font-size: 18px;">visibility</span></button>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Equipment will be loaded dynamically -->
+                        <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-gray);">
+                            <span class="material-icons-outlined"
+                                style="font-size: 3rem; animation: spin 1s linear infinite;">sync</span>
+                            <p>Loading your equipment...</p>
                         </div>
                     </div>
                 </section>
@@ -1672,16 +1618,19 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Equipment Name *</label>
-                            <input type="text" placeholder="e.g. John Deere 5050D" required>
+                            <input type="text" id="equipment_name" name="equipment_name"
+                                placeholder="e.g. John Deere 5050D" required>
                         </div>
                         <div class="form-group">
                             <label>Category *</label>
-                            <select required>
+                            <select id="category" name="category" required>
                                 <option value="">Select Category</option>
                                 <option value="tractor">Tractor</option>
                                 <option value="harvester">Harvester</option>
                                 <option value="tiller">Tiller/Cultivator</option>
                                 <option value="seeder">Seeder/Planter</option>
+                                <option value="rotavator">Rotavator</option>
+                                <option value="plough">Plough</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
@@ -1689,11 +1638,12 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Price per Day (₹) *</label>
-                            <input type="number" placeholder="Enter amount" required>
+                            <input type="number" id="price_per_day" name="price_per_day" placeholder="Enter amount"
+                                required min="0" step="1">
                         </div>
                         <div class="form-group">
                             <label>Condition *</label>
-                            <select required>
+                            <select id="condition" name="condition" required>
                                 <option value="new">Brand New</option>
                                 <option value="excellent">Excellent</option>
                                 <option value="good">Good</option>
@@ -1703,7 +1653,7 @@
                     </div>
                     <div class="form-group">
                         <label>Availability Status</label>
-                        <select>
+                        <select id="availability" name="availability">
                             <option value="available">Available Now</option>
                             <option value="booked">Already Booked</option>
                             <option value="maintenance">Under Maintenance</option>
@@ -1712,18 +1662,29 @@
                     <div class="form-group">
                         <label>Machine Images</label>
                         <div class="image-upload-box"
-                            style="border: 2px dashed #cbd5e1; padding: 2rem; text-align: center; border-radius: 12px; cursor: pointer;"
+                            style="border: 2px dashed #cbd5e1; padding: 2rem; text-align: center; border-radius: 12px; cursor: pointer; position: relative;"
                             onclick="document.getElementById('fileInput').click()">
-                            <span class="material-icons-outlined"
-                                style="font-size: 3rem; color: var(--text-light);">add_a_photo</span>
-                            <p style="color: var(--text-gray); margin-top: 0.5rem;">Click or drag images here</p>
-                            <input type="file" id="fileInput" style="display: none;" multiple accept="image/*">
+                            <div id="image-preview-container" style="display: none; margin-bottom: 1rem;">
+                                <img id="image-preview" src="" alt="Preview"
+                                    style="max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: cover;">
+                                <button type="button" onclick="removeImage(event)"
+                                    style="position: absolute; top: 1rem; right: 1rem; background: rgba(239, 68, 68, 0.9); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                    <span class="material-icons-outlined" style="font-size: 18px;">close</span>
+                                </button>
+                            </div>
+                            <div id="upload-placeholder">
+                                <span class="material-icons-outlined"
+                                    style="font-size: 3rem; color: var(--text-light);">add_a_photo</span>
+                                <p style="color: var(--text-gray); margin-top: 0.5rem;">Click or drag images here</p>
+                            </div>
+                            <input type="file" id="fileInput" name="equipment_image" style="display: none;"
+                                accept="image/*" onchange="previewEquipmentImage(this)">
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Description & Features *</label>
-                        <textarea rows="4" placeholder="Mention specifications (HP, Year, Fuel type, etc.)"
-                            required></textarea>
+                        <textarea id="description" name="description" rows="4"
+                            placeholder="Mention specifications (HP, Year, Fuel type, etc.)" required></textarea>
                     </div>
                 </form>
             </div>
@@ -1757,20 +1718,13 @@
                                 <th style="padding: 1rem;">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 1rem;">
-                                    <div style="font-weight: 600;">Suresh Kumar</div>
-                                    <div style="font-size: 0.75rem; color: var(--text-gray);">⭐ 4.5 Rating</div>
-                                </td>
-                                <td style="padding: 1rem;">John Deere 5050D</td>
-                                <td style="padding: 1rem;">Jan 10 - Jan 17 (7 days)</td>
-                                <td style="padding: 1rem; font-weight: 700; color: var(--success);">₹17,500</td>
-                                <td style="padding: 1rem;">
-                                    <button onclick="alert('Booking Approved!')"
-                                        style="background: var(--success); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; margin-right: 0.5rem;">Approve</button>
-                                    <button onclick="alert('Booking Rejected!')"
-                                        style="background: var(--error); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer;">Reject</button>
+                        <tbody id="bookingsTableBody">
+                            <tr>
+                                <td colspan="5" style="padding: 3rem; text-align: center;">
+                                    <span class="material-icons-outlined"
+                                        style="font-size: 3rem; animation: spin 1s linear infinite; color: var(--text-light);">sync</span>
+                                    <p style="margin-top: 1rem; color: var(--text-gray);">Loading booking requests...
+                                    </p>
                                 </td>
                             </tr>
                         </tbody>
@@ -1802,22 +1756,13 @@
                                 <th style="padding: 1rem;">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 1rem; font-weight: 600;">John Deere 5050D</td>
-                                <td style="padding: 1rem;">Murugan M.</td>
-                                <td style="padding: 1rem;">Jan 15, 2026</td>
-                                <td style="padding: 1rem;"><span class="badge success">Excellent</span></td>
-                                <td style="padding: 1rem;"><button class="btn btn-secondary"
-                                        onclick="alert('Contacting Farmer...')">Message</button></td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 1rem; font-weight: 600;">Seed Drill</td>
-                                <td style="padding: 1rem;">John Doe</td>
-                                <td style="padding: 1rem;">Jan 12, 2026</td>
-                                <td style="padding: 1rem;"><span class="badge success">Good</span></td>
-                                <td style="padding: 1rem;"><button class="btn btn-secondary"
-                                        onclick="alert('Contacting Farmer...')">Message</button></td>
+                        <tbody id="activeRentalsTableBody">
+                            <tr>
+                                <td colspan="5" style="padding: 3rem; text-align: center;">
+                                    <span class="material-icons-outlined"
+                                        style="font-size: 3rem; animation: spin 1s linear infinite; color: var(--text-light);">sync</span>
+                                    <p style="margin-top: 1rem; color: var(--text-gray);">Loading active rentals...</p>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -1966,30 +1911,74 @@
 
     <!-- Profile Modal -->
     <div class="modal" id="profileModal">
-        <div class="modal-content" style="max-width: 600px;">
-            <button class="close-modal" onclick="closeModal('profileModal')">
+        <div class="modal-content" style="max-width: 650px; border-radius: 30px;">
+            <button class="close-modal" onclick="closeModal('profileModal')" style="top: 2rem; right: 2rem;">
                 <span class="material-icons-outlined">close</span>
             </button>
-            <div class="modal-header">
-                <h2 class="modal-title">👤 My Profile</h2>
-                <p class="modal-subtitle">Update your personal and business details</p>
+            <div class="modal-header" style="border-bottom: none; padding: 3rem 3rem 1rem;">
+                <h2 class="modal-title"
+                    style="font-family: var(--font-serif); font-size: 2.5rem; color: #1a1a2e; font-weight: 700;">Profile
+                    Settings</h2>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 0 3rem 3rem;">
                 <form>
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" value="ALEN CHACKO">
+                    <!-- Avatar Upload Section -->
+                    <div style="display: flex; justify-content: center; margin-bottom: 2.5rem;">
+                        <div
+                            style="position: relative; width: 180px; height: 180px; border-radius: 50%; border: 3px solid var(--primary-blue); padding: 5px;">
+                            <div id="profile-avatar-preview"
+                                style="width: 100%; height: 100%; border-radius: 50%; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; background-size: cover; background-position: center;">
+                                <span class="material-icons-outlined"
+                                    style="font-size: 5rem; color: #e2e8f0;">person</span>
+                            </div>
+                            <label for="avatar-upload"
+                                style="position: absolute; bottom: 8px; right: 8px; width: 45px; height: 45px; background: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; border: 3px solid white; box-shadow: 0 4px 10px rgba(0, 119, 182, 0.3); transition: all 0.3s ease;">
+                                <span class="material-icons-outlined" style="font-size: 20px;">photo_camera</span>
+                                <input type="file" id="avatar-upload" style="display: none;" accept="image/*"
+                                    onchange="previewAvatar(this)">
+                            </label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Business Name</label>
-                        <input type="text" value="Alen's Agri Rentals">
+
+                    <div class="form-row" style="margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label
+                                style="font-size: 0.9rem; font-weight: 600; color: #64748b; margin-bottom: 0.75rem;">Full
+                                Name</label>
+                            <input type="text" value="ALEN CHACKO"
+                                style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 12px; font-weight: 500;">
+                        </div>
+                        <div class="form-group">
+                            <label
+                                style="font-size: 0.9rem; font-weight: 600; color: #64748b; margin-bottom: 0.75rem;">Email
+                                Address</label>
+                            <input type="email" value="alenchacko2028@mca.ajce.in"
+                                style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 12px; font-weight: 500;">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" value="+91 98765 43210">
+
+                    <div class="form-group" style="position: relative; margin-bottom: 2.5rem;">
+                        <label
+                            style="font-size: 0.9rem; font-weight: 600; color: #64748b; margin-bottom: 0.75rem;">Change
+                            Password (leave blank to keep current)</label>
+                        <div style="position: relative;">
+                            <input type="password" value="********"
+                                style="background: #eff6ff; border: 1px solid #dbeafe; padding: 1rem; border-radius: 12px; width: 100%; padding-right: 3.5rem;">
+                            <span class="material-icons-outlined"
+                                style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer;"
+                                onclick="togglePasswordVisibility(this)">visibility</span>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-primary" style="width: 100%;"
-                        onclick="alert('Profile Updated!')">Save Changes</button>
+
+                    <button type="button" class="btn"
+                        style="width: 100%; background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; padding: 1.25rem; border-radius: 15px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 10px 20px rgba(0, 119, 182, 0.2); border: none; cursor: pointer; transition: all 0.3s ease;"
+                        onclick="alert('Profile Updated Successfully!')">
+                        <span class="material-icons-outlined">save</span>
+                        UPDATE PROFILE DETAILS
+                    </button>
+
+                    <p style="text-align: center; margin-top: 1.5rem; color: #94a3b8; font-size: 0.9rem;">Changes will
+                        be saved permanently to your account.</p>
                 </form>
             </div>
         </div>
@@ -2225,7 +2214,9 @@
 
                 // Update Profile Modal fields
                 const profileNameInput = document.querySelector('#profileModal input[type="text"]');
+                const profileEmailInput = document.querySelector('#profileModal input[type="email"]');
                 if (profileNameInput) profileNameInput.value = userName;
+                if (profileEmailInput && userData.email) profileEmailInput.value = userData.email;
 
                 // If user has a Google profile picture, use it
                 if (userData.picture) {
@@ -2234,12 +2225,257 @@
                     avatarEl.style.backgroundSize = 'cover';
                     avatarEl.style.backgroundPosition = 'center';
                     avatarEl.textContent = '';
+
+                    const modalAvatar = document.getElementById('profile-avatar-preview');
+                    if (modalAvatar) {
+                        modalAvatar.style.backgroundImage = 'url(' + userData.picture + ')';
+                        modalAvatar.innerHTML = '';
+                    }
                 }
             }
         }
 
+        // Load owner's equipment from database
+        async function loadOwnerEquipment() {
+            const grid = document.getElementById('ownerEquipmentGrid');
+            if (!grid) return;
+
+            try {
+                const response = await fetch('php/get_equipment.php');
+                const data = await response.json();
+
+                if (data.success && data.equipment && data.equipment.length > 0) {
+                    grid.innerHTML = data.equipment.map(item => `
+                        <div class="equipment-card" style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                            <div style="height: 180px; position: relative; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); display: flex; align-items: center; justify-content: center;">
+                                ${item.image_url ? `<img src="${item.image_url}" style="width:100%; height:100%; object-fit:cover; position: absolute; top: 0; left: 0;" onerror="this.style.display='none'; this.parentElement.querySelector('.placeholder-icon').style.display='flex';">` : ''}
+                                <span class="material-icons-outlined placeholder-icon" style="font-size: 4rem; color: var(--text-light); ${item.image_url ? 'display: none;' : 'display: flex;'}">agriculture</span>
+                                <span style="position: absolute; top: 12px; left: 12px; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: ${item.availability_status === 'available' ? 'rgba(34,197,94,0.2)' : 'rgba(245,158,11,0.2)'}; color: ${item.availability_status === 'available' ? 'var(--success)' : 'var(--accent-orange)'}; font-weight: 600; backdrop-filter: blur(4px);">
+                                    ${item.availability_status === 'available' ? 'Available' : item.availability_status === 'booked' ? 'Booked' : 'Maintenance'}
+                                </span>
+                            </div>
+                            <div style="padding: 1.25rem;">
+                                <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">${item.equipment_name}</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 1rem;">${item.description.substring(0, 50)}...</p>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="font-weight: 700; color: var(--primary-blue);">₹${parseFloat(item.price_per_day).toLocaleString()} <span style="font-weight: 400; font-size: 0.8rem; color: var(--text-gray);">/day</span></div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button onclick="alert('Edit functionality coming soon!')" style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;">
+                                            <span class="material-icons-outlined" style="font-size: 18px;">edit</span>
+                                        </button>
+                                        <button onclick="alert('View details for: ${item.equipment_name}')" style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;">
+                                            <span class="material-icons-outlined" style="font-size: 18px;">visibility</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 20px; border: 2px dashed #e5e7eb;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">inventory_2</span>
+                            <h3 style="margin: 1rem 0; color: var(--text-dark);">No Equipment Listed Yet</h3>
+                            <p style="color: var(--text-gray); margin-bottom: 1.5rem;">Start by adding your first equipment to begin receiving rental requests</p>
+                            <button onclick="openModal('addEquipmentModal')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; border: none; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                <span class="material-icons-outlined">add</span>
+                                Add Your First Equipment
+                            </button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading equipment:', error);
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; background: rgba(239, 68, 68, 0.1); border-radius: 20px; border: 2px solid var(--error);">
+                        <span class="material-icons-outlined" style="font-size: 3rem; color: var(--error);">error_outline</span>
+                        <p style="margin-top: 1rem; color: var(--error);">Failed to load equipment. Please refresh the page.</p>
+                    </div>
+                `;
+            }
+        }
+
         // Run on page load
-        window.addEventListener('DOMContentLoaded', loadUserInfo);
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserInfo();
+            loadOwnerEquipment();
+        });
+
+        // Load booking requests for the owner
+        async function loadBookingRequests() {
+            const tbody = document.getElementById('bookingsTableBody');
+            if (!tbody) return;
+
+            try {
+                // Get owner info from localStorage
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                const ownerId = userData.id || 1;
+
+                const response = await fetch(`php/get_bookings.php?owner_id=${ownerId}`);
+                const data = await response.json();
+
+                if (data.success && data.bookings && data.bookings.length > 0) {
+                    tbody.innerHTML = data.bookings.map(booking => `
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 1rem;">
+                                <div style="font-weight: 600;">${booking.farmer_name || 'Anonymous Farmer'}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-gray);">⭐ ${booking.farmer_rating || '4.0'} Rating</div>
+                            </td>
+                            <td style="padding: 1rem;">${booking.equipment_name}</td>
+                            <td style="padding: 1rem;">${booking.start_date} - ${booking.end_date} (${booking.duration} days)</td>
+                            <td style="padding: 1rem; font-weight: 700; color: var(--success);">₹${parseFloat(booking.total_amount).toLocaleString()}</td>
+                            <td style="padding: 1rem;">
+                                ${booking.status === 'pending' ? `
+                                    <button onclick="approveBooking(${booking.id})"
+                                        style="background: var(--success); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; margin-right: 0.5rem;">Approve</button>
+                                    <button onclick="rejectBooking(${booking.id})"
+                                        style="background: var(--error); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer;">Reject</button>
+                                ` : `
+                                    <span style="padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; 
+                                        background: ${booking.status === 'approved' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)'}; 
+                                        color: ${booking.status === 'approved' ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">
+                                        ${booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                                    </span>
+                                `}
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="padding: 3rem; text-align: center;">
+                                <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">event_busy</span>
+                                <h3 style="margin: 1rem 0; color: var(--text-dark);">No Booking Requests Yet</h3>
+                                <p style="color: var(--text-gray);">When farmers request to rent your equipment, you'll see them here.</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="padding: 3rem; text-align: center;">
+                            <span class="material-icons-outlined" style="font-size: 3rem; color: var(--error);">error_outline</span>
+                            <p style="margin-top: 1rem; color: var(--error);">Failed to load booking requests. Please try again.</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Approve booking
+        async function approveBooking(bookingId) {
+            if (!confirm('Are you sure you want to approve this booking request?')) return;
+
+            try {
+                const response = await fetch('php/update_booking.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking_id: bookingId, status: 'approved' })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showNotification('✅ Booking approved successfully!', 'success');
+                    loadBookingRequests(); // Reload the list
+                } else {
+                    showNotification('❌ Failed to approve booking: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showNotification('❌ Network error: Could not approve booking', 'error');
+            }
+        }
+
+        // Reject booking
+        async function rejectBooking(bookingId) {
+            if (!confirm('Are you sure you want to reject this booking request?')) return;
+
+            try {
+                const response = await fetch('php/update_booking.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking_id: bookingId, status: 'rejected' })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showNotification('ℹ️ Booking rejected', 'error');
+                    loadBookingRequests(); // Reload the list
+                } else {
+                    showNotification('❌ Failed to reject booking: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showNotification('❌ Network error: Could not reject booking', 'error');
+            }
+        }
+
+        // Load active rentals (approved bookings)
+        async function loadActiveRentals() {
+            const tbody = document.getElementById('activeRentalsTableBody');
+            if (!tbody) return;
+
+            try {
+                // Get owner info from localStorage
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                const ownerId = userData.id || 1;
+
+                const response = await fetch(`php/get_bookings.php?owner_id=${ownerId}&status=approved`);
+                const data = await response.json();
+
+                if (data.success && data.bookings && data.bookings.length > 0) {
+                    tbody.innerHTML = data.bookings.map(rental => {
+                        const returnDate = new Date(rental.end_date);
+                        const formattedDate = returnDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                        });
+
+                        return `
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 1rem; font-weight: 600;">${rental.equipment_name}</td>
+                            <td style="padding: 1rem;">${rental.farmer_name}</td>
+                            <td style="padding: 1rem;">${formattedDate}</td>
+                            <td style="padding: 1rem;">
+                                <span class="badge success" style="padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(34,197,94,0.1); color: var(--success);">
+                                    ${rental.equipment_condition || 'Good'}
+                                </span>
+                            </td>
+                            <td style="padding: 1rem;">
+                                <button class="btn btn-secondary" 
+                                    onclick="alert('Messaging feature coming soon! You can contact ${rental.farmer_name}')"
+                                    style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;">
+                                    Message
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="padding: 3rem; text-align: center;">
+                                <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">inventory_2</span>
+                                <h3 style="margin: 1rem 0; color: var(--text-dark);">No Active Rentals</h3>
+                                <p style="color: var(--text-gray);">When you approve booking requests, they will appear here as active rentals.</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading active rentals:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="padding: 3rem; text-align: center;">
+                            <span class="material-icons-outlined" style="font-size: 3rem; color: var(--error);">error_outline</span>
+                            <p style="margin-top: 1rem; color: var(--error);">Failed to load active rentals. Please try again.</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
 
         // Active nav item handler
         const navItems = document.querySelectorAll('.nav-item');
@@ -2366,6 +2602,16 @@
         function openModal(modalId) {
             document.getElementById(modalId).classList.add('active');
             document.body.style.overflow = 'hidden';
+
+            // Load bookings when bookings modal is opened
+            if (modalId === 'bookingsModal') {
+                loadBookingRequests();
+            }
+
+            // Load active rentals when active rentals modal is opened
+            if (modalId === 'activeRentalsModal') {
+                loadActiveRentals();
+            }
         }
 
         function closeModal(modalId) {
@@ -2373,15 +2619,162 @@
             document.body.style.overflow = 'auto';
         }
 
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('profile-avatar-preview');
+                    preview.style.backgroundImage = 'url(' + e.target.result + ')';
+                    preview.innerHTML = '';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function togglePasswordVisibility(icon) {
+            const input = icon.previousElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        function previewEquipmentImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('image-preview').src = e.target.result;
+                    document.getElementById('image-preview-container').style.display = 'block';
+                    document.getElementById('upload-placeholder').style.display = 'none';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeImage(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            document.getElementById('fileInput').value = '';
+            document.getElementById('image-preview').src = '';
+            document.getElementById('image-preview-container').style.display = 'none';
+            document.getElementById('upload-placeholder').style.display = 'block';
+        }
+
         function submitNewListing() {
             const form = document.getElementById('addEquipmentForm');
-            if (form.checkValidity()) {
-                alert('Success! Your equipment listing has been submitted for review.');
-                closeModal('addEquipmentModal');
-                form.reset();
-            } else {
-                alert('Please fill in all required fields.');
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
             }
+
+            // Get form data
+            const formData = new FormData();
+            formData.append('equipment_name', document.getElementById('equipment_name').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('price_per_day', document.getElementById('price_per_day').value);
+            formData.append('condition', document.getElementById('condition').value);
+            formData.append('availability', document.getElementById('availability').value);
+            formData.append('description', document.getElementById('description').value);
+
+            // Get owner info from localStorage
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            formData.append('owner_name', userData.name || userData.email || 'Equipment Owner');
+            formData.append('owner_id', userData.id || 1);
+
+            // Add image if uploaded
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files && fileInput.files[0]) {
+                formData.append('equipment_image', fileInput.files[0]);
+            }
+
+            // Show loading state
+            const submitBtn = event.target;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="material-icons-outlined" style="animation: spin 1s linear infinite;">sync</span> Publishing...';
+            submitBtn.disabled = true;
+
+            // Submit to backend
+            fetch('php/add_equipment.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+
+                    if (data.success) {
+                        // Show success message
+                        showNotification('✅ Equipment listed successfully! It now appears on both dashboards.', 'success');
+
+                        // Close modal and reset form
+                        closeModal('addEquipmentModal');
+                        form.reset();
+                        removeImage(new Event('click'));
+
+                        // Reload equipment list to show new item
+                        setTimeout(() => {
+                            loadOwnerEquipment();
+                        }, 1000);
+                    } else {
+                        showNotification('❌ Error: ' + (data.error || 'Failed to list equipment'), 'error');
+                    }
+                })
+                .catch(error => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    console.error('Error:', error);
+                    showNotification('❌ Network error: Could not connect to server', 'error');
+                });
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1.25rem 1.5rem;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #22c55e, #16a34a)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
+                color: white;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: 500;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Add spin animation to CSS
+        if (!document.querySelector('#notification-animations')) {
+            const style = document.createElement('style');
+            style.id = 'notification-animations';
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOutRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
         }
 
         const quickActionBtns = document.querySelectorAll('.quick-action-btn');

@@ -19,11 +19,16 @@
 
     <style>
         :root {
-            --primary-green: #2d6a4f;
-            --dark-green: #1b4332;
-            --light-green: #d8f3dc;
+            --primary-blue: #0077b6;
+            --dark-blue: #023e8a;
+            --light-blue: #caf0f8;
+            /* Keep original green as fallback/compatibility */
+            --primary-green: #0077b6;
+            --dark-green: #023e8a;
+            --light-green: #caf0f8;
             --accent-gold: #ffd60a;
             --accent-orange: #fb8500;
+            --owner-accent: #0096c7;
             --text-dark: #1a1a2e;
             --text-gray: #4a5568;
             --text-light: #a0aec0;
@@ -46,7 +51,7 @@
             font-family: var(--font-sans);
             color: var(--text-dark);
             line-height: 1.6;
-            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+            background: linear-gradient(135deg, #caf0f8 0%, #ade8f4 50%, #90e0ef 100%);
             min-height: 100vh;
             padding: 2rem;
         }
@@ -547,7 +552,7 @@
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">
-            <a href="farmer-dashboard.html" class="back-btn">
+            <a href="#" id="backBtn" class="back-btn" onclick="goBackToDashboard(); return false;">
                 <span class="material-icons-outlined">arrow_back</span>
                 Back to Dashboard
             </a>
@@ -672,105 +677,144 @@
                 <button type="button" class="btn btn-primary" onclick="purchaseInsurance()">Purchase Insurance</button>
             </div>
         </div>
-    </div>
 
-    <script>
-        // Sample agreement data
-        const agreements = [
-            {
-                id: 'AGR-2024-001',
-                title: 'John Deere 5050D Tractor',
-                status: 'active',
-                startDate: '2024-01-15',
-                endDate: '2024-02-15',
-                amount: 75000,
-                owner: 'Rajesh Equipment Rentals',
-                deposit: 15000
-            },
-            {
-                id: 'AGR-2024-002',
-                title: 'Rotavator 6ft Rental',
-                status: 'pending',
-                startDate: '2024-01-20',
-                endDate: '2024-01-27',
-                amount: 5600,
-                owner: 'Kumar Agri Services',
-                deposit: 2000
-            },
-            {
-                id: 'AGR-2023-089',
-                title: 'Combined Harvester',
-                status: 'expired',
-                startDate: '2023-11-10',
-                endDate: '2023-11-20',
-                amount: 50000,
-                owner: 'Hassan Machinery',
-                deposit: 10000
+        <script>
+            // Function to redirect to the appropriate dashboard based on referrer or sessionStorage
+            function goBackToDashboard() {
+                // First check sessionStorage for the dashboard type
+                const dashboardType = sessionStorage.getItem('dashboardType');
+
+                if (dashboardType === 'owner') {
+                    window.location.href = 'owner-dashboard.html';
+                    return;
+                } else if (dashboardType === 'admin') {
+                    window.location.href = 'admin-dashboard.html';
+                    return;
+                } else if (dashboardType === 'farmer') {
+                    window.location.href = 'farmer-dashboard.html';
+                    return;
+                }
+
+                // Fallback: Check the referrer URL
+                const referrer = document.referrer;
+                if (referrer.includes('owner-dashboard.html')) {
+                    window.location.href = 'owner-dashboard.html';
+                } else if (referrer.includes('admin-dashboard.html')) {
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    // Default to farmer dashboard
+                    window.location.href = 'farmer-dashboard.html';
+                }
             }
-        ];
 
-        // Sample insurance plans
-        const insurancePlans = [
-            {
-                id: 1,
-                name: 'Basic Protection',
-                type: 'Basic Coverage',
-                price: 499,
-                period: 'month',
-                features: [
-                    'Theft Protection',
-                    'Accidental Damage Cover',
-                    '24/7 Customer Support',
-                    'Up to ₹50,000 coverage',
-                    'Instant claim processing'
-                ],
-                popular: false
-            },
-            {
-                id: 2,
-                name: 'Premium Shield',
-                type: 'Comprehensive Coverage',
-                price: 999,
-                period: 'month',
-                features: [
-                    'All Basic features',
-                    'Fire & Natural Disasters',
-                    'Third-party Liability',
-                    'Up to ₹2,00,000 coverage',
-                    'Zero deductible',
-                    'Free annual maintenance'
-                ],
-                popular: true
-            },
-            {
-                id: 3,
-                name: 'Enterprise Plus',
-                type: 'Premium Coverage',
-                price: 1999,
-                period: 'month',
-                features: [
-                    'All Premium features',
-                    'Equipment Breakdown',
-                    'Business Interruption',
-                    'Unlimited coverage',
-                    'Legal assistance',
-                    'Replacement equipment',
-                    'Premium support'
-                ],
-                popular: false
-            }
-        ];
+            // Store dashboard type when page loads (based on referrer)
+            window.addEventListener('DOMContentLoaded', function () {
+                const referrer = document.referrer;
+                if (referrer.includes('owner-dashboard.html')) {
+                    sessionStorage.setItem('dashboardType', 'owner');
+                } else if (referrer.includes('admin-dashboard.html')) {
+                    sessionStorage.setItem('dashboardType', 'admin');
+                } else if (referrer.includes('farmer-dashboard.html')) {
+                    sessionStorage.setItem('dashboardType', 'farmer');
+                }
+            });
 
-        let currentInsurance = null;
+            // Sample agreement data
+            const agreements = [
+                {
+                    id: 'AGR-2024-001',
+                    title: 'John Deere 5050D Tractor',
+                    status: 'active',
+                    startDate: '2024-01-15',
+                    endDate: '2024-02-15',
+                    amount: 75000,
+                    owner: 'Rajesh Equipment Rentals',
+                    deposit: 15000
+                },
+                {
+                    id: 'AGR-2024-002',
+                    title: 'Rotavator 6ft Rental',
+                    status: 'pending',
+                    startDate: '2024-01-20',
+                    endDate: '2024-01-27',
+                    amount: 5600,
+                    owner: 'Kumar Agri Services',
+                    deposit: 2000
+                },
+                {
+                    id: 'AGR-2023-089',
+                    title: 'Combined Harvester',
+                    status: 'expired',
+                    startDate: '2023-11-10',
+                    endDate: '2023-11-20',
+                    amount: 50000,
+                    owner: 'Hassan Machinery',
+                    deposit: 10000
+                }
+            ];
 
-        // Render agreements
-        function renderAgreements() {
-            const grid = document.getElementById('agreementsGrid');
-            grid.innerHTML = agreements.map(agreement => {
-                const statusText = agreement.status === 'active' ? 'Active' :
-                    agreement.status === 'pending' ? 'Pending Signature' :
-                        'Expired';
-                return `
+            // Sample insurance plans
+            const insurancePlans = [
+                {
+                    id: 1,
+                    name: 'Basic Protection',
+                    type: 'Basic Coverage',
+                    price: 499,
+                    period: 'month',
+                    features: [
+                        'Theft Protection',
+                        'Accidental Damage Cover',
+                        '24/7 Customer Support',
+                        'Up to ₹50,000 coverage',
+                        'Instant claim processing'
+                    ],
+                    popular: false
+                },
+                {
+                    id: 2,
+                    name: 'Premium Shield',
+                    type: 'Comprehensive Coverage',
+                    price: 999,
+                    period: 'month',
+                    features: [
+                        'All Basic features',
+                        'Fire & Natural Disasters',
+                        'Third-party Liability',
+                        'Up to ₹2,00,000 coverage',
+                        'Zero deductible',
+                        'Free annual maintenance'
+                    ],
+                    popular: true
+                },
+                {
+                    id: 3,
+                    name: 'Enterprise Plus',
+                    type: 'Premium Coverage',
+                    price: 1999,
+                    period: 'month',
+                    features: [
+                        'All Premium features',
+                        'Equipment Breakdown',
+                        'Business Interruption',
+                        'Unlimited coverage',
+                        'Legal assistance',
+                        'Replacement equipment',
+                        'Premium support'
+                    ],
+                    popular: false
+                }
+            ];
+
+            let currentInsurance = null;
+
+            // Render agreements
+            function renderAgreements() {
+                const grid = document.getElementById('agreementsGrid');
+                grid.innerHTML = agreements.map(agreement => {
+                    const statusText = agreement.status === 'active' ? 'Active' :
+                        agreement.status === 'pending' ? 'Pending Signature' :
+                            'Expired';
+                    return `
                 <div class="agreement-card ${agreement.status}" onclick="viewAgreement('${agreement.id}')">
                     <div class="agreement-header">
                         <div>
@@ -779,9 +823,9 @@
                         </div>
                         <span class="status-badge ${agreement.status}">
                             <span class="material-icons-outlined" style="font-size: 1rem;">${agreement.status === 'active' ? 'check_circle' :
-                        agreement.status === 'pending' ? 'pending' :
-                            'cancel'
-                    }</span>
+                            agreement.status === 'pending' ? 'pending' :
+                                'cancel'
+                        }</span>
                             ${statusText}
                         </span>
                     </div>
@@ -817,12 +861,12 @@
                     </div>
                 </div>
             `}).join('');
-        }
+            }
 
-        // Render insurance plans
-        function renderInsurance() {
-            const grid = document.getElementById('insuranceGrid');
-            grid.innerHTML = insurancePlans.map(plan => `
+            // Render insurance plans
+            function renderInsurance() {
+                const grid = document.getElementById('insuranceGrid');
+                grid.innerHTML = insurancePlans.map(plan => `
                 <div class="insurance-card" style="position: relative;">
                     ${plan.popular ? '<div class="popular-badge">⭐ MOST POPULAR</div>' : ''}
                     <div class="insurance-header">
@@ -846,28 +890,28 @@
                     </div>
                 </div>
             `).join('');
-        }
+            }
 
-        // Switch tabs
-        function switchTab(tab) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.closest('.tab-btn').classList.add('active');
+            // Switch tabs
+            function switchTab(tab) {
+                // Update tab buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.closest('.tab-btn').classList.add('active');
 
-            // Update content
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(`${tab}-tab`).classList.add('active');
-        }
+                // Update content
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(`${tab}-tab`).classList.add('active');
+            }
 
-        // View agreement details
-        function viewAgreement(agreementId) {
-            const agreement = agreements.find(a => a.id === agreementId);
-            if (!agreement) return;
+            // View agreement details
+            function viewAgreement(agreementId) {
+                const agreement = agreements.find(a => a.id === agreementId);
+                if (!agreement) return;
 
-            document.getElementById('agreementModalTitle').textContent = agreement.title;
-            document.getElementById('agreementModalId').textContent = agreement.id;
+                document.getElementById('agreementModalTitle').textContent = agreement.title;
+                document.getElementById('agreementModalId').textContent = agreement.id;
 
-            const documentHTML = `
+                const documentHTML = `
                 <h3>EQUIPMENT RENTAL AGREEMENT</h3>
                 
                 <div class="section">
@@ -924,64 +968,64 @@
                 </div>
             `;
 
-            document.getElementById('agreementDocument').innerHTML = documentHTML;
-            document.getElementById('agreementModal').classList.add('active');
-        }
-
-        // Open insurance modal
-        function openInsuranceModal(planId) {
-            const plan = insurancePlans.find(p => p.id === planId);
-            if (!plan) return;
-
-            currentInsurance = plan;
-            document.getElementById('insuranceModalTitle').textContent = `Purchase ${plan.name}`;
-            document.getElementById('insuranceCoverage').textContent = plan.features.join(' • ');
-            document.getElementById('totalPremium').value = `₹${plan.price}/month`;
-
-            document.getElementById('insuranceModal').classList.add('active');
-        }
-
-        // Close modal
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Download agreement
-        function downloadAgreement(agreementId) {
-            console.log('Downloading agreement:', agreementId || 'current');
-            alert('Agreement PDF download will start shortly. In production, this would generate and download a PDF file.');
-        }
-
-        // Purchase insurance
-        function purchaseInsurance() {
-            const form = document.getElementById('insuranceForm');
-
-            if (!form.checkValidity()) {
-                alert('Please fill in all required fields');
-                return;
+                document.getElementById('agreementDocument').innerHTML = documentHTML;
+                document.getElementById('agreementModal').classList.add('active');
             }
 
-            const purchaseData = {
-                plan: currentInsurance.name,
-                equipment: document.getElementById('equipmentSelect').value,
-                period: document.getElementById('coveragePeriod').value,
-                name: document.getElementById('buyerName').value,
-                phone: document.getElementById('buyerPhone').value,
-                premium: currentInsurance.price
-            };
+            // Open insurance modal
+            function openInsuranceModal(planId) {
+                const plan = insurancePlans.find(p => p.id === planId);
+                if (!plan) return;
 
-            console.log('Insurance Purchase:', purchaseData);
+                currentInsurance = plan;
+                document.getElementById('insuranceModalTitle').textContent = `Purchase ${plan.name}`;
+                document.getElementById('insuranceCoverage').textContent = plan.features.join(' • ');
+                document.getElementById('totalPremium').value = `₹${plan.price}/month`;
 
-            alert(`Insurance purchased successfully!\n\nPlan: ${purchaseData.plan}\nEquipment: ${purchaseData.equipment}\nCoverage: ${purchaseData.period} month(s)\n\nYour policy documents will be sent to your email.`);
+                document.getElementById('insuranceModal').classList.add('active');
+            }
 
-            closeModal('insuranceModal');
-            form.reset();
-        }
+            // Close modal
+            function closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+            }
 
-        // Initialize
-        renderAgreements();
-        renderInsurance();
-    </script>
+            // Download agreement
+            function downloadAgreement(agreementId) {
+                console.log('Downloading agreement:', agreementId || 'current');
+                alert('Agreement PDF download will start shortly. In production, this would generate and download a PDF file.');
+            }
+
+            // Purchase insurance
+            function purchaseInsurance() {
+                const form = document.getElementById('insuranceForm');
+
+                if (!form.checkValidity()) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+
+                const purchaseData = {
+                    plan: currentInsurance.name,
+                    equipment: document.getElementById('equipmentSelect').value,
+                    period: document.getElementById('coveragePeriod').value,
+                    name: document.getElementById('buyerName').value,
+                    phone: document.getElementById('buyerPhone').value,
+                    premium: currentInsurance.price
+                };
+
+                console.log('Insurance Purchase:', purchaseData);
+
+                alert(`Insurance purchased successfully!\n\nPlan: ${purchaseData.plan}\nEquipment: ${purchaseData.equipment}\nCoverage: ${purchaseData.period} month(s)\n\nYour policy documents will be sent to your email.`);
+
+                closeModal('insuranceModal');
+                form.reset();
+            }
+
+            // Initialize
+            renderAgreements();
+            renderInsurance();
+        </script>
 </body>
 
 </html>

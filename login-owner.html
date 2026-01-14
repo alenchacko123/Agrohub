@@ -346,33 +346,20 @@
             font-size: 0.95rem;
         }
 
-        .google-btn {
+        #google-signin-button {
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.75rem;
-            padding: 0.875rem 1.5rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            background: var(--white);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
             margin-bottom: 2rem;
         }
 
-        .google-btn:hover {
-            border-color: var(--primary);
-            background: var(--light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.15);
+        #google-signin-button>div {
+            width: 100% !important;
         }
 
-        .google-btn svg {
-            width: 20px;
-            height: 20px;
+        #google-signin-button iframe {
+            margin: 0 auto;
         }
 
         .divider {
@@ -655,16 +642,7 @@
                 <h1>Owner Sign In</h1>
                 <p>Access your equipment management dashboard</p>
             </div>
-            <button class="google-btn" id="google-signin"><svg viewBox="0 0 24 24">
-                    <path fill="#4285F4"
-                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                    <path fill="#34A853"
-                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05"
-                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                    <path fill="#EA4335"
-                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                </svg>Continue with Google</button>
+            <div id="google-signin-button"></div>
             <div class="divider"><span>or</span></div>
             <form id="login-form">
                 <div class="form-group"><label for="email">Email Address</label>
@@ -699,38 +677,99 @@
         // Google Sign-In Configuration
         const GOOGLE_CLIENT_ID = '1099298645708-av54k0kbvnib0o4lqdtr1hb920hi126k.apps.googleusercontent.com';
 
-        // Initialize Google Sign-In
-        function initializeGoogleSignIn() {
-            google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                callback: handleGoogleSignIn,
-                auto_select: false,
-                cancel_on_tap_outside: true
-            });
-        }
+        // Initialize Google Sign-In when page loads
+        window.onload = function () {
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: handleGoogleSignIn,
+                    auto_select: false,
+                    cancel_on_tap_outside: true
+                });
+
+                // Render the Google Sign-In button
+                google.accounts.id.renderButton(
+                    document.getElementById('google-signin-button'),
+                    {
+                        theme: 'outline',
+                        size: 'large',
+                        width: 420,
+                        text: 'continue_with',
+                        shape: 'rectangular',
+                        logo_alignment: 'left'
+                    }
+                );
+            }
+        };
 
         // Handle Google Sign-In Response
-        function handleGoogleSignIn(response) {
+        async function handleGoogleSignIn(response) {
+            console.log('=== OWNER LOGIN: handleGoogleSignIn called ===');
+            console.log('Response object:', response);
+
             if (response.credential) {
                 const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                console.log('Decoded payload:', payload);
+                console.log('User email:', payload.email);
+                console.log('User name:', payload.name);
 
-                console.log('Google Sign-In Successful!');
+                console.log('Google Sign-In Successful! Sending to backend...');
 
-                localStorage.setItem('agrohub_user', JSON.stringify({
-                    name: payload.name,
-                    email: payload.email,
-                    picture: payload.picture,
-                    userType: 'owner',
-                    loginMethod: 'google',
-                    token: response.credential
-                }));
+                try {
+                    const requestBody = {
+                        credential: response.credential,
+                        userType: 'owner'  // Specify that this is an owner
+                    };
+                    console.log('Request body:', requestBody);
 
-                showNotification('Welcome, ' + payload.name + '!', 'success');
+                    // Send to backend for database storage
+                    const backendResponse = await fetch('php/auth.php?action=google-auth', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
 
-                setTimeout(() => {
-                    window.location.href = 'owner-dashboard.html';
-                }, 1500);
+                    console.log('Fetch completed. Status:', backendResponse.status);
+
+                    const data = await backendResponse.json();
+                    console.log('Backend response data:', data);
+
+                    if (data.success) {
+                        console.log('Backend reports success!');
+                        console.log('User ID from database:', data.user.id);
+
+                        // Store complete user info in localStorage
+                        const userDataToStore = {
+                            id: data.user.id,
+                            name: data.user.name,
+                            email: data.user.email,
+                            picture: payload.picture,
+                            userType: 'owner',
+                            loginMethod: 'google',
+                            token: data.token
+                        };
+                        console.log('Storing in localStorage:', userDataToStore);
+                        localStorage.setItem('agrohub_user', JSON.stringify(userDataToStore));
+
+                        showNotification('Welcome, ' + data.user.name + '!', 'success');
+
+                        setTimeout(() => {
+                            console.log('Redirecting to owner-dashboard.html...');
+                            window.location.href = 'owner-dashboard.html';
+                        }, 1500);
+                    } else {
+                        console.error('Backend reported failure:', data.error);
+                        showNotification('Login failed: ' + (data.error || 'Unknown error'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Login error (catch block):', error);
+                    console.error('Error stack:', error.stack);
+                    showNotification('Network error. Please try again.', 'error');
+                }
             } else {
+                console.error('No credential in response');
                 showNotification('Sign-in failed. Please try again.', 'error');
             }
         }
@@ -764,42 +803,6 @@
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
-
-        // Google Sign-In Button Click Handler
-        document.getElementById('google-signin').addEventListener('click', function () {
-            if (typeof google !== 'undefined' && google.accounts) {
-                initializeGoogleSignIn();
-                google.accounts.id.prompt((notification) => {
-                    if (notification.isNotDisplayed()) {
-                        const client = google.accounts.oauth2.initTokenClient({
-                            client_id: GOOGLE_CLIENT_ID,
-                            scope: 'email profile',
-                            callback: (tokenResponse) => {
-                                if (tokenResponse.access_token) {
-                                    fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                                        headers: { 'Authorization': 'Bearer ' + tokenResponse.access_token }
-                                    })
-                                        .then(response => response.json())
-                                        .then(userInfo => {
-                                            localStorage.setItem('agrohub_user', JSON.stringify({
-                                                name: userInfo.name, email: userInfo.email,
-                                                picture: userInfo.picture, userType: 'owner', loginMethod: 'google'
-                                            }));
-                                            showNotification('Welcome, ' + userInfo.name + '!', 'success');
-                                            setTimeout(() => { window.location.href = 'owner-dashboard.html'; }, 1500);
-                                        })
-                                        .catch(() => showNotification('Sign-in failed. Please try again.', 'error'));
-                                }
-                            },
-                            error_callback: () => showNotification('Sign-in was cancelled or failed.', 'error')
-                        });
-                        client.requestAccessToken();
-                    }
-                });
-            } else {
-                showNotification('Google Sign-In is loading. Please try again.', 'error');
-            }
-        });
 
         // Password toggle
         document.getElementById('toggle-password').addEventListener('click', function () {

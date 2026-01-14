@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Owner Login Test - Check Browser Console</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #0077b6;
+        }
+
+        .instructions {
+            background: #e7f3ff;
+            padding: 20px;
+            border-left: 4px solid #0077b6;
+            margin: 20px 0;
+        }
+
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #0077b6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 10px 5px;
+        }
+
+        .button:hover {
+            background: #023e8a;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>🔍 Owner Login Debugging Guide</h1>
+
+        <div class="instructions">
+            <h2>Follow these steps to debug:</h2>
+
+            <div class="step">
+                <strong>Step 1:</strong> Open the browser Developer Tools
+                <ul>
+                    <li>Press <kbd>F12</kbd> on your keyboard</li>
+                    <li>Or right-click anywhere and select "Inspect"</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <strong>Step 2:</strong> Go to the "Console" tab in Developer Tools
+            </div>
+
+            <div class="step">
+                <strong>Step 3:</strong> Click the button below to go to Owner Login
+            </div>
+
+            <div class="step">
+                <strong>Step 4:</strong> Click "Sign in with Google" on the owner login page
+            </div>
+
+            <div class="step">
+                <strong>Step 5:</strong> Watch the console for detailed logs:
+                <ul>
+                    <li>✅ Should see: "=== OWNER LOGIN: handleGoogleSignIn called ==="</li>
+                    <li>✅ Should see: Email and name from Google</li>
+                    <li>✅ Should see: "Sending to backend..."</li>
+                    <li>✅ Should see: "Backend response data:"</li>
+                    <li>✅ Should see: "User ID from database:"</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Important:</strong> Keep the Developer Console open during the entire login process!
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="login-owner.html" class="button">🚀 Go to Owner Login Page</a>
+        </div>
+
+        <hr style="margin: 40px 0;">
+
+        <h2>📊 After Login, Check Database:</h2>
+        <div class="step">
+            Run this SQL query in phpMyAdmin or MySQL:
+            <pre style="background: #272822; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto;">SELECT id, name, email, user_type, created_at 
+FROM users 
+WHERE user_type = 'owner' 
+ORDER BY created_at DESC;</pre>
+        </div>
+
+        <h2>🔗 Quick Links:</h2>
+        <div style="margin-top: 20px;">
+            <a href="login-owner.html" class="button">Owner Login</a>
+            <a href="http://localhost/phpmyadmin" target="_blank" class="button">phpMyAdmin</a>
+            <a href="php/debug_auth.log" target="_blank" class="button">View Auth Logs</a>
+        </div>
+
+        <hr style="margin: 40px 0;">
+
+        <h3>📝 What the Console Logs Mean:</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background: #f0f0f0;">
+                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Log Message</th>
+                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Meaning</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>handleGoogleSignIn called</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">✅ Google button was clicked and callback fired</td>
+            </tr>
+            <tr style="background: #f9f9f9;">
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>User email: xxx</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">✅ Google authentication successful</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>Sending to backend...</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">✅ About to send data to PHP</td>
+            </tr>
+            <tr style="background: #f9f9f9;">
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>Fetch completed. Status: 200</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">✅ Backend responded successfully</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>Backend reports success!</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">✅ User saved to database!</td>
+            </tr>
+            <tr style="background: #f9f9f9;">
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>User ID from database: X</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">✅ This is the database ID - user was created/logged
+                    in</td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        console.log('🔍 Debug page loaded. Ready to test owner login!');
+        console.log('Remember to keep this console open when you click "Sign in with Google"');
+    </script>
+</body>
+
+</html>

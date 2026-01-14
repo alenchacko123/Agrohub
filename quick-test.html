@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quick API Test</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>🔧 Quick Fix Verification</h2>
+    <p>Testing the PHP backend fixes...</p>
+
+    <button onclick="testGetEquipment()">Test Get Equipment API</button>
+    <button onclick="window.location.href='owner-dashboard.html'">Go to Owner Dashboard</button>
+
+    <div id="result"></div>
+
+    <script>
+        async function testGetEquipment() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="result">⏳ Testing...</div>';
+
+            try {
+                const response = await fetch('php/get_equipment.php');
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            <h3>✅ SUCCESS! PHP Backend is Working</h3>
+                            <p><strong>Equipment Found:</strong> ${data.count}</p>
+                            <p><strong>Database Connection:</strong> ✅ Working</p>
+                            <p><strong>PHP File:</strong> ✅ No errors</p>
+                            <hr>
+                            <p><strong>Next Step:</strong> Try adding equipment from owner dashboard again!</p>
+                            <button onclick="window.location.href='owner-dashboard.html'">Add Equipment Now</button>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            <h3>❌ Error</h3>
+                            <p>${data.error}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ Network Error</h3>
+                        <p>${error.message}</p>
+                        <p><strong>Make sure XAMPP Apache is running!</strong></p>
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-test on load
+        window.addEventListener('DOMContentLoaded', testGetEquipment);
+    </script>
+</body>
+
+</html>

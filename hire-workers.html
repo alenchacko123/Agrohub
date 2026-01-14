@@ -587,7 +587,7 @@
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">
-            <a href="farmer-dashboard.html" class="back-btn">
+            <a href="#" id="backBtn" class="back-btn" onclick="goBackToDashboard(); return false;">
                 <span class="material-icons-outlined">arrow_back</span>
                 Back to Dashboard
             </a>
@@ -761,6 +761,47 @@
     </div>
 
     <script>
+        // Function to redirect to the appropriate dashboard based on referrer or sessionStorage
+        function goBackToDashboard() {
+            // First check sessionStorage for the dashboard type
+            const dashboardType = sessionStorage.getItem('dashboardType');
+
+            if (dashboardType === 'owner') {
+                window.location.href = 'owner-dashboard.html';
+                return;
+            } else if (dashboardType === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+                return;
+            } else if (dashboardType === 'farmer') {
+                window.location.href = 'farmer-dashboard.html';
+                return;
+            }
+
+            // Fallback: Check the referrer URL
+            const referrer = document.referrer;
+            if (referrer.includes('owner-dashboard.html')) {
+                window.location.href = 'owner-dashboard.html';
+            } else if (referrer.includes('admin-dashboard.html')) {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                // Default to farmer dashboard
+                window.location.href = 'farmer-dashboard.html';
+            }
+        }
+
+        // Store dashboard type when page loads (based on referrer)
+        window.addEventListener('DOMContentLoaded', function () {
+            const referrer = document.referrer;
+            if (referrer.includes('owner-dashboard.html')) {
+                sessionStorage.setItem('dashboardType', 'owner');
+            } else if (referrer.includes('admin-dashboard.html')) {
+                sessionStorage.setItem('dashboardType', 'admin');
+            } else if (referrer.includes('farmer-dashboard.html')) {
+                sessionStorage.setItem('dashboardType', 'farmer');
+            }
+        });
+
+
         // Sample worker data
         const workerData = [
             {
@@ -921,12 +962,15 @@
                                 ${worker.availability === 'available' ? 'Available Now' : 'Currently Busy'}
                             </div>
                             <div class="worker-badges">
-                                ${worker.verified ? '<span class="badge verified"><span class="material-icons-outlined" style="font-size: 0.9rem;">verified</span> Verified</span>' : ''}
-                                ${worker.premium ? '<span class="badge premium"><span class="material-icons-outlined" style="font-size: 0.9rem;">star</span> Premium</span>' : ''}
-                            </div>
-                        </div>
-                    </div>
-                    
+                                ${worker.verified ? '<span class="badge verified"><span class="material-icons-outlined"
+                                        style = "font-size: 0.9rem;" > verified</span > Verified</span > ' : ''}
+                                ${
+                    worker.premium ? '<span class="badge premium"><span class="material-icons-outlined"
+                                        style = "font-size: 0.9rem;" > star</span > Premium</span > ' : ''}
+                            </div >
+                        </div >
+                    </div >
+
                     <div class="worker-details">
                         <div class="detail-row">
                             <span class="detail-label">
@@ -955,7 +999,7 @@
 
                     <div class="skills-list">
                         ${worker.skills.slice(0, 4).map(skill => `
-                            <span class="skill-tag">${skill}</span>
+                        <span class="skill-tag">${skill}</span>
                         `).join('')}
                     </div>
 
@@ -964,145 +1008,150 @@
                             <span class="rate-value">₹${worker.rate.toLocaleString()}</span>
                             <span class="rate-label">per day</span>
                         </div>
-                        <button class="hire-btn" ${worker.availability === 'busy' ? 'disabled' : ''}>
+                        <button class="hire-btn" ${worker.availability==='busy' ? 'disabled' : '' }>
                             ${worker.availability === 'busy' ? 'Not Available' : 'Hire Now'}
-                            ${worker.availability !== 'busy' ? '<span class="material-icons-outlined">arrow_forward</span>' : ''}
+                            ${worker.availability !== 'busy' ? '<span
+                                class="material-icons-outlined">arrow_forward</span>' : ''}
                         </button>
-                    </div>
-                </div>
-            `}).join('');
-        }
+                    </div >
+                </div >
+                        `}).join('');
+                }
 
-        // Filter by category
-        function filterByCategory(category) {
-            currentCategory = category;
+                // Filter by category
+                function filterByCategory(category) {
+                currentCategory = category;
 
-            // Update active tab
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.closest('.tab-btn').classList.add('active');
+                // Update active tab
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.closest('.tab-btn').classList.add('active');
 
-            applyFilters();
-        }
+                applyFilters();
+                }
 
-        // Apply all filters
-        function applyFilters() {
-            const experience = document.getElementById('experienceFilter').value;
-            const availability = document.getElementById('availabilityFilter').value;
-            const rate = document.getElementById('rateFilter').value;
-            const location = document.getElementById('locationFilter').value;
+                // Apply all filters
+                function applyFilters() {
+                const experience = document.getElementById('experienceFilter').value;
+                const availability = document.getElementById('availabilityFilter').value;
+                const rate = document.getElementById('rateFilter').value;
+                const location = document.getElementById('locationFilter').value;
 
-            let filtered = workerData.filter(worker => {
+                let filtered = workerData.filter(worker => {
                 const matchesCategory = currentCategory === 'all' || worker.category === currentCategory;
                 const matchesAvailability = !availability || worker.availability === availability;
                 const matchesLocation = !location || worker.location === location;
 
                 let matchesExperience = true;
                 if (experience) {
-                    const [min, max] = experience.split('-').map(e => parseInt(e.replace('+', '')));
-                    matchesExperience = max ? (worker.experience >= min && worker.experience <= max) : worker.experience >= min;
-                }
+                const [min, max] = experience.split('-').map(e => parseInt(e.replace('+', '')));
+                matchesExperience = max ? (worker.experience >= min && worker.experience <= max) : worker.experience>=
+                    min;
+                    }
 
-                let matchesRate = true;
-                if (rate) {
+                    let matchesRate = true;
+                    if (rate) {
                     const [min, max] = rate.split('-').map(r => parseInt(r.replace('+', '')));
-                    matchesRate = max ? (worker.rate >= min && worker.rate <= max) : worker.rate >= min;
+                    matchesRate = max ? (worker.rate >= min && worker.rate <= max) : worker.rate>= min;
+                        }
+
+                        return matchesCategory && matchesAvailability && matchesLocation && matchesExperience &&
+                        matchesRate;
+                        });
+
+                        renderWorkers(filtered);
+                        }
+
+                        // Event listeners for filters
+                        document.getElementById('experienceFilter').addEventListener('change', applyFilters);
+                        document.getElementById('availabilityFilter').addEventListener('change', applyFilters);
+                        document.getElementById('rateFilter').addEventListener('change', applyFilters);
+                        document.getElementById('locationFilter').addEventListener('change', applyFilters);
+
+                        // Open hiring modal
+                        function openHiringModal(workerId) {
+                        const worker = workerData.find(w => w.id === workerId);
+                        if (!worker || worker.availability === 'busy') return;
+
+                        currentWorker = worker;
+                        document.getElementById('modalWorkerName').textContent = `Hire ${ worker.name } `;
+                        document.getElementById('modalRate').textContent = `₹${ worker.rate.toLocaleString() }/day`;
+                    document.getElementById('modalExperience').textContent = worker.experience;
+
+                    // Set minimum date to today
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('startDate').min = today;
+                    document.getElementById('endDate').min = today;
+
+                    document.getElementById('hiringModal').classList.add('active');
                 }
 
-                return matchesCategory && matchesAvailability && matchesLocation && matchesExperience && matchesRate;
-            });
+                // Close hiring modal
+                function closeHiringModal() {
+                    document.getElementById('hiringModal').classList.remove('active');
+                    document.getElementById('hiringForm').reset();
+                    currentWorker = null;
+                }
 
-            renderWorkers(filtered);
-        }
+                // Calculate hiring cost
+                function calculateCost() {
+                    const startDate = new Date(document.getElementById('startDate').value);
+                    const endDate = new Date(document.getElementById('endDate').value);
 
-        // Event listeners for filters
-        document.getElementById('experienceFilter').addEventListener('change', applyFilters);
-        document.getElementById('availabilityFilter').addEventListener('change', applyFilters);
-        document.getElementById('rateFilter').addEventListener('change', applyFilters);
-        document.getElementById('locationFilter').addEventListener('change', applyFilters);
+                    let days = 1;
+                    if (startDate && endDate && endDate >= startDate) {
+                        days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                    }
 
-        // Open hiring modal
-        function openHiringModal(workerId) {
-            const worker = workerData.find(w => w.id === workerId);
-            if (!worker || worker.availability === 'busy') return;
+                    document.getElementById('estimatedDays').value = days;
 
-            currentWorker = worker;
-            document.getElementById('modalWorkerName').textContent = `Hire ${worker.name}`;
-            document.getElementById('modalRate').textContent = `₹${worker.rate.toLocaleString()}/day`;
-            document.getElementById('modalExperience').textContent = worker.experience;
+                    if (currentWorker) {
+                        const total = currentWorker.rate * days;
+                        document.getElementById('totalCost').value = `₹${total.toLocaleString()}`;
+                    }
+                }
 
-            // Set minimum date to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('startDate').min = today;
-            document.getElementById('endDate').min = today;
+                // Event listeners for cost calculation
+                document.getElementById('startDate').addEventListener('change', function () {
+                    document.getElementById('endDate').min = this.value;
+                    calculateCost();
+                });
+                document.getElementById('endDate').addEventListener('change', calculateCost);
 
-            document.getElementById('hiringModal').classList.add('active');
-        }
+                // Submit hiring
+                function submitHiring() {
+                    const form = document.getElementById('hiringForm');
 
-        // Close hiring modal
-        function closeHiringModal() {
-            document.getElementById('hiringModal').classList.remove('active');
-            document.getElementById('hiringForm').reset();
-            currentWorker = null;
-        }
+                    if (!form.checkValidity()) {
+                        alert('Please fill in all required fields');
+                        return;
+                    }
 
-        // Calculate hiring cost
-        function calculateCost() {
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
+                    const hiringData = {
+                        worker: currentWorker.name,
+                        workerId: currentWorker.id,
+                        startDate: document.getElementById('startDate').value,
+                        endDate: document.getElementById('endDate').value || 'Ongoing',
+                        workType: document.getElementById('workType').value,
+                        farmLocation: document.getElementById('farmLocation').value,
+                        workHours: document.getElementById('workHours').value,
+                        estimatedDays: document.getElementById('estimatedDays').value,
+                        accommodation: document.getElementById('accommodation').value === 'yes',
+                        foodProvided: document.getElementById('foodProvided').value === 'yes',
+                        specialRequirements: document.getElementById('specialRequirements').value,
+                        totalCost: document.getElementById('totalCost').value
+                    };
 
-            let days = 1;
-            if (startDate && endDate && endDate >= startDate) {
-                days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-            }
+                    console.log('Hiring Data:', hiringData);
 
-            document.getElementById('estimatedDays').value = days;
+                    alert(`Hiring request submitted successfully!\n\nWorker: ${hiringData.worker}\nWork Type:
+                        ${hiringData.workType}\nDuration: ${hiringData.estimatedDays} days\nTotal Cost:
+                        ${hiringData.totalCost}\n\nThe worker will contact you within 24 hours to confirm.`);
 
-            if (currentWorker) {
-                const total = currentWorker.rate * days;
-                document.getElementById('totalCost').value = `₹${total.toLocaleString()}`;
-            }
-        }
+                    closeHiringModal();
+                }
 
-        // Event listeners for cost calculation
-        document.getElementById('startDate').addEventListener('change', function () {
-            document.getElementById('endDate').min = this.value;
-            calculateCost();
-        });
-        document.getElementById('endDate').addEventListener('change', calculateCost);
-
-        // Submit hiring
-        function submitHiring() {
-            const form = document.getElementById('hiringForm');
-
-            if (!form.checkValidity()) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            const hiringData = {
-                worker: currentWorker.name,
-                workerId: currentWorker.id,
-                startDate: document.getElementById('startDate').value,
-                endDate: document.getElementById('endDate').value || 'Ongoing',
-                workType: document.getElementById('workType').value,
-                farmLocation: document.getElementById('farmLocation').value,
-                workHours: document.getElementById('workHours').value,
-                estimatedDays: document.getElementById('estimatedDays').value,
-                accommodation: document.getElementById('accommodation').value === 'yes',
-                foodProvided: document.getElementById('foodProvided').value === 'yes',
-                specialRequirements: document.getElementById('specialRequirements').value,
-                totalCost: document.getElementById('totalCost').value
-            };
-
-            console.log('Hiring Data:', hiringData);
-
-            alert(`Hiring request submitted successfully!\n\nWorker: ${hiringData.worker}\nWork Type: ${hiringData.workType}\nDuration: ${hiringData.estimatedDays} days\nTotal Cost: ${hiringData.totalCost}\n\nThe worker will contact you within 24 hours to confirm.`);
-
-            closeHiringModal();
-        }
-
-        // Initialize
-        renderWorkers();
+                // Initialize
+                renderWorkers();
     </script>
 </body>
 
