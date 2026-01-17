@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - AgroHub</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #16a34a;
+            --dark-green: #15803d;
+            --light-green: #dcfce7;
+            --accent-teal: #14b8a6;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --white: #ffffff;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - same as job portal */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #1b4332 0%, #2d6a4f 100%);
+            color: var(--white);
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .menu-section {
+            margin-bottom: 2rem;
+            flex: 1;
+        }
+
+        .menu-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            margin-bottom: 0.75rem;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .signout-btn {
+            background: rgba(139, 69, 19, 0.6);
+            color: var(--white);
+            border: none;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .signout-btn:hover {
+            background: rgba(139, 69, 19, 0.8);
+        }
+
+        /* Main content with sidebar offset */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 3rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 0.75rem;
+        }
+
+        /* Job Header Card - Enhanced */
+        .job-header-card {
+            background: linear-gradient(135deg, #16a34a 0%, #059669 50%, #047857 100%);
+            color: var(--white);
+            border-radius: 28px;
+            padding: 3rem;
+            margin: 0 auto 2.5rem;
+            max-width: 900px;
+            box-shadow:
+                0 20px 60px rgba(22, 163, 74, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            position: relative;
+            overflow: hidden;
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        .job-header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .job-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 0.6rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-title {
+            font-family: var(--font-serif);
+            font-size: 2.75rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            letter-spacing: -0.5px;
+        }
+
+        .job-posted {
+            opacity: 0.95;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .job-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-top: 2.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow:
+                0 12px 32px rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-item:hover::before {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.95;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2.5rem;
+            margin-bottom: 2rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+        /* Cards - Enhanced */
+        .card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(22, 163, 74, 0.05);
+            margin-bottom: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #16a34a, #059669, #047857);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 16px 48px rgba(22, 163, 74, 0.15),
+                0 0 0 1px rgba(22, 163, 74, 0.1);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
+        }
+
+        .card-icon .material-icons-outlined {
+            font-size: 1.5rem;
+        }
+
+        /* Description */
+        .description-text {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        /* Lists */
+        .requirements-list,
+        .responsibilities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            border-left: 3px solid var(--primary-green);
+        }
+
+        .list-item-icon {
+            color: var(--primary-green);
+            flex-shrink: 0;
+        }
+
+        .list-item-text {
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        /* Benefits Grid */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--light-green);
+            border-radius: 12px;
+        }
+
+        .benefit-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-green);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .benefit-text {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .other-benefits {
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Farmer Details Card */
+        .farmer-card {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .farmer-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .farmer-avatar-large {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+
+        .farmer-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .farmer-role {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        .farmer-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .farmer-info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .info-icon {
+            color: var(--primary-green);
+            flex-shrink: 0;
+        }
+
+        .info-text {
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-green);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-gray);
+            border: 2px solid #e5e7eb;
+        }
+
+        .btn-outline:hover {
+            background: #f9fafb;
+            border-color: var(--text-gray);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f3f4f6;
+        }
+
+        .quick-actions-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-gray);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-gray);
+        }
+
+        @media (max-width: 968px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .farmer-card {
+                position: relative;
+                top: 0;
+            }
+
+            .job-title {
+                font-size: 2rem;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a href="landingpage.html" class="sidebar-logo">
+            <span class="material-icons-outlined">spa</span>
+            AgroHub
+        </a>
+
+        <div class="user-profile">
+            <div class="user-avatar" id="sidebarAvatar">J</div>
+            <div class="user-info">
+                <div class="user-name" id="sidebarName">John Doe</div>
+                <div class="user-role">Agricultural Worker</div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">WORK</div>
+            <a href="job-portal-dashboard.html" class="menu-item active">
+                <span class="material-icons-outlined">work</span>
+                <span>Available Jobs</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="material-icons-outlined">assignment</span>
+                <span>My Jobs</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="material-icons-outlined">person</span>
+                <span>My Profile</span>
+            </a>
+        </div>
+
+        <button class="signout-btn" onclick="signOut()">
+            <span class="material-icons-outlined">logout</span>
+            Sign Out
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <a href="job-portal-dashboard.html" class="back-btn">
+                <span class="material-icons-outlined">arrow_back</span>
+                Back to Job Portal
+            </a>
+
+            <div id="jobContent" class="loading">
+                <span class="material-icons-outlined"
+                    style="font-size: 3rem; animation: spin 2s linear infinite;">hourglass_empty</span>
+                <p>Loading job details...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load user info
+        function loadUserInfo() {
+            const userData = localStorage.getItem('user') || localStorage.getItem('agrohub_user');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    const name = user.name || user.displayName || user.email?.split('@')[0] || 'User';
+                    document.getElementById('sidebarName').textContent = name;
+                    document.getElementById('sidebarAvatar').textContent = name.charAt(0).toUpperCase();
+                } catch (e) {
+                    console.error('Error loading user:', e);
+                }
+            }
+        }
+
+        // Sign out
+        function signOut() {
+            localStorage.removeItem('user');
+            localStorage.removeItem('agrohub_user');
+            localStorage.removeItem('agrohub_token');
+            window.location.href = 'landingpage.html';
+        }
+
+        // Get job ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get('job_id');
+
+        if (!jobId) {
+            window.location.href = 'job-portal-dashboard.html';
+        }
+
+        // Load job details
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserInfo();
+            loadJobDetails();
+        });
+
+        async function loadJobDetails() {
+            try {
+                const response = await fetch(`php/get_job_details.php?job_id=${jobId}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayJobDetails(result.job);
+                } else {
+                    showError('Job not found');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to load job details');
+            }
+        }
+
+        function displayJobDetails(job) {
+            const content = document.getElementById('jobContent');
+
+            content.innerHTML = `
+                <!-- Header Card -->
+                <div class="job-header-card">
+                    <div class="job-badge">
+                        <span class="material-icons-outlined">verified</span>
+                        ${job.status === 'active' ? 'Available' : job.status}
+                    </div>
+                    <h1 class="job-title">🌾 ${job.job_title}</h1>
+                    <p class="job-posted">${job.posted_ago}</p>
+
+                    <div class="job-stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <span class="material-icons-outlined">location_on</span>
+                            </div>
+                            <div class="stat-label">Location</div>
+                            <div class="stat-value">${job.location}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <span class="material-icons-outlined">calendar_today</span>
+                            </div>
+                            <div class="stat-label">Duration</div>
+                            <div class="stat-value">${job.duration_days} Days (${job.start_date} - ${job.end_date || 'TBD'})</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <span class="material-icons-outlined">payments</span>
+                            </div>
+                            <div class="stat-label">Wage</div>
+                            <div class="stat-value">₹${job.wage_per_day}/day</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <span class="material-icons-outlined">groups</span>
+                            </div>
+                            <div class="stat-label">Workers Needed</div>
+                            <div class="stat-value">${job.workers_needed} Workers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Grid -->
+                <div class="content-grid">
+                    <!-- Left Column -->
+                    <div class="left-column">
+                        <!-- Job Description -->
+                        <div class="card">
+                            <h2 class="card-title">
+                                <span class="card-icon">
+                                    <span class="material-icons-outlined">description</span>
+                                </span>
+                                Job Description
+                            </h2>
+                            <p class="description-text">${job.job_description}</p>
+                        </div>
+
+                        <!-- Requirements -->
+                        <div class="card">
+                            <h2 class="card-title">
+                                <span class="card-icon">
+                                    <span class="material-icons-outlined">checklist</span>
+                                </span>
+                                Requirements
+                            </h2>
+                            <div class="requirements-list">
+                                ${job.requirements && job.requirements.length > 0
+                    ? job.requirements.map(req => `
+                                        <div class="list-item">
+                                            <span class="material-icons-outlined list-item-icon">check_circle</span>
+                                            <span class="list-item-text">${req}</span>
+                                        </div>
+                                    `).join('')
+                    : '<p style="color: var(--text-gray);">No specific requirements listed</p>'
+                }
+                            </div>
+                        </div>
+
+                        <!-- Responsibilities -->
+                        <div class="card">
+                            <h2 class="card-title">
+                                <span class="card-icon">
+                                    <span class="material-icons-outlined">assignment</span>
+                                </span>
+                                Responsibilities
+                            </h2>
+                            <div class="responsibilities-list">
+                                ${job.responsibilities && job.responsibilities.length > 0
+                    ? job.responsibilities.map(resp => `
+                                        <div class="list-item">
+                                            <span class="material-icons-outlined list-item-icon">task_alt</span>
+                                            <span class="list-item-text">${resp}</span>
+                                        </div>
+                                    `).join('')
+                    : '<p style="color: var(--text-gray);">No specific responsibilities listed</p>'
+                }
+                            </div>
+                        </div>
+
+                        <!-- Benefits & Facilities -->
+                        <div class="card">
+                            <h2 class="card-title">
+                                <span class="card-icon">
+                                    <span class="material-icons-outlined">verified</span>
+                                </span>
+                                Benefits & Facilities
+                            </h2>
+                            <div class="benefits-grid">
+                                ${job.accommodation_provided ? `
+                                    <div class="benefit-item">
+                                        <span class="benefit-icon">
+                                            <span class="material-icons-outlined">hotel</span>
+                                        </span>
+                                        <span class="benefit-text">Accommodation Provided</span>
+                                    </div>
+                                ` : ''}
+                                ${job.food_provided ? `
+                                    <div class="benefit-item">
+                                        <span class="benefit-icon">
+                                            <span class="material-icons-outlined">restaurant</span>
+                                        </span>
+                                        <span class="benefit-text">Food Provided</span>
+                                    </div>
+                                ` : ''}
+                                ${job.transportation_provided ? `
+                                    <div class="benefit-item">
+                                        <span class="benefit-icon">
+                                            <span class="material-icons-outlined">directions_bus</span>
+                                        </span>
+                                        <span class="benefit-text">Transportation</span>
+                                    </div>
+                                ` : ''}
+                                ${job.tools_provided ? `
+                                    <div class="benefit-item">
+                                        <span class="benefit-icon">
+                                            <span class="material-icons-outlined">construction</span>
+                                        </span>
+                                        <span class="benefit-text">Tools Provided</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${job.other_benefits ? `
+                                <div class="other-benefits">
+                                    <strong>Additional Benefits:</strong><br>
+                                    ${job.other_benefits}
+                                </div>
+                            ` : ''}
+                            ${!job.accommodation_provided && !job.food_provided && !job.transportation_provided && !job.tools_provided && !job.other_benefits ?
+                    '<p style="color: var(--text-gray);">No additional benefits listed</p>' : ''}
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Farmer Details -->
+                    <div class="right-column">
+                        <div class="card farmer-card">
+                            <h2 class="card-title" style="justify-content: center; margin-bottom: 2rem;">
+                                <span class="material-icons-outlined">person</span>
+                                Farmer Details
+                            </h2>
+                            
+                            <div class="farmer-header">
+                                <div class="farmer-avatar-large">${job.farmer_name.charAt(0).toUpperCase()}</div>
+                                <div class="farmer-name">${job.farmer_name}</div>
+                                <div class="farmer-role">Farm Owner</div>
+                                <div class="farmer-rating">
+                                    <span class="material-icons-outlined">star</span>
+                                    4.8 <span style="color: var(--text-gray); font-weight: 400;">(24 reviews)</span>
+                                </div>
+                            </div>
+
+                            <div class="farmer-info-list">
+                                <div class="info-item">
+                                    <span class="material-icons-outlined info-icon">location_on</span>
+                                    <span class="info-text">${job.farmer_location || job.location}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="material-icons-outlined info-icon">phone</span>
+                                    <span class="info-text">${job.farmer_phone || '+91 98765 43210'}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="material-icons-outlined info-icon">email</span>
+                                    <span class="info-text">${job.farmer_email}</span>
+                                </div>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="applyForJob(${job.id})">
+                                    <span class="material-icons-outlined">send</span>
+                                    Apply for This Job
+                                </button>
+                                <button class="btn btn-secondary" onclick="contactFarmer('${job.farmer_phone || '+91 98765 43210'}')">
+                                    <span class="material-icons-outlined">call</span>
+                                    Call Farmer
+                                </button>
+                                <button class="btn btn-outline" onclick="saveLater(${job.id})">
+                                    <span class="material-icons-outlined">bookmark_border</span>
+                                    Save for Later
+                                </button>
+                            </div>
+
+                            <div class="quick-actions">
+                                <h4 class="quick-actions-title">Quick Actions</h4>
+                                <div class="action-buttons">
+                                    <button class="btn btn-outline" onclick="sendMessage()">
+                                        <span class="material-icons-outlined">message</span>
+                                        Send Message
+                                    </button>
+                                    <button class="btn btn-outline" onclick="shareJob()">
+                                        <span class="material-icons-outlined">share</span>
+                                        Share Job
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function applyForJob(jobId) {
+            // Check if user is logged in (check both possible keys)
+            const userData = localStorage.getItem('user') || localStorage.getItem('agrohub_user');
+            if (!userData) {
+                alert('Please login as a worker to apply for jobs');
+                window.location.href = 'login-worker.html';
+                return;
+            }
+
+            try {
+                const user = JSON.parse(userData);
+                // Ensure we have user ID (handle both structures)
+                const workerId = user.id || user.user_id;
+
+                if (!workerId) {
+                    alert('Error: Could not determine user ID. Please try logging in again.');
+                    return;
+                }
+
+                // Show loading state
+                const applyBtn = document.querySelector('.btn-primary');
+                const originalText = applyBtn.innerHTML;
+                applyBtn.innerHTML = '<span class="material-icons-outlined" style="animation: spin 1s infinite linear;">refresh</span> Sending...';
+                applyBtn.disabled = true;
+
+                const response = await fetch('php/apply_for_job.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        job_id: jobId,
+                        worker_id: workerId,
+                        worker_name: user.name || user.displayName || 'Worker',
+                        worker_email: user.email || ''
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ Application submitted successfully! The farmer will be notified.');
+                    applyBtn.innerHTML = '<span class="material-icons-outlined">check_circle</span> Applied';
+                    applyBtn.style.background = '#059669'; // Success green
+                } else {
+                    alert('❌ ' + result.message);
+                    applyBtn.innerHTML = originalText;
+                    applyBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error applying for job:', error);
+                alert('An error occurred while applying. Please try again.');
+                const applyBtn = document.querySelector('.btn-primary');
+                if (applyBtn) {
+                    applyBtn.innerHTML = '<span class="material-icons-outlined">send</span> Apply for This Job';
+                    applyBtn.disabled = false;
+                }
+            }
+        }
+
+        function contactFarmer(phone) {
+            window.location.href = `tel:${phone}`;
+        }
+
+        function saveLater(jobId) {
+            alert('Job saved! You can find it in your saved jobs section.');
+        }
+
+        function sendMessage() {
+            alert('Messaging feature coming soon!');
+        }
+
+        function shareJob() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Job Opportunity on AgroHub',
+                    url: window.location.href
+                });
+            } else {
+                alert('Share this link: ' + window.location.href);
+            }
+        }
+
+        function showError(message) {
+            const content = document.getElementById('jobContent');
+            content.innerHTML = `
+                <div style="text-align: center; padding: 4rem; color: var(--text-gray);">
+                    <span class="material-icons-outlined" style="font-size: 4rem; opacity: 0.5;">error_outline</span>
+                    <h2 style="margin-top: 1rem;">${message}</h2>
+                    <p style="margin-top: 0.5rem;">Please try again or go back to the job portal.</p>
+                    <a href="job-portal-dashboard.html" class="btn btn-primary" style="margin-top: 2rem; display: inline-flex;">
+                        <span class="material-icons-outlined">arrow_back</span>
+                        Back to Job Portal
+                    </a>
+                </div>
+            `;
+        }
+    </script>
+
+    <style>
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</body>
+
+</html>

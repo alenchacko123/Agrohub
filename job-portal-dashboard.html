@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Portal - AgroHub</title>
+    <meta name="description" content="Browse and apply for agricultural job opportunities">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #16a34a;
+            --dark-green: #15803d;
+            --light-green: #dcfce7;
+            --accent-teal: #14b8a6;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --white: #ffffff;
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-gradient);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #1b4332 0%, #2d6a4f 100%);
+            color: var(--white);
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .sidebar-logo .material-icons-outlined {
+            font-size: 1.75rem;
+            color: var(--accent-gold, #ffd60a);
+        }
+
+        /* User Profile */
+        .user-profile {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Menu */
+        .menu-section {
+            margin-bottom: 2rem;
+            flex: 1;
+        }
+
+        .menu-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            margin-bottom: 0.75rem;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .menu-item .material-icons-outlined {
+            font-size: 1.25rem;
+        }
+
+        /* Sign Out Button */
+        .signout-btn {
+            background: rgba(139, 69, 19, 0.6);
+            color: var(--white);
+            border: none;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin-top: auto;
+        }
+
+        .signout-btn:hover {
+            background: rgba(139, 69, 19, 0.8);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            text-decoration: none;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            background: var(--primary-green);
+            color: var(--white);
+            border-color: var(--primary-green);
+        }
+
+        /* Job Grid */
+        .jobs-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .job-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(22, 163, 74, 0.15);
+            border-color: var(--primary-green);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .job-title-section {
+            flex: 1;
+        }
+
+        .job-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .job-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+
+        .job-posted {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .job-status {
+            padding: 0.5rem 1rem;
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--primary-green);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .job-details-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-icon {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+        }
+
+        .detail-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .job-description {
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin: 1rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .farmer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .farmer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .farmer-name {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .farmer-label {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        .view-details-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-details-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            color: var(--text-gray);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-gray);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-gray);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .job-details-row {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a href="landingpage.html" class="sidebar-logo">
+            <span class="material-icons-outlined">spa</span>
+            AgroHub
+        </a>
+
+        <!-- User Profile -->
+        <div class="user-profile">
+            <div class="user-avatar" id="sidebarAvatar">J</div>
+            <div class="user-info">
+                <div class="user-name" id="sidebarName">John Doe</div>
+                <div class="user-role">Agricultural Worker</div>
+            </div>
+        </div>
+
+        <!-- Work Menu -->
+        <div class="menu-section">
+            <div class="menu-title">WORK</div>
+            <a href="job-portal-dashboard.html" class="menu-item active">
+                <span class="material-icons-outlined">work</span>
+                <span>Available Jobs</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="material-icons-outlined">assignment</span>
+                <span>My Jobs</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="material-icons-outlined">person</span>
+                <span>My Profile</span>
+            </a>
+        </div>
+
+        <!-- Sign Out -->
+        <button class="signout-btn" onclick="signOut()">
+            <span class="material-icons-outlined">logout</span>
+            Sign Out
+        </button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Header (kept for consistency but can be minimal) -->
+        <header class="header" style="display: none;">
+            <div class="header-content">
+                <a href="landingpage.html" class="logo">
+                    <span class="material-icons-outlined">spa</span>
+                    AgroHub
+                </a>
+                <div class="header-actions">
+                    <span id="userGreeting"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">🌾 Job Portal</h1>
+                <p class="page-subtitle">Browse available agricultural job opportunities</p>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="tab-btn active" onclick="filterByCategory('all')">
+                    <span class="material-icons-outlined">grid_view</span>
+                    All Jobs
+                </button>
+                <button class="tab-btn" onclick="filterByCategory('harvesting')">
+                    <span class="material-icons-outlined">agriculture</span>
+                    Harvesting
+                </button>
+                <button class="tab-btn" onclick="filterByCategory('planting')">
+                    <span class="material-icons-outlined">eco</span>
+                    Planting
+                </button>
+                <button class="tab-btn" onclick="filterByCategory('machine_operation')">
+                    <span class="material-icons-outlined">engineering</span>
+                    Machine Operation
+                </button>
+                <button class="tab-btn" onclick="filterByCategory('general_labor')">
+                    <span class="material-icons-outlined">handyman</span>
+                    General Labor
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Location</label>
+                        <input type="text" id="locationFilter" placeholder="Search location...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Minimum Wage</label>
+                        <select id="wageFilter">
+                            <option value="0">All Wages</option>
+                            <option value="500">₹500+/day</option>
+                            <option value="800">₹800+/day</option>
+                            <option value="1000">₹1000+/day</option>
+                            <option value="1500">₹1500+/day</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Duration</label>
+                        <select id="durationFilter">
+                            <option value="0">Any Duration</option>
+                            <option value="1">1-3 days</option>
+                            <option value="3">3-7 days</option>
+                            <option value="7">7+ days</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Grid -->
+            <div class="jobs-grid" id="jobsGrid">
+                <div class="loading">
+                    <span class="material-icons-outlined"
+                        style="font-size: 3rem; animation: spin 2s linear infinite;">hourglass_empty</span>
+                    <p>Loading jobs...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allJobs = [];
+        let currentCategory = 'all';
+
+        // Load user info in sidebar
+        function loadUserInfo() {
+            const userData = localStorage.getItem('user') || localStorage.getItem('agrohub_user');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    const name = user.name || user.displayName || user.email?.split('@')[0] || 'User';
+                    const initial = name.charAt(0).toUpperCase();
+
+                    document.getElementById('sidebarName').textContent = name;
+                    document.getElementById('sidebarAvatar').textContent = initial;
+                } catch (e) {
+                    console.error('Error loading user info:', e);
+                }
+            }
+        }
+
+        // Sign out function
+        function signOut() {
+            // Clear all stored data
+            localStorage.removeItem('user');
+            localStorage.removeItem('agrohub_user');
+            localStorage.removeItem('agrohub_token');
+
+            // Redirect to home page
+            window.location.href = 'landingpage.html';
+        }
+
+        // Load jobs on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserInfo();
+            loadJobs();
+
+            // Set up filter listeners
+            document.getElementById('locationFilter').addEventListener('input', applyFilters);
+            document.getElementById('wageFilter').addEventListener('change', applyFilters);
+            document.getElementById('durationFilter').addEventListener('change', applyFilters);
+        });
+
+        async function loadJobs() {
+            try {
+                const response = await fetch('php/get_jobs.php?status=active');
+                const result = await response.json();
+
+                if (result.success) {
+                    allJobs = result.jobs;
+                    displayJobs(allJobs);
+                } else {
+                    showEmptyState('Failed to load jobs');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showEmptyState('Error loading jobs');
+            }
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const location = document.getElementById('locationFilter').value.toLowerCase();
+            const minWage = parseInt(document.getElementById('wageFilter').value);
+            const minDuration = parseInt(document.getElementById('durationFilter').value);
+
+            let filtered = allJobs;
+
+            // Filter by category
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(job => job.job_category === currentCategory);
+            }
+
+            // Filter by location
+            if (location) {
+                filtered = filtered.filter(job =>
+                    job.location.toLowerCase().includes(location) ||
+                    job.farmer_location?.toLowerCase().includes(location)
+                );
+            }
+
+            // Filter by wage
+            if (minWage > 0) {
+                filtered = filtered.filter(job => parseFloat(job.wage_per_day) >= minWage);
+            }
+
+            // Filter by duration
+            if (minDuration > 0) {
+                if (minDuration === 1) {
+                    filtered = filtered.filter(job => parseInt(job.duration_days) <= 3);
+                } else if (minDuration === 3) {
+                    filtered = filtered.filter(job => parseInt(job.duration_days) > 3 && parseInt(job.duration_days) <= 7);
+                } else if (minDuration === 7) {
+                    filtered = filtered.filter(job => parseInt(job.duration_days) > 7);
+                }
+            }
+
+            displayJobs(filtered);
+        }
+
+        function displayJobs(jobs) {
+            const grid = document.getElementById('jobsGrid');
+
+            if (jobs.length === 0) {
+                showEmptyState('No jobs found matching your criteria');
+                return;
+            }
+
+            grid.innerHTML = jobs.map(job => `
+                <div class="job-card" onclick="viewJobDetails(${job.id})">
+                    <div class="job-header">
+                        <div class="job-title-section">
+                            <div class="job-icon">
+                                <span class="material-icons-outlined">${getJobIcon(job.job_category)}</span>
+                            </div>
+                            <h3 class="job-title">${job.job_title}</h3>
+                            <p class="job-posted">${job.posted_ago}</p>
+                        </div>
+                        <div class="job-status">Available</div>
+                    </div>
+
+                    <div class="job-details-row">
+                        <div class="detail-item">
+                            <span class="material-icons-outlined detail-icon">location_on</span>
+                            <div class="detail-content">
+                                <span class="detail-label">Location</span>
+                                <span class="detail-value">${job.location}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="material-icons-outlined detail-icon">calendar_today</span>
+                            <div class="detail-content">
+                                <span class="detail-label">Duration</span>
+                                <span class="detail-value">${job.duration_days} day${job.duration_days > 1 ? 's' : ''}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="material-icons-outlined detail-icon">payments</span>
+                            <div class="detail-content">
+                                <span class="detail-label">Wage</span>
+                                <span class="detail-value">₹${job.wage_per_day}/day</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="material-icons-outlined detail-icon">groups</span>
+                            <div class="detail-content">
+                                <span class="detail-label">Workers Needed</span>
+                                <span class="detail-value">${job.workers_needed}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="job-description">${job.job_description}</p>
+
+                    <div class="job-footer">
+                        <div class="farmer-info">
+                            <div class="farmer-avatar">${job.farmer_name.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <div class="farmer-name">${job.farmer_name}</div>
+                                <div class="farmer-label">Farm Owner</div>
+                            </div>
+                        </div>
+                        <button class="view-details-btn" onclick="viewJobDetails(${job.id}); event.stopPropagation();">
+                            <span class="material-icons-outlined">arrow_forward</span>
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getJobIcon(category) {
+            const icons = {
+                'harvesting': 'agriculture',
+                'planting': 'eco',
+                'machine_operation': 'engineering',
+                'irrigation': 'water_drop',
+                'crop_maintenance': 'spa',
+                'pest_control': 'pest_control',
+                'general_labor': 'handyman',
+                'specialist': 'stars'
+            };
+            return icons[category] || 'work';
+        }
+
+        function showEmptyState(message) {
+            const grid = document.getElementById('jobsGrid');
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <div class="icon">
+                        <span class="material-icons-outlined" style="font-size: inherit;">search_off</span>
+                    </div>
+                    <h3>${message}</h3>
+                    <p>Try adjusting your filters or check back later for new opportunities</p>
+                </div>
+            `;
+        }
+
+        function viewJobDetails(jobId) {
+            window.location.href = `job-details.html?job_id=${jobId}`;
+        }
+    </script>
+
+    <style>
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</body>
+
+</html>

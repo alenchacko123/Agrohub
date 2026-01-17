@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Posted Jobs - AgroHub</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #16a34a;
+            --dark-green: #15803d;
+            --light-green: #dcfce7;
+            --accent-teal: #14b8a6;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --white: #ffffff;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 0.75rem;
+        }
+
+        /* Job Cards */
+        .jobs-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .job-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(22, 163, 74, 0.15);
+            border-color: var(--primary-green);
+        }
+
+        .job-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1.5rem;
+        }
+
+        .job-title-section h3 {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .job-meta {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .job-status {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--primary-green);
+        }
+
+        .job-details-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-icon {
+            color: var(--primary-green);
+        }
+
+        .detail-value {
+            font-weight: 600;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-green);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            color: var(--text-gray);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="farmer-dashboard.html" class="back-btn">
+            <span class="material-icons-outlined">arrow_back</span>
+            Back to Dashboard
+        </a>
+
+        <div class="page-header">
+            <h1 class="page-title">📋 My Posted Jobs</h1>
+            <p class="page-subtitle">Manage your job postings and view applications</p>
+            <div
+                style="margin-top: 1rem; padding: 0.5rem; background: #fffbeb; border: 1px solid #f59e0b; border-radius: 8px; font-size: 0.85rem; color: #b45309; display: inline-block;">
+                🛠️ Debug Info: <span id="debugFarmerId">Loading ID...</span> |
+                <a href="php/list_all_jobs.php" target="_blank"
+                    style="color: #b45309; text-decoration: underline;">Check ALL Database Jobs</a>
+            </div>
+        </div>
+
+        <div class="jobs-grid" id="jobsGrid">
+            <div class="loading">
+                <span class="material-icons-outlined"
+                    style="font-size: 3rem; animation: spin 2s linear infinite;">hourglass_empty</span>
+                <p>Loading your jobs...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get farmer ID from localStorage
+        const userData = localStorage.getItem('user') || localStorage.getItem('agrohub_user');
+        let farmerId = null;
+
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                farmerId = user.id || user.user_id || user.userId; // Check multiple possible ID keys
+
+                // Debug: Show which ID was found
+                const debugEl = document.getElementById('debugFarmerId');
+                if (debugEl) {
+                    debugEl.textContent = `Current User ID: ${farmerId || 'Not Found'}`;
+                    if (!farmerId) debugEl.textContent += " (Using Default: 0)";
+                }
+
+                if (!farmerId) {
+                    console.error("No ID found in user object:", user);
+                    // Fallback for testing if you are strictly an owner/farmer
+                    farmerId = 1;
+                }
+            } catch (e) {
+                console.error('Error parsing user data:', e);
+                farmerId = 1;
+            }
+        } else {
+            document.getElementById('debugFarmerId').textContent = "User Not Logged In";
+        }
+
+        async function loadMyJobs() {
+            try {
+                const response = await fetch(`php/get_my_jobs.php?farmer_id=${farmerId}`);
+                const result = await response.json();
+
+                if (result.success && result.jobs.length > 0) {
+                    displayJobs(result.jobs);
+                } else {
+                    showEmptyState();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showEmptyState();
+            }
+        }
+
+        function displayJobs(jobs) {
+            const grid = document.getElementById('jobsGrid');
+            grid.innerHTML = jobs.map(job => `
+                <div class="job-card">
+                    <div class="job-card-header">
+                        <div class="job-title-section">
+                            <h3>${job.job_title}</h3>
+                            <div class="job-meta">Posted ${job.posted_ago} • ${job.application_count || 0} applications</div>
+                        </div>
+                        <span class="job-status status-active">Active</span>
+                    </div>
+
+                    <div class="job-details-row">
+                        <div class="detail-item">
+                            <span class="material-icons-outlined detail-icon">location_on</span>
+                            <div>
+                                <div class="detail-label">Location</div>
+                                <div class="detail-value">${job.location}</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="material-icons-outlined detail-icon">payments</span>
+                            <div>
+                                <div class="detail-label">Wage</div>
+                                <div class="detail-value">₹${job.wage_per_day}/day</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="material-icons-outlined detail-icon">groups</span>
+                            <div>
+                                <div class="detail-label">Workers</div>
+                                <div class="detail-value">${job.workers_needed}</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="material-icons-outlined detail-icon">calendar_today</span>
+                            <div>
+                                <div class="detail-label">Duration</div>
+                                <div class="detail-value">${job.duration_days} days</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="job-actions">
+                        <button class="btn btn-primary" onclick="viewApplications(${job.id})">
+                            <span class="material-icons-outlined">people</span>
+                            View Applications (${job.application_count || 0})
+                        </button>
+                        <button class="btn btn-secondary" onclick="viewJobDetails(${job.id})">
+                            <span class="material-icons-outlined">visibility</span>
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showEmptyState() {
+            const grid = document.getElementById('jobsGrid');
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <div class="icon">
+                        <span class="material-icons-outlined" style="font-size: inherit;">work_off</span>
+                    </div>
+                    <h3>No Posted Jobs</h3>
+                    <p>You haven't posted any jobs yet. <a href="post-job.html">Post your first job</a> to find workers!</p>
+                </div>
+            `;
+        }
+
+        function viewApplications(jobId) {
+            // TODO: Create applications page
+            alert(`Viewing applications for job ${jobId}. This feature will be implemented next.`);
+        }
+
+        function viewJobDetails(jobId) {
+            window.location.href = `job-details.html?job_id=${jobId}`;
+        }
+
+        // Load jobs on page load
+        document.addEventListener('DOMContentLoaded', loadMyJobs);
+    </script>
+
+    <style>
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</body>
+
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Test - Job Posting System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #16a34a;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .test-result {
+            margin: 15px 0;
+            padding: 15px;
+            border-left: 4px solid #16a34a;
+            background: #f0fdf4;
+            border-radius: 8px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 10px 10px 0;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+        }
+
+        .job-list {
+            margin-top: 20px;
+        }
+
+        .job-item {
+            background: #f9fafb;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border-left: 4px solid #16a34a;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-card">
+        <h1>🧪 Job Posting System - Test Page</h1>
+        <p>This page verifies that your job posting system is working correctly.</p>
+
+        <div id="testResults"></div>
+
+        <button onclick="runTests()">Run Tests</button>
+        <button onclick="window.location.href='job-portal-dashboard.html'">Open Job Portal</button>
+        <button onclick="window.location.href='post-job.html'">Post a Job</button>
+    </div>
+
+    <script>
+        async function runTests() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<div class="loading">Running tests...</div>';
+
+            let html = '';
+
+            // Test 1: Check if API is accessible
+            html += '<div class="test-result">';
+            html += '<h3>✓ Test 1: API Endpoint Check</h3>';
+            try {
+                const response = await fetch('php/get_jobs.php?status=active');
+                if (response.ok) {
+                    html += '<span class="status success">✓ Success</span>';
+                    html += '<p>Backend API is accessible and responding.</p>';
+                } else {
+                    html += '<span class="status error">✗ Failed</span>';
+                    html += `<p>API returned status: ${response.status}</p>`;
+                }
+            } catch (error) {
+                html += '<span class="status error">✗ Failed</span>';
+                html += `<p>Error: ${error.message}</p>`;
+            }
+            html += '</div>';
+
+            // Test 2: Fetch and display jobs
+            html += '<div class="test-result">';
+            html += '<h3>✓ Test 2: Job Data Retrieval</h3>';
+            try {
+                const response = await fetch('php/get_jobs.php?status=active');
+                const result = await response.json();
+
+                if (result.success && result.jobs) {
+                    html += '<span class="status success">✓ Success</span>';
+                    html += `<p>Found <strong>${result.count}</strong> active jobs in database.</p>`;
+
+                    if (result.count > 0) {
+                        html += '<div class="job-list">';
+                        result.jobs.forEach((job, index) => {
+                            html += `
+                                <div class="job-item">
+                                    <strong>${index + 1}. ${job.job_title}</strong><br>
+                                    Farmer: ${job.farmer_name} | 
+                                    Location: ${job.location} | 
+                                    Wage: ₹${job.wage_per_day}/day | 
+                                    Workers: ${job.workers_needed}
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                    } else {
+                        html += '<p style="color: #f59e0b;">⚠️ No jobs found. You can add sample data by running the SQL script.</p>';
+                    }
+                } else {
+                    html += '<span class="status error">✗ Failed</span>';
+                    html += `<p>Error: ${result.message || 'Unknown error'}</p>`;
+                }
+            } catch (error) {
+                html += '<span class="status error">✗ Failed</span>';
+                html += `<p>Error: ${error.message}</p>`;
+            }
+            html += '</div>';
+
+            // Test 3: Check job details endpoint
+            html += '<div class="test-result">';
+            html += '<h3>✓ Test 3: Job Details Endpoint</h3>';
+            try {
+                const response = await fetch('php/get_job_details.php?job_id=1');
+                const result = await response.json();
+
+                if (result.success) {
+                    html += '<span class="status success">✓ Success</span>';
+                    html += '<p>Job details endpoint is working correctly.</p>';
+                    if (result.job) {
+                        html += `<p>Sample: "${result.job.job_title}" by ${result.job.farmer_name}</p>`;
+                    }
+                } else {
+                    html += '<span class="status error">✗ Failed</span>';
+                    html += `<p>${result.message}</p>`;
+                }
+            } catch (error) {
+                html += '<span class="status error">✗ Failed</span>';
+                html += `<p>Error: ${error.message}</p>`;
+            }
+            html += '</div>';
+
+            // Summary
+            html += '<div class="test-result" style="border-left-color: #3b82f6; background: #eff6ff;">';
+            html += '<h3>📊 Test Summary</h3>';
+            html += '<p><strong>All tests completed!</strong> If all tests show "Success", your system is ready to use.</p>';
+            html += '<p>Next steps:</p>';
+            html += '<ul>';
+            html += '<li>Click "Open Job Portal" to browse jobs</li>';
+            html += '<li>Click "Post a Job" to create a new job posting</li>';
+            html += '<li>Test the filters and view details functionality</li>';
+            html += '</ul>';
+            html += '</div>';
+
+            resultsDiv.innerHTML = html;
+        }
+
+        // Auto-run tests on load
+        window.addEventListener('DOMContentLoaded', runTests);
+    </script>
+</body>
+
+</html>

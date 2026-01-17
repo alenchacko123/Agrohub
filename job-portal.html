@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers - AgroHub Job Portal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --dark-green: #1b4332;
+            --light-green: #d8f3dc;
+            --accent-gold: #ffd60a;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --white: #ffffff;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .nav-btn {
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+        }
+
+        .nav-btn.secondary {
+            background: var(--white);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        /* Job Grid */
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .job-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-green);
+        }
+
+        .job-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .job-icon .material-icons-outlined {
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        .job-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .job-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .job-meta .material-icons-outlined {
+            font-size: 1.1rem;
+        }
+
+        .job-description {
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin: 1.5rem 0;
+        }
+
+        .job-requirements {
+            margin: 1.5rem 0;
+        }
+
+        .job-requirements h4 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .job-requirements ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .job-requirements li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: start;
+            gap: 0.5rem;
+        }
+
+        .job-requirements li::before {
+            content: '✓';
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-gray);
+        }
+
+        .close-btn:hover {
+            color: var(--text-dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>💼 Join Our Team</h1>
+        <p>Explore exciting career opportunities at AgroHub</p>
+    </div>
+
+    <div class="container">
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="login-job-portal.html" class="nav-btn secondary">
+                <span class="material-icons-outlined">login</span>
+                Login to Portal
+            </a>
+            <a href="landingpage.html" class="nav-btn secondary">
+                <span class="material-icons-outlined">home</span>
+                Back to Home
+            </a>
+        </div>
+
+        <!-- Jobs Grid -->
+        <div class="jobs-grid">
+            <!-- Agricultural Consultant -->
+            <div class="job-card">
+                <div class="job-icon">
+                    <span class="material-icons-outlined">agriculture</span>
+                </div>
+                <h3>Agricultural Consultant</h3>
+                <div class="job-meta">
+                    <span><span class="material-icons-outlined">business_center</span>Agricultural Services</span>
+                    <span><span class="material-icons-outlined">location_on</span>Bangalore, Karnataka</span>
+                    <span><span class="material-icons-outlined">schedule</span>Full-time</span>
+                </div>
+                <p class="job-description">
+                    Provide expert advice to farmers on crop management, soil health, and sustainable farming practices.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Bachelor's degree in Agriculture</li>
+                        <li>3+ years of field experience</li>
+                        <li>Strong communication skills</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="openModal('Agricultural Consultant')">
+                    <span class="material-icons-outlined">send</span>
+                    Apply Now
+                </button>
+            </div>
+
+            <!-- Farm Manager -->
+            <div class="job-card">
+                <div class="job-icon">
+                    <span class="material-icons-outlined">person</span>
+                </div>
+                <h3>Farm Manager</h3>
+                <div class="job-meta">
+                    <span><span class="material-icons-outlined">business_center</span>Operations</span>
+                    <span><span class="material-icons-outlined">location_on</span>Mysore, Karnataka</span>
+                    <span><span class="material-icons-outlined">schedule</span>Full-time</span>
+                </div>
+                <p class="job-description">
+                    Oversee daily farm operations, manage workers, and ensure optimal crop production and quality.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>5+ years farm management experience</li>
+                        <li>Leadership skills</li>
+                        <li>Knowledge of modern farming techniques</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="openModal('Farm Manager')">
+                    <span class="material-icons-outlined">send</span>
+                    Apply Now
+                </button>
+            </div>
+
+            <!-- Equipment Technician -->
+            <div class="job-card">
+                <div class="job-icon">
+                    <span class="material-icons-outlined">build</span>
+                </div>
+                <h3>Equipment Technician</h3>
+                <div class="job-meta">
+                    <span><span class="material-icons-outlined">business_center</span>Maintenance</span>
+                    <span><span class="material-icons-outlined">location_on</span>Hubli, Karnataka</span>
+                    <span><span class="material-icons-outlined">schedule</span>Full-time</span>
+                </div>
+                <p class="job-description">
+                    Maintain and repair agricultural machinery and equipment. Ensure all tools are in working condition.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Technical diploma or ITI</li>
+                        <li>Experience with agricultural equipment</li>
+                        <li>Problem-solving skills</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="openModal('Equipment Technician')">
+                    <span class="material-icons-outlined">send</span>
+                    Apply Now
+                </button>
+            </div>
+
+            <!-- Marketing Manager -->
+            <div class="job-card">
+                <div class="job-icon">
+                    <span class="material-icons-outlined">campaign</span>
+                </div>
+                <h3>Marketing Manager</h3>
+                <div class="job-meta">
+                    <span><span class="material-icons-outlined">business_center</span>Marketing</span>
+                    <span><span class="material-icons-outlined">location_on</span>Bangalore, Karnataka</span>
+                    <span><span class="material-icons-outlined">schedule</span>Full-time</span>
+                </div>
+                <p class="job-description">
+                    Develop and execute marketing strategies to promote AgroHub services and grow our customer base.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>MBA in Marketing preferred</li>
+                        <li>3+ years marketing experience</li>
+                        <li>Digital marketing expertise</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="openModal('Marketing Manager')">
+                    <span class="material-icons-outlined">send</span>
+                    Apply Now
+                </button>
+            </div>
+
+            <!-- IT Developer -->
+            <div class="job-card">
+                <div class="job-icon">
+                    <span class="material-icons-outlined">computer</span>
+                </div>
+                <h3>IT Developer</h3>
+                <div class="job-meta">
+                    <span><span class="material-icons-outlined">business_center</span>Technology</span>
+                    <span><span class="material-icons-outlined">location_on</span>Bangalore, Karnataka</span>
+                    <span><span class="material-icons-outlined">schedule</span>Full-time</span>
+                </div>
+                <p class="job-description">
+                    Build and maintain web applications and mobile apps for AgroHub's digital platform.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>B.Tech/MCA in Computer Science</li>
+                        <li>Proficiency in PHP, JavaScript, MySQL</li>
+                        <li>2+ years development experience</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="openModal('IT Developer')">
+                    <span class="material-icons-outlined">send</span>
+                    Apply Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Modal -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Apply for <span id="positionName"></span></h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form id="applicationForm">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="fullName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone *</label>
+                    <input type="tel" id="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="location" placeholder="City, State">
+                </div>
+
+                <div class="form-group">
+                    <label>Years of Experience *</label>
+                    <input type="number" id="experience" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Cover Letter</label>
+                    <textarea id="coverLetter" placeholder="Tell us why you're a great fit for this role..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Skills (comma-separated)</label>
+                    <textarea id="skills" rows="2"
+                        placeholder="e.g., Leadership, Communication, Technical..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Education</label>
+                    <textarea id="education" rows="2" placeholder="Your educational background..."></textarea>
+                </div>
+
+                <button type="submit" class="apply-btn">
+                    <span class="material-icons-outlined">send</span>
+                    Submit Application
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let selectedPosition = '';
+
+        function openModal(position) {
+            selectedPosition = position;
+            document.getElementById('positionName').textContent = position;
+            document.getElementById('applicationModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('applicationModal').classList.remove('active');
+            document.getElementById('applicationForm').reset();
+        }
+
+        // Close modal on outside click
+        document.getElementById('applicationModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('applicationForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons-outlined">hourglass_empty</span> Submitting...';
+
+            const formData = {
+                action: 'submit_application',
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                location: document.getElementById('location').value,
+                positionApplied: selectedPosition,
+                experienceYears: document.getElementById('experience').value,
+                coverLetter: document.getElementById('coverLetter').value,
+                skills: document.getElementById('skills').value,
+                education: document.getElementById('education').value
+            };
+
+            try {
+                const response = await fetch('php/job_portal_api.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Store applicant data
+                    const applicantData = {
+                        email: formData.email,
+                        fullName: formData.fullName,
+                        phone: formData.phone,
+                        location: formData.location,
+                        skills: formData.skills,
+                        education: formData.education
+                    };
+                    localStorage.setItem('applicantData', JSON.stringify(applicantData));
+
+                    alert('✅ ' + result.message + '\n\nRedirecting to your dashboard...');
+                    closeModal();
+                    setTimeout(() => {
+                        window.location.href = 'job-portal-dashboard.html';
+                    }, 1000);
+                } else {
+                    alert('❌ ' + result.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="material-icons-outlined">send</span> Submit Application';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ An error occurred. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="material-icons-outlined">send</span> Submit Application';
+            }
+        });
+    </script>
+</body>
+
+</html>

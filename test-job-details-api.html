@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Job Details</title>
+</head>
+
+<body>
+    <h1>Test Job Details API</h1>
+    <p>Testing job ID: 1</p>
+    <button onclick="testAPI()">Test API</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function testAPI() {
+            try {
+                const response = await fetch('php/get_job_details.php?job_id=1');
+                const text = await response.text();
+                document.getElementById('result').textContent = text;
+
+                try {
+                    const data = JSON.parse(text);
+                    console.log('Success:', data);
+                    if (data.success) {
+                        alert('✅ Job found! API is working!');
+                    } else {
+                        alert('❌ ' + data.message);
+                    }
+                } catch (e) {
+                    alert('❌ Response is not JSON. Server error.');
+                }
+            } catch (error) {
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+
+</html>

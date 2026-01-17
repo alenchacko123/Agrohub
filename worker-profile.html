@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Profile - AgroHub</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1e5437 0%, #0d2818 100%);
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo .material-icons-outlined {
+            color: #ffd60a;
+        }
+
+        .user-profile {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 1rem 2rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .user-info h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info p {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .menu-section {
+            margin-bottom: 2rem;
+        }
+
+        .menu-title {
+            padding: 0 1.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .menu-item {
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid #ffd60a;
+        }
+
+        .menu-item .material-icons-outlined {
+            font-size: 1.25rem;
+        }
+
+        .sign-out {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            padding: 0.875rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .sign-out:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-card h1 {
+            font-size: 2rem;
+            margin-bottom: 2.5rem;
+            color: #1a1a2e;
+        }
+
+        .avatar-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .avatar-container {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: 600;
+            color: white;
+            border: 5px solid #10b981;
+        }
+
+        .camera-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 45px;
+            height: 45px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .camera-btn .material-icons-outlined {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: #f9fafb;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        .password-toggle:hover {
+            color: #10b981;
+        }
+
+        .update-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2rem;
+            transition: all 0.3s;
+        }
+
+        .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .note {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                padding: 1.5rem;
+            }
+
+            .menu-item span:not(.material-icons-outlined),
+            .user-info,
+            .menu-title,
+            .sign-out span {
+                display: none;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <span class="material-icons-outlined">agriculture</span>
+            AgroHub
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar" id="avatarInitial">J</div>
+            <div class="user-info">
+                <h3 id="userName">John Doe</h3>
+                <p>Agricultural Worker</p>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Main Menu</div>
+            <a href="job-portal-dashboard.html" class="menu-item">
+                <span class="material-icons-outlined">dashboard</span>
+                <span>Overview</span>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Work</div>
+            <a href="available-jobs.html" class="menu-item">
+                <span class="material-icons-outlined">work</span>
+                <span>Available Jobs</span>
+            </a>
+            <a href="my-jobs.html" class="menu-item">
+                <span class="material-icons-outlined">assignment</span>
+                <span>My Jobs</span>
+            </a>
+            <a href="worker-profile.html" class="menu-item active">
+                <span class="material-icons-outlined">person</span>
+                <span>My Profile</span>
+            </a>
+        </div>
+
+        <button class="sign-out" onclick="logout()">
+            <span class="material-icons-outlined">logout</span>
+            <span>Sign Out</span>
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="profile-card">
+            <h1>Profile Settings</h1>
+
+            <!-- Avatar Section -->
+            <div class="avatar-section">
+                <div class="avatar-container">
+                    <div class="profile-avatar" id="profileAvatar">A</div>
+                    <div class="camera-btn" onclick="uploadPhoto()">
+                        <span class="material-icons-outlined">photo_camera</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Form -->
+            <form id="profileForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" class="form-input" placeholder="ALEN CHACKO" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="alenchacko2028@mca.ajce.in"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Change Password (leave blank to keep current)</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" class="form-input" placeholder="••••••••">
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <span class="material-icons-outlined" id="passwordIcon">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="update-btn">
+                    <span class="material-icons-outlined">save</span>
+                    Update Profile Details
+                </button>
+
+                <p class="note">Changes will be saved permanently to your account.</p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Load user data
+        function loadUserData() {
+            const applicantData = JSON.parse(localStorage.getItem('applicantData'));
+            if (applicantData) {
+                document.getElementById('userName').textContent = applicantData.fullName;
+                document.getElementById('avatarInitial').textContent = applicantData.fullName.charAt(0);
+
+                // Populate form
+                document.getElementById('fullName').value = applicantData.fullName;
+                document.getElementById('email').value = applicantData.email;
+
+                // Set profile avatar
+                const firstLetter = applicantData.fullName.charAt(0).toUpperCase();
+                document.getElementById('profileAvatar').textContent = firstLetter;
+            }
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const icon = document.getElementById('passwordIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                passwordInput.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        function uploadPhoto() {
+            alert('📸 Photo upload feature coming soon!\n\nYou will be able to upload your profile picture.');
+        }
+
+        // Handle form submission
+        document.getElementById('profileForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const applicantData = JSON.parse(localStorage.getItem('applicantData'));
+
+            // Update data
+            applicantData.fullName = document.getElementById('fullName').value;
+            applicantData.email = document.getElementById('email').value;
+
+            // Save to localStorage
+            localStorage.setItem('applicantData', JSON.stringify(applicantData));
+
+            alert('✅ Profile updated successfully!\n\nYour changes have been saved.');
+
+            // Reload page to reflect changes
+            window.location.reload();
+        });
+
+        function logout() {
+            localStorage.removeItem('applicantData');
+            window.location.href = 'landingpage.html';
+        }
+
+        // Initialize
+        window.onload = loadUserData;
+    </script>
+</body>
+
+</html>

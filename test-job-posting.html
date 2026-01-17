@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Job Posting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        button {
+            background: #2d6a4f;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background: #1b4332;
+        }
+
+        #output {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 Job Posting Test Tool</h1>
+    <p>This will test if the jobposting endpoint is working correctly.</p>
+
+    <button onclick="testDatabase()">1. Test Database Connection</button>
+    <button onclick="testJobPosting()">2. Test Job Posting</button>
+    <button onclick="checkMySQLStatus()">3. Check MySQL Status</button>
+
+    <div id="output">Click a button above to start testing...</div>
+
+    <script>
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : '';
+            output.innerHTML += `\n[${timestamp}] <span class="${className}">${message}</span>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('output').innerHTML = '';
+        }
+
+        async function testDatabase() {
+            clearLog();
+            log('Testing database connection...');
+
+            try {
+                const response = await fetch('php/test_post_job.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: true })
+                });
+
+                const text = await response.text();
+                log('Raw response: ' + text.substring(0, 500));
+
+                try {
+                    const result = JSON.parse(text);
+                    log(JSON.stringify(result, null, 2));
+
+                    if (result.diagnostics) {
+                        if (result.diagnostics.database_connected) {
+                            log('✅ Database is connected!', 'success');
+                        } else {
+                            log('❌ Database connection failed!', 'error');
+                        }
+
+                        if (result.diagnostics.table_exists) {
+                            log('✅ job_postings table exists!', 'success');
+                        } else {
+                            log('❌ job_postings table does NOT exist!', 'error');
+                            log('   You need to create the table. Run this in phpMyAdmin:', 'error');
+                            log('   SOURCE C:/xampp/htdocs/Agrohub/php/create_job_postings_table.sql', 'error');
+                        }
+                    }
+                } catch (e) {
+                    log('❌ Response is not JSON. Server returned HTML error page.', 'error');
+                    log('This usually means PHP has an error. Check the response above.', 'error');
+                }
+            } catch (error) {
+                log('❌ Network error: ' + error.message, 'error');
+            }
+        }
+
+        async function testJobPosting() {
+            clearLog();
+            log('Testing job posting with sample data...');
+
+            const testData = {
+                farmer_id: 1,
+                farmer_name: "Test Farmer",
+                farmer_email: "test@test.com",
+                farmer_phone: "1234567890",
+                farmer_location: "Test Location",
+                job_title: "Test Job - Rice Harvesting",
+                job_type: "temporary",
+                job_category: "harvesting",
+                job_description: "This is a test job posting",
+                workers_needed: 5,
+                wage_per_day: 800,
+                work_hours_per_day: 8,
+                duration_days: 3,
+                start_date: "2026-01-20",
+                end_date: "2026-01-23",
+                location: "Test Farm, Bangalore",
+                requirements: ["Experience required", "Must be punctual"],
+                responsibilities: ["Harvest rice", "Load equipment"],
+                accommodation_provided: true,
+                food_provided: true,
+                transportation_provided: false,
+                tools_provided: true,
+                other_benefits: "Bonus on completion"
+            };
+
+            log('Sending data: ' + JSON.stringify(testData, null, 2));
+
+            try {
+                const response = await fetch('php/post_job.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+
+                log('Response status: ' + response.status);
+
+                const text = await response.text();
+                log('Raw response: ' + text.substring(0, 1000));
+
+                try {
+                    const result = JSON.parse(text);
+                    log('Parsed JSON response:');
+                    log(JSON.stringify(result, null, 2));
+
+                    if (result.success) {
+                        log('✅ SUCCESS! Job posted with ID: ' + result.job_id, 'success');
+                        log('The job posting system is working!', 'success');
+                    } else {
+                        log('❌ Failed: ' + result.message, 'error');
+                    }
+                } catch (e) {
+                    log('❌ Response is not JSON!', 'error');
+                    log('Error: ' + e.message, 'error');
+                    log('The PHP file returned an error page instead of JSON.', 'error');
+                }
+            } catch (error) {
+                log('❌ Network error: ' + error.message, 'error');
+            }
+        }
+
+        function checkMySQLStatus() {
+            clearLog();
+            log('Checking MySQL status...');
+            log('Please check XAMPP Control Panel:');
+            log('1. Open XAMPP Control Panel');
+            log('2. Check if "MySQL" shows a GREEN highlight');
+            log('3. If it\'s not green, click "Start" next to MySQL');
+            log('4. If it fails to start, check port 3306 is not in use');
+            log('');
+            log('You can also try opening:');
+            log('http://localhost/phpmyadmin');
+            log('If it opens successfully, MySQL is running.', 'success');
+        }
+    </script>
+</body>
+
+</html>

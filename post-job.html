@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post Job - AgroHub</title>
+    <meta name="description" content="Post a job to hire agricultural workers">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --dark-green: #1b4332;
+            --light-green: #d8f3dc;
+            --accent-gold: #ffd60a;
+            --accent-orange: #fb8500;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --text-light: #a0aec0;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 0.75rem;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        .form-container {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .form-group label .required {
+            color: var(--error);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.875rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Dynamic List Input */
+        .dynamic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .list-item {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .list-item input {
+            flex: 1;
+        }
+
+        .list-item button {
+            padding: 0.5rem;
+            background: var(--error);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .list-item button:hover {
+            background: #dc2626;
+        }
+
+        .add-item-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--light-green);
+            color: var(--primary-green);
+            border: 2px dashed var(--primary-green);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .add-item-btn:hover {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        /* Checkbox Group */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: var(--light-green);
+            border-color: var(--primary-green);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary-green);
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            margin: 0;
+            flex: 1;
+        }
+
+        /* Buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f3f4f6;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(45, 106, 79, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: var(--text-gray);
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.15));
+            border-left: 4px solid var(--info);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .info-card h4 {
+            color: var(--info);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-card p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .message.show {
+            display: flex;
+        }
+
+        .message.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 2px solid var(--error);
+        }
+
+        /* Loading State */
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-grid,
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <a href="farmer-dashboard.html" class="back-btn">
+                <span class="material-icons-outlined">arrow_back</span>
+                Back to Dashboard
+            </a>
+            <h1 class="page-title">📋 Post a Job</h1>
+            <p class="page-subtitle">Find skilled agricultural workers for your farm</p>
+        </div>
+
+        <div class="message" id="messageBox"></div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <div class="info-card">
+                <h4>
+                    <span class="material-icons-outlined">info</span>
+                    Posting Guidelines
+                </h4>
+                <p>Please provide accurate and detailed information about the job to attract the right candidates. All
+                    fields marked with (*) are required.</p>
+            </div>
+
+            <form id="postJobForm">
+                <!-- Basic Job Information -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons-outlined">work</span>
+                        Job Information
+                    </h3>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Job Title <span class="required">*</span></label>
+                            <input type="text" id="jobTitle" placeholder="e.g., Rice Harvesting Worker" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Job Category <span class="required">*</span></label>
+                            <select id="jobCategory" required>
+                                <option value="">Select category</option>
+                                <option value="harvesting">Harvesting</option>
+                                <option value="planting">Planting/Sowing</option>
+                                <option value="machine_operation">Machine Operation</option>
+                                <option value="irrigation">Irrigation</option>
+                                <option value="crop_maintenance">Crop Maintenance</option>
+                                <option value="pest_control">Pest Control</option>
+                                <option value="general_labor">General Farm Labor</option>
+                                <option value="specialist">Specialist Work</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Job Type <span class="required">*</span></label>
+                            <select id="jobType" required>
+                                <option value="">Select type</option>
+                                <option value="seasonal">Seasonal</option>
+                                <option value="temporary">Temporary</option>
+                                <option value="contract">Contract-based</option>
+                                <option value="daily_wage">Daily Wage</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Job Description <span class="required">*</span></label>
+                            <textarea id="jobDescription"
+                                placeholder="Describe the work in detail, including tasks, expectations, and working conditions..."
+                                required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Worker Requirements -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons-outlined">groups</span>
+                        Worker Requirements
+                    </h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Number of Workers Needed <span class="required">*</span></label>
+                            <input type="number" id="workersNeeded" min="1" value="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Wage per Day (₹) <span class="required">*</span></label>
+                            <input type="number" id="wagePerDay" min="100" step="50" placeholder="e.g., 800" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Work Hours per Day <span class="required">*</span></label>
+                            <input type="number" id="workHours" min="4" max="12" value="8" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Duration (Days) <span class="required">*</span></label>
+                            <input type="number" id="durationDays" min="1" placeholder="e.g., 3" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Start Date <span class="required">*</span></label>
+                            <input type="date" id="startDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>End Date (Optional)</label>
+                            <input type="date" id="endDate">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Location <span class="required">*</span></label>
+                            <input type="text" id="location" placeholder="e.g., Mysore, Karnataka" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Requirements List -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons-outlined">checklist</span>
+                        Requirements
+                    </h3>
+                    <div class="form-group full-width">
+                        <label>List the skills and requirements for this job</label>
+                        <div class="dynamic-list" id="requirementsList">
+                            <div class="list-item">
+                                <input type="text"
+                                    placeholder="e.g., Experience with traditional rice harvesting methods">
+                            </div>
+                        </div>
+                        <button type="button" class="add-item-btn" onclick="addRequirement()">
+                            <span class="material-icons-outlined">add</span>
+                            Add Requirement
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Responsibilities List -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons-outlined">assignment</span>
+                        Responsibilities
+                    </h3>
+                    <div class="form-group full-width">
+                        <label>List the main duties and responsibilities</label>
+                        <div class="dynamic-list" id="responsibilitiesList">
+                            <div class="list-item">
+                                <input type="text" placeholder="e.g., Harvest rice crops using traditional methods">
+                            </div>
+                        </div>
+                        <button type="button" class="add-item-btn" onclick="addResponsibility()">
+                            <span class="material-icons-outlined">add</span>
+                            Add Responsibility
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Benefits & Facilities -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons-outlined">verified</span>
+                        Benefits & Facilities
+                    </h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="accommodation">
+                            <label for="accommodation">
+                                <strong>Accommodation Provided</strong>
+                                <br><small>Free lodging for workers</small>
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="food">
+                            <label for="food">
+                                <strong>Food Provided</strong>
+                                <br><small>Meals included</small>
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="transportation">
+                            <label for="transportation">
+                                <strong>Transportation</strong>
+                                <br><small>Pick-up and drop service</small>
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tools">
+                            <label for="tools">
+                                <strong>Tools Provided</strong>
+                                <br><small>All necessary equipment</small>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group full-width" style="margin-top: 1.5rem;">
+                        <label>Other Benefits (Optional)</label>
+                        <textarea id="otherBenefits"
+                            placeholder="Any additional benefits or facilities you provide..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                        <span class="material-icons-outlined">close</span>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span class="material-icons-outlined">send</span>
+                        Post Job
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Set minimum date to today
+        document.getElementById('startDate').min = new Date().toISOString().split('T')[0];
+        document.getElementById('endDate').min = new Date().toISOString().split('T')[0];
+
+        // Dynamic Requirements
+        function addRequirement() {
+            const list = document.getElementById('requirementsList');
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `
+                <input type="text" placeholder="Enter a requirement">
+                <button type="button" onclick="this.parentElement.remove()">
+                    <span class="material-icons-outlined">delete</span>
+                </button>
+            `;
+            list.appendChild(item);
+        }
+
+        // Dynamic Responsibilities
+        function addResponsibility() {
+            const list = document.getElementById('responsibilitiesList');
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `
+                <input type="text" placeholder="Enter a responsibility">
+                <button type="button" onclick="this.parentElement.remove()">
+                    <span class="material-icons-outlined">delete</span>
+                </button>
+            `;
+            list.appendChild(item);
+        }
+
+        // Update end date minimum when start date changes
+        document.getElementById('startDate').addEventListener('change', function () {
+            document.getElementById('endDate').min = this.value;
+        });
+
+        // Form Submission
+        document.getElementById('postJobForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const messageBox = document.getElementById('messageBox');
+
+            // Get user data - check both possible localStorage keys
+            let userData = localStorage.getItem('user') || localStorage.getItem('agrohub_user');
+
+            if (!userData) {
+                showMessage('Please login to post a job', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-farmer.html';
+                }, 2000);
+                return;
+            }
+
+            const user = JSON.parse(userData);
+
+            // Validate user data has required fields
+            if (!user.id || !user.email) {
+                showMessage('Invalid user session. Please login again.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-farmer.html';
+                }, 2000);
+                return;
+            }
+
+            // Collect requirements
+            const requirements = [];
+            document.querySelectorAll('#requirementsList input').forEach(input => {
+                if (input.value.trim()) {
+                    requirements.push(input.value.trim());
+                }
+            });
+
+            // Collect responsibilities
+            const responsibilities = [];
+            document.querySelectorAll('#responsibilitiesList input').forEach(input => {
+                if (input.value.trim()) {
+                    responsibilities.push(input.value.trim());
+                }
+            });
+
+            // Prepare job data with fallback for user ID
+            // If user.id doesn't exist, use email hash or default to 1
+            const farmerId = user.id || user.user_id || 1; // Fallback to 1 for testing
+            const farmerName = user.name || user.displayName || user.email?.split('@')[0] || 'Farmer';
+            const farmerPhone = user.phone || user.phoneNumber || '';
+            const farmerLocation = user.location || user.address || '';
+
+            console.log('User object:', user);
+            console.log('Extracted farmer_id:', farmerId);
+
+            // Prepare job data
+            const jobData = {
+                farmer_id: farmerId,
+                farmer_name: farmerName,
+                farmer_email: user.email,
+                farmer_phone: farmerPhone,
+                farmer_location: farmerLocation || document.getElementById('location').value,
+
+                job_title: document.getElementById('jobTitle').value,
+                job_category: document.getElementById('jobCategory').value,
+                job_type: document.getElementById('jobType').value,
+                job_description: document.getElementById('jobDescription').value,
+
+                workers_needed: parseInt(document.getElementById('workersNeeded').value),
+                wage_per_day: parseFloat(document.getElementById('wagePerDay').value),
+                work_hours_per_day: parseInt(document.getElementById('workHours').value),
+                duration_days: parseInt(document.getElementById('durationDays').value),
+                start_date: document.getElementById('startDate').value,
+                end_date: document.getElementById('endDate').value || null,
+                location: document.getElementById('location').value,
+
+                requirements: requirements,
+                responsibilities: responsibilities,
+
+                accommodation_provided: document.getElementById('accommodation').checked,
+                food_provided: document.getElementById('food').checked,
+                transportation_provided: document.getElementById('transportation').checked,
+                tools_provided: document.getElementById('tools').checked,
+                other_benefits: document.getElementById('otherBenefits').value || null
+            };
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons-outlined">hourglass_empty</span> Posting...';
+
+            try {
+                // DEBUG: Log the data being sent
+                console.log('=== JOB POSTING DEBUG ===');
+                console.log('Sending job data:', jobData);
+
+                const response = await fetch('php/post_job.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jobData)
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response OK:', response.ok);
+
+                const result = await response.json();
+                console.log('Server response:', result);
+
+                if (result.success) {
+                    showMessage('Job posted successfully! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'farmer-dashboard.html';
+                    }, 2000);
+                } else {
+                    showMessage(result.message || 'Failed to post job', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="material-icons-outlined">send</span> Post Job';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('An error occurred. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="material-icons-outlined">send</span> Post Job';
+            }
+        });
+
+        function showMessage(text, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.className = `message ${type} show`;
+            messageBox.innerHTML = `
+                <span class="material-icons-outlined">${type === 'success' ? 'check_circle' : 'error'}</span>
+                ${text}
+            `;
+            messageBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+
+</html>

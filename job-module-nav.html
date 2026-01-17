@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Module - Navigation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .card-description {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: white;
+            color: #2d6a4f;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #ffd60a;
+            transform: translateX(5px);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .info-box {
+            background: rgba(255, 214, 10, 0.2);
+            border-left: 4px solid #ffd60a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(34, 197, 94, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🌾 Job Module Navigation</h1>
+        <p class="subtitle">Quick access to all job application and hiring module pages</p>
+
+        <div class="info-box">
+            <h3>✅ System Status</h3>
+            <p>All components are installed and ready to use!</p>
+            <span class="status">
+                <span class="material-icons-outlined">check_circle</span>
+                Operational
+            </span>
+        </div>
+
+        <!-- Worker Portal -->
+        <h2 class="section-title">👷 Worker Portal</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">person_add</span>
+                    </div>
+                    <div class="card-title">Worker Signup</div>
+                </div>
+                <p class="card-description">
+                    Register as an agricultural worker or machine operator. Choose your worker type and create your
+                    profile.
+                </p>
+                <a href="signup-worker.html" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    Register Now
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">login</span>
+                    </div>
+                    <div class="card-title">Worker Login</div>
+                </div>
+                <p class="card-description">
+                    Login to your worker account to access your dashboard, browse jobs, and manage applications.
+                </p>
+                <a href="login-worker.html" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    Login
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">dashboard</span>
+                    </div>
+                    <div class="card-title">Worker Dashboard</div>
+                </div>
+                <p class="card-description">
+                    View your statistics, active contracts, available jobs, and recent applications all in one place.
+                </p>
+                <a href="worker-dashboard.html" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    View Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Job Portal -->
+        <h2 class="section-title">💼 Job Portal (Careers)</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">work</span>
+                    </div>
+                    <div class="card-title">Browse Jobs</div>
+                </div>
+                <p class="card-description">
+                    Explore career opportunities at AgroHub. Browse available positions and apply with your resume.
+                </p>
+                <a href="job-portal.html" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    View Jobs
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">assignment</span>
+                    </div>
+                    <div class="card-title">Portal Dashboard</div>
+                </div>
+                <p class="card-description">
+                    Track your job applications, view status updates, and manage your applicant profile.
+                </p>
+                <a href="job-portal-dashboard.html" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    View Applications
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">login</span>
+                    </div>
+                    <div class="card-title">Portal Login</div>
+                </div>
+                <p class="card-description">
+                    Login to your job portal account to track applications and manage your profile.
+                </p>
+                <a href="login-job-portal.html" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    Login to Portal
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">check_circle</span>
+                    </div>
+                    <div class="card-title">System Test</div>
+                </div>
+                <p class="card-description">
+                    View system status, database tables, and verify that all components are working correctly.
+                </p>
+                <a href="system-test.php" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    Run Test
+                </a>
+            </div>
+        </div>
+
+        <!-- Documentation -->
+        <h2 class="section-title">📚 Documentation</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">description</span>
+                    </div>
+                    <div class="card-title">Quick Start Guide</div>
+                </div>
+                <p class="card-description">
+                    Step-by-step instructions for testing and using the job module. Includes troubleshooting tips.
+                </p>
+                <a href="QUICK_START_GUIDE.md" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    Read Guide
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">summarize</span>
+                    </div>
+                    <div class="card-title">Implementation Summary</div>
+                </div>
+                <p class="card-description">
+                    Complete overview of all implemented features, database schema, and system architecture.
+                </p>
+                <a href="FINAL_IMPLEMENTATION_SUMMARY.md" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    View Summary
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-outlined">home</span>
+                    </div>
+                    <div class="card-title">Main Website</div>
+                </div>
+                <p class="card-description">
+                    Return to the AgroHub landing page to explore other features and services.
+                </p>
+                <a href="landingpage.html" class="btn">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                    Go Home
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

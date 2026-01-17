@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Jobs - AgroHub Worker Portal</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Same as available-jobs.html */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1e5437 0%, #0d2818 100%);
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo .material-icons-outlined {
+            color: #ffd60a;
+        }
+
+        .user-profile {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 1rem 2rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .user-info h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info p {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .menu-section {
+            margin-bottom: 2rem;
+        }
+
+        .menu-title {
+            padding: 0 1.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .menu-item {
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid #ffd60a;
+        }
+
+        .menu-item .material-icons-outlined {
+            font-size: 1.25rem;
+        }
+
+        .sign-out {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            padding: 0.875rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .sign-out:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem 3rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 0.875rem 1.5rem;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: #10b981;
+            border-bottom-color: #10b981;
+        }
+
+        /* Job Cards */
+        .jobs-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .job-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .badge-requested {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge-accepted {
+            background: #dbeafe;
+            color: #0284c7;
+        }
+
+        .badge-in-progress {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        .badge-completed {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .job-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .meta-item .material-icons-outlined {
+            font-size: 1.1rem;
+            color: #10b981;
+        }
+
+        .progress-bar {
+            margin: 1.5rem 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .progress-track {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 50px;
+            transition: width 0.3s;
+        }
+
+        .job-description {
+            color: #6b7280;
+            line-height: 1.6;
+            margin: 1rem 0;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #10b981;
+            border: 2px solid #10b981;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                padding: 1.5rem;
+            }
+
+            .menu-item span:not(.material-icons-outlined),
+            .user-info,
+            .menu-title,
+            .sign-out span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <span class="material-icons-outlined">agriculture</span>
+            AgroHub
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar" id="avatarInitial">J</div>
+            <div class="user-info">
+                <h3 id="userName">John Doe</h3>
+                <p>Agricultural Worker</p>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Main Menu</div>
+            <a href="job-portal-dashboard.html" class="menu-item">
+                <span class="material-icons-outlined">dashboard</span>
+                <span>Overview</span>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Work</div>
+            <a href="available-jobs.html" class="menu-item">
+                <span class="material-icons-outlined">work</span>
+                <span>Available Jobs</span>
+            </a>
+            <a href="my-jobs.html" class="menu-item active">
+                <span class="material-icons-outlined">assignment</span>
+                <span>My Jobs</span>
+            </a>
+            <a href="worker-profile.html" class="menu-item">
+                <span class="material-icons-outlined">person</span>
+                <span>My Profile</span>
+            </a>
+        </div>
+
+        <button class="sign-out" onclick="logout()">
+            <span class="material-icons-outlined">logout</span>
+            <span>Sign Out</span>
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1>📋 My Jobs</h1>
+            <p>Track and manage your farming job assignments</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('active')">Active Jobs (2)</button>
+            <button class="tab" onclick="showTab('completed')">Completed (8)</button>
+            <button class="tab" onclick="showTab('requested')">Job Requests (3)</button>
+        </div>
+
+        <!-- Active Jobs -->
+        <div class="tab-content active" id="active-tab">
+            <div class="jobs-grid">
+                <!-- Active Job 1 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3>🌾 Wheat Field Maintenance</h3>
+                        </div>
+                        <span class="job-badge badge-in-progress">In Progress</span>
+                    </div>
+                    <div class="job-meta">
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">location_on</span>
+                            <span>Mandya, Karnataka</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">event</span>
+                            <span>4 days (Jan 10-13)</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">payments</span>
+                            <span>₹850/day</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">person</span>
+                            <span>Farmer: Venkat Reddy</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-label">
+                            <span>Progress</span>
+                            <span>Day 2 of 4</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <p class="job-description">
+                        Ongoing wheat field maintenance including weeding, irrigation management, and pest control
+                        monitoring.
+                    </p>
+                    <div class="job-actions">
+                        <button class="btn btn-success" onclick="markComplete(1)">
+                            <span class="material-icons-outlined">check_circle</span>
+                            Mark Complete
+                        </button>
+                        <button class="btn btn-secondary" onclick="contactFarmer(1)">
+                            <span class="material-icons-outlined">chat</span>
+                            Contact Farmer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Job 2 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3>💧 Drip Irrigation Setup</h3>
+                        </div>
+                        <span class="job-badge badge-accepted">Accepted - Starting Tomorrow</span>
+                    </div>
+                    <div class="job-meta">
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">location_on</span>
+                            <span>Shimoga, Karnataka</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">event</span>
+                            <span>3 days (Jan 15-17)</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">payments</span>
+                            <span>₹1,000/day</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">person</span>
+                            <span>Farmer: Kiran Kumar</span>
+                        </div>
+                    </div>
+                    <p class="job-description">
+                        Install and test drip irrigation system for tomato farming. Will provide training on system
+                        operation.
+                    </p>
+                    <div class="job-actions">
+                        <button class="btn btn-secondary" onclick="viewJobLocation(2)">
+                            <span class="material-icons-outlined">map</span>
+                            View Location
+                        </button>
+                        <button class="btn btn-secondary" onclick="contactFarmer(2)">
+                            <span class="material-icons-outlined">chat</span>
+                            Contact Farmer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Jobs -->
+        <div class="tab-content" id="completed-tab">
+            <div class="jobs-grid">
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3>🌾 Rice Harvesting</h3>
+                        </div>
+                        <span class="job-badge badge-completed">Completed</span>
+                    </div>
+                    <div class="job-meta">
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">location_on</span>
+                            <span>Mysore, Karnataka</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">event</span>
+                            <span>Completed on Jan 8, 2026</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">payments</span>
+                            <span>Earned: ₹3,200</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">star</span>
+                            <span>Rating: 4.8/5</span>
+                        </div>
+                    </div>
+                    <p class="job-description">
+                        Successfully completed 4-day rice harvesting job. Excellent feedback received from farmer.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Requests -->
+        <div class="tab-content" id="requested-tab">
+            <div class="jobs-grid">
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3>🚜 Combine Harvester Operation</h3>
+                        </div>
+                        <span class="job-badge badge-requested">New Request</span>
+                    </div>
+                    <div class="job-meta">
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">location_on</span>
+                            <span>Hassan, Karnataka</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">event</span>
+                            <span>6 days (Jan 20-25)</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">payments</span>
+                            <span>₹1,500/day</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">person</span>
+                            <span>Farmer: Prakash Shetty</span>
+                        </div>
+                    </div>
+                    <p class="job-description">
+                        Operate combine harvester for paddy harvesting across 50 acres. Accommodation and meals
+                        provided.
+                    </p>
+                    <div class="job-actions">
+                        <button class="btn btn-primary" onclick="acceptJob(1)">
+                            <span class="material-icons-outlined">check</span>
+                            Accept Job
+                        </button>
+                        <button class="btn btn-danger" onclick="rejectJob(1)">
+                            <span class="material-icons-outlined">close</span>
+                            Decline
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function markComplete(jobId) {
+            if (confirm('Mark this job as complete?')) {
+                alert('✅ Job marked as complete! Payment will be processed within 24 hours.');
+            }
+        }
+
+        function contactFarmer(farmerId) {
+            alert('📱 Opening chat with farmer...\nThis feature is coming soon!');
+        }
+
+        function viewJobLocation(jobId) {
+            alert('📍 Opening map location...\nThis feature is coming soon!');
+        }
+
+        function acceptJob(jobId) {
+            alert('✅ Job request accepted!\nThe farmer has been notified. Check your schedule for details.');
+        }
+
+        function rejectJob(jobId) {
+            if (confirm('Are you sure you want to decline this job request?')) {
+                alert('❌ Job request declined.');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('applicantData');
+            window.location.href = 'landingpage.html';
+        }
+
+        // Load user data
+        const applicantData = JSON.parse(localStorage.getItem('applicantData'));
+        if (applicantData) {
+            document.getElementById('userName').textContent = applicantData.fullName;
+            document.getElementById('avatarInitial').textContent = applicantData.fullName.charAt(0);
+        }
+    </script>
+</body>
+
+</html>

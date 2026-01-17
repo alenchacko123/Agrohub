@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Dashboard - AgroHub</title>
+    <meta name="description" content="Agricultural worker dashboard">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --dark-green: #1b4332;
+            --light-green: #d8f3dc;
+            --accent-gold: #ffd60a;
+            --accent-orange: #fb8500;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-brand span {
+            font-size: 2rem;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: var(--white);
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 24px;
+            padding: 3rem;
+            color: var(--white);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(45, 106, 79, 0.9), rgba(27, 67, 50, 0.9));
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-banner h1 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-banner p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, rgba(45, 106, 79, 0.1), rgba(45, 106, 79, 0.15));
+            color: var(--primary-green);
+        }
+
+        .stat-icon.gold {
+            background: linear-gradient(135deg, rgba(255, 214, 10, 0.2), rgba(217, 119, 6, 0.2));
+            color: var(--accent-gold);
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.15));
+            color: var(--info);
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, rgba(251, 133, 0, 0.1), rgba(251, 146, 60, 0.15));
+            color: var(--accent-orange);
+        }
+
+        .stat-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-content p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            color: var(--text-dark);
+        }
+
+        .view-all-btn {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .view-all-btn:hover {
+            gap: 0.75rem;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            padding: 0.4rem 0.9rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .badge.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .badge.info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        /* Job Card */
+        .job-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .job-card:hover {
+            border-color: var(--primary-green);
+            transform: translateX(5px);
+            box-shadow: 0 8px 30px rgba(45, 106, 79, 0.15);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .job-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .job-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .job-wage {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .job-duration {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-gray);
+        }
+
+        .empty-state .material-icons-outlined {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-banner {
+                padding: 2rem;
+            }
+
+            .welcome-banner h1 {
+                font-size: 1.75rem;
+            }
+
+            .top-nav {
+                padding: 1rem;
+            }
+
+            .nav-brand {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <span class="material-icons-outlined">agriculture</span>
+            AgroHub Worker
+        </div>
+        <div class="nav-actions">
+            <a href="#" class="nav-btn" id="notificationsBtn">
+                <span class="material-icons-outlined">notifications</span>
+                <span id="notificationCount" style="display: none;">0</span>
+            </a>
+            <div class="user-avatar" id="userAvatar" title="Profile Settings">
+                <span id="userInitials">W</span>
+            </div>
+            <button class="nav-btn" id="logoutBtn">
+                <span class="material-icons-outlined">logout</span>
+                Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Banner -->
+        <div class="page-header">
+            <div class="welcome-banner">
+                <div class="welcome-content">
+                    <h1>👋 Welcome back, <span id="userName">Worker</span>!</h1>
+                    <p>Ready to find your next opportunity?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <span class="material-icons-outlined">work</span>
+                </div>
+                <div class="stat-content">
+                    <h3 id="activeContractsCount">0</h3>
+                    <p>Active Contracts</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon gold">
+                    <span class="material-icons-outlined">currency_rupee</span>
+                </div>
+                <div class="stat-content">
+                    <h3>₹<span id="totalEarnings">0</span></h3>
+                    <p>Total Earnings</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <span class="material-icons-outlined">pending_actions</span>
+                </div>
+                <div class="stat-content">
+                    <h3 id="pendingApplicationsCount">0</h3>
+                    <p>Pending Applications</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <span class="material-icons-outlined">star</span>
+                </div>
+                <div class="stat-content">
+                    <h3 id="workerRating">0.0</h3>
+                    <p>Your Rating</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Jobs Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">🌾 Available Jobs</h2>
+                <a href="job-listings.html" class="view-all-btn">
+                    View All
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </a>
+            </div>
+            <div id="availableJobsContainer">
+                <!-- Jobs will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Active Contracts  -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📋 Active Contracts</h2>
+                <a href="my-contracts.html" class="view-all-btn">
+                    View All
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </a>
+            </div>
+            <div class="grid-2">
+                <div id="activeContractsContainer">
+                    <!-- Contracts will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Applications -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📝 Recent Applications</h2>
+                <a href="my-applications.html" class="view-all-btn">
+                    View All
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </a>
+            </div>
+            <div id="recentApplicationsContainer">
+                <!-- Applications will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('userToken');
+            const userData = localStorage.getItem('userData');
+            const userType = localStorage.getItem('userType');
+
+            if (!token || !userData || userType !== 'worker') {
+                window.location.href = 'login-worker.html';
+                return null;
+            }
+
+            return JSON.parse(userData);
+        }
+
+        // Load user info
+        function loadUserInfo() {
+            const user = checkAuth();
+            if (!user) return;
+
+            document.getElementById('userName').textContent = user.name || 'Worker';
+
+            // Set user initials
+            const initials = (user.name || 'W').split(' ').map(n => n[0]).join('').toUpperCase();
+            document.getElementById('userInitials').textContent = initials;
+        }
+
+        // Load dashboard stats
+        async function loadDashboardStats() {
+            const token = localStorage.getItem('userToken');
+
+            try {
+                const response = await fetch('php/worker_dashboard.php', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('activeContractsCount').textContent = data.data.activeContracts || 0;
+                    document.getElementById('totalEarnings').textContent = data.data.totalEarnings || 0;
+                    document.getElementById('pendingApplicationsCount').textContent = data.data.pendingApplications || 0;
+                    document.getElementById('workerRating').textContent = (data.data.rating || 0).toFixed(1);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        // Load available jobs
+        async function loadAvailableJobs() {
+            const container = document.getElementById('availableJobsContainer');
+            const token = localStorage.getItem('userToken');
+
+            try {
+                const response = await fetch('php/job_search.php?limit=3', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.data.jobs && data.data.jobs.length > 0) {
+                    container.innerHTML = data.data.jobs.map(job => `
+                        <div class="job-card" onclick="window.location.href='job-listings.html?job=${job.id}'">
+                            <div class="job-header">
+                                <div class="job-info">
+                                    <h4>${job.job_title}</h4>
+                                    <div class="job-meta">
+                                        <span>
+                                            <span class="material-icons-outlined" style="font-size: 1.1rem;">location_on</span>
+                                            ${job.location}
+                                        </span>
+                                        <span>
+                                            <span class="material-icons-outlined" style="font-size: 1.1rem;">schedule</span>
+                                            ${job.duration_days} days
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="job-wage">₹${job.daily_wage}</div>
+                                    <div class="job-duration">/day</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge info">${job.job_type || 'General'}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <span class="material-icons-outlined">work_off</span>
+                            <p>No jobs available at the moment</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <span class="material-icons-outlined">error</span>
+                        <p>Unable to load jobs. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load active contracts (placeholder)
+        function loadActiveContracts() {
+            const container = document.getElementById('activeContractsContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <span class="material-icons-outlined">assignment</span>
+                    <p>No active contracts</p>
+                    <a href="job-listings.html" class="btn btn-primary" style="margin-top: 1rem;">Browse Jobs</a>
+                </div>
+            `;
+        }
+
+        // Load recent applications (placeholder)
+        function loadRecentApplications() {
+            const container = document.getElementById('recentApplicationsContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <span class="material-icons-outlined">description</span>
+                    <p>No applications yet</p>
+                    <a href="job-listings.html" class="btn btn-primary" style="margin-top: 1rem;">Apply for Jobs</a>
+                </div>
+            `;
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('userToken');
+                localStorage.removeItem('userData');
+                localStorage.removeItem('userType');
+                window.location.href = 'login-worker.html';
+            }
+        });
+
+        // User avatar click
+        document.getElementById('userAvatar').addEventListener('click', function () {
+            window.location.href = 'worker-profile.html';
+        });
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserInfo();
+            loadDashboardStats();
+            loadAvailableJobs();
+            loadActiveContracts();
+            loadRecentApplications();
+        });
+    </script>
+</body>
+
+</html>
