@@ -733,10 +733,11 @@
                         category: item.category,
                         description: item.description.substring(0, 50) + '...',
                         price: parseFloat(item.price_per_day),
-                        location: item.owner_name || 'Karnataka',
+                        location: item.location || 'Not specified',
                         stock: item.availability_status,
                         stockCount: item.availability_status === 'available' ? 5 : item.availability_status === 'booked' ? 0 : 2,
                         image: item.image_url,
+                        owner_id: item.owner_id,
                         specs: {
                             condition: item.equipment_condition,
                             category: item.category
@@ -913,7 +914,7 @@
         document.getElementById('needInsurance').addEventListener('change', calculateRental);
 
         // Submit rental
-        function submitRental() {
+        async function submitRental() {
             const form = document.getElementById('rentalForm');
 
             if (!form.checkValidity()) {
@@ -921,25 +922,115 @@
                 return;
             }
 
-            const rentalData = {
-                equipment: currentEquipment.name,
-                equipmentId: currentEquipment.id,
-                startDate: document.getElementById('startDate').value,
-                endDate: document.getElementById('endDate').value,
-                days: document.getElementById('numDays').value,
-                totalAmount: document.getElementById('totalAmount').value,
-                deliveryAddress: document.getElementById('deliveryAddress').value,
-                needOperator: document.getElementById('needOperator').checked,
-                needInsurance: document.getElementById('needInsurance').checked,
-                specialRequirements: document.getElementById('specialRequirements').value
+            // ⚠️ TEST MODE - Remove in production
+            const TEST_MODE = true; // Set to false in production
+
+            // Get farmer info from localStorage
+            let userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+
+            // If TEST_MODE and no user data, use test farmer
+            if (TEST_MODE && !userData.id) {
+                console.log('TEST MODE: Using test farmer account');
+                userData = {
+                    id: 8,
+                    name: 'Test Farmer',
+                    email: 'testfarmer@agrohub.com',
+                    user_type: 'farmer'
+                };
+            }
+
+            if (!userData.id) {
+                alert('Please log in to submit a rental request');
+                window.location.href = 'login-farmer.html';
+                return;
+            }
+
+            // Check if currentEquipment is defined
+            if (!currentEquipment) {
+                alert('Error: Equipment information not available. Please try again.');
+                closeRentalModal();
+                return;
+            }
+
+            // Extract numeric value from totalAmount (remove ₹ and commas)
+            const totalAmountText = document.getElementById('totalAmount').value;
+            const totalAmount = parseFloat(totalAmountText.replace(/[₹,]/g, ''));
+
+            if (isNaN(totalAmount) || totalAmount <= 0) {
+                alert('Invalid total amount. Please recalculate.');
+                return;
+            }
+
+            // Simplified booking data - only what's needed for bookings table
+            const bookingData = {
+                equipment_id: currentEquipment.id,
+                farmer_id: userData.id,
+                farmer_name: userData.name || userData.email || 'Unknown Farmer',
+                start_date: document.getElementById('startDate').value,
+                end_date: document.getElementById('endDate').value,
+                total_amount: totalAmount
             };
 
-            console.log('Rental Data:', rentalData);
+            console.log('Submitting booking:', bookingData);
 
-            // Here you would send this data to your backend
-            alert(`Rental request submitted successfully!\n\nEquipment: ${rentalData.equipment}\nDuration: ${rentalData.days} days\nTotal: ${rentalData.totalAmount}\n\nYou will receive a confirmation email shortly.`);
+            try {
+                // Show loading state
+                const submitBtn = event.target;
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Submitting...';
+                submitBtn.disabled = true;
 
-            closeRentalModal();
+                const response = await fetch('php/submit_booking.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+
+                console.log('Response status:', response.status);
+
+                const result = await response.json();
+                console.log('Response from server:', result);
+
+                // Reset button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+
+                if (result.success) {
+                    alert(`✅ Booking request submitted successfully!\n\nEquipment: ${currentEquipment.name}\nDates: ${bookingData.start_date} to ${bookingData.end_date}\nTotal: ₹${totalAmount.toLocaleString()}\n\n📧 The owner will be notified.\nYou will receive a confirmation once approved.`);
+                    closeRentalModal();
+                    // Optionally redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'farmer-dashboard.html';
+                    }, 2000);
+                } else {
+                    alert('❌ Failed to submit booking:\n' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error submitting rental:', error);
+
+                // Reset button if it exists
+                try {
+                    const submitBtn = document.querySelector('.btn-primary');
+                    submitBtn.textContent = 'Confirm Rental';
+                    submitBtn.disabled = false;
+                } catch (e) {
+                    console.error('Could not reset button:', e);
+                }
+
+                // More detailed error message
+                let errorMessage = 'Network error. ';
+                if (error.message.includes('HTTP error')) {
+                    errorMessage += 'Server returned an error. Make sure XAMPP/Apache is running.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage += 'Cannot connect to server. Please check:\n\n1. XAMPP/Apache is running\n2. You are accessing via localhost\n3. The PHP file exists';
+                } else {
+                    errorMessage += error.message;
+                }
+
+                alert(errorMessage);
+            }
         }
 
         // Initialize - load equipment from database

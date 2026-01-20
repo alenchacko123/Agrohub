@@ -668,10 +668,11 @@
             AgroHub
         </a>
 
+
         <div class="user-profile">
-            <div class="user-avatar" id="sidebarAvatar">J</div>
+            <div class="user-avatar" id="sidebarAvatar">?</div>
             <div class="user-info">
-                <div class="user-name" id="sidebarName">John Doe</div>
+                <div class="user-name" id="sidebarName">Loading...</div>
                 <div class="user-role">Agricultural Worker</div>
             </div>
         </div>
@@ -682,11 +683,11 @@
                 <span class="material-icons-outlined">work</span>
                 <span>Available Jobs</span>
             </a>
-            <a href="#" class="menu-item">
+            <a href="my-jobs.html" class="menu-item">
                 <span class="material-icons-outlined">assignment</span>
                 <span>My Jobs</span>
             </a>
-            <a href="#" class="menu-item">
+            <a href="worker-profile.html" class="menu-item">
                 <span class="material-icons-outlined">person</span>
                 <span>My Profile</span>
             </a>
@@ -697,6 +698,40 @@
             Sign Out
         </button>
     </aside>
+
+    <!-- IMMEDIATE USER INFO LOADER - Runs before any other JavaScript -->
+    <script>
+        (function () {
+            // Immediately load user info - inline to prevent flash of "Loading..."
+            function loadUserInfoImmediate() {
+                let user = null;
+
+                // Check localStorage in priority order
+                const applicantData = localStorage.getItem('applicantData');
+                const userData = localStorage.getItem('userData');
+                const userSimple = localStorage.getItem('user');
+                const agrohubUser = localStorage.getItem('agrohub_user');
+
+                if (applicantData) user = JSON.parse(applicantData);
+                else if (userData) user = JSON.parse(userData);
+                else if (userSimple) user = JSON.parse(userSimple);
+                else if (agrohubUser) user = JSON.parse(agrohubUser);
+
+                if (user) {
+                    const name = user.name || user.fullName || user.displayName || user.email?.split('@')[0] || 'User';
+                    const initial = name.charAt(0).toUpperCase();
+
+                    // Update immediately
+                    document.getElementById('sidebarName').textContent = name;
+                    document.getElementById('sidebarAvatar').textContent = initial;
+                }
+            }
+
+            // Run immediately
+            loadUserInfoImmediate();
+        })();
+    </script>
+
 
     <!-- Main Content -->
     <div class="main-content">
@@ -717,24 +752,85 @@
     <script>
         // Load user info
         function loadUserInfo() {
-            const userData = localStorage.getItem('user') || localStorage.getItem('agrohub_user');
-            if (userData) {
+            let user = null;
+            let source = '';
+
+            // Check for user data - Priority: applicantData (Google login) first
+            const applicantData = localStorage.getItem('applicantData');
+            const userData = localStorage.getItem('userData');
+            const userSimple = localStorage.getItem('user');
+            const agrohubUser = localStorage.getItem('agrohub_user');
+
+            if (applicantData) {
+                user = JSON.parse(applicantData);
+                source = 'applicantData';
+            }
+            else if (userData) {
+                user = JSON.parse(userData);
+                source = 'userData';
+            }
+            else if (userSimple) {
+                user = JSON.parse(userSimple);
+                source = 'user';
+            }
+            else if (agrohubUser) {
+                user = JSON.parse(agrohubUser);
+                source = 'agrohubUser';
+            }
+
+            console.log('Job Details - Loading user from:', source, user);
+
+            if (user) {
                 try {
-                    const user = JSON.parse(userData);
-                    const name = user.name || user.displayName || user.email?.split('@')[0] || 'User';
-                    document.getElementById('sidebarName').textContent = name;
-                    document.getElementById('sidebarAvatar').textContent = name.charAt(0).toUpperCase();
+                    const name = user.name || user.fullName || user.displayName || user.email?.split('@')[0] || 'User';
+                    const initial = name.charAt(0).toUpperCase();
+
+                    const nameEl = document.getElementById('sidebarName');
+                    const avatarEl = document.getElementById('sidebarAvatar');
+
+                    if (nameEl) {
+                        nameEl.textContent = name;
+                        console.log('Updated job details sidebar to:', name);
+                    }
+                    if (avatarEl) avatarEl.textContent = initial;
                 } catch (e) {
                     console.error('Error loading user:', e);
                 }
+            } else {
+                console.warn('No user data found in localStorage');
             }
         }
+
+        // Try to load user info immediately (before DOM is ready)
+        let userInfoLoaded = false;
+        let retryCount = 0;
+        const maxRetries = 10;
+
+        function tryLoadUserInfo() {
+            const hasUserData = localStorage.getItem('applicantData') ||
+                localStorage.getItem('userData') ||
+                localStorage.getItem('user') ||
+                localStorage.getItem('agrohub_user');
+
+            if (hasUserData && !userInfoLoaded) {
+                loadUserInfo();
+                userInfoLoaded = true;
+            } else if (!hasUserData && retryCount < maxRetries) {
+                retryCount++;
+                setTimeout(tryLoadUserInfo, 100);
+            }
+        }
+
+        // Start trying immediately
+        tryLoadUserInfo();
 
         // Sign out
         function signOut() {
             localStorage.removeItem('user');
             localStorage.removeItem('agrohub_user');
             localStorage.removeItem('agrohub_token');
+            localStorage.removeItem('userData');
+            localStorage.removeItem('applicantData');
             window.location.href = 'landingpage.html';
         }
 
@@ -748,7 +844,10 @@
 
         // Load job details
         document.addEventListener('DOMContentLoaded', function () {
-            loadUserInfo();
+            // Load user info again if not already loaded
+            if (!userInfoLoaded) {
+                loadUserInfo();
+            }
             loadJobDetails();
         });
 
@@ -991,23 +1090,26 @@
         }
 
         async function applyForJob(jobId) {
-            // Check if user is logged in (check both possible keys)
-            const userData = localStorage.getItem('user') || localStorage.getItem('agrohub_user');
-            if (!userData) {
+            // Check if user is logged in
+            const applicantData = localStorage.getItem('applicantData') || localStorage.getItem('user') || localStorage.getItem('agrohub_user');
+            if (!applicantData) {
                 alert('Please login as a worker to apply for jobs');
                 window.location.href = 'login-worker.html';
                 return;
             }
 
             try {
-                const user = JSON.parse(userData);
-                // Ensure we have user ID (handle both structures)
-                const workerId = user.id || user.user_id;
+                const user = JSON.parse(applicantData);
+                const applicantId = user.id || user.user_id;
 
-                if (!workerId) {
+                if (!applicantId) {
                     alert('Error: Could not determine user ID. Please try logging in again.');
                     return;
                 }
+
+                // Ask for optional message and experience
+                const message = prompt('Why are you a good fit for this job? (Optional)', '');
+                const experience = prompt('Your relevant experience (e.g., "2 years in harvesting"). Optional:', '');
 
                 // Show loading state
                 const applyBtn = document.querySelector('.btn-primary');
@@ -1015,25 +1117,25 @@
                 applyBtn.innerHTML = '<span class="material-icons-outlined" style="animation: spin 1s infinite linear;">refresh</span> Sending...';
                 applyBtn.disabled = true;
 
-                const response = await fetch('php/apply_for_job.php', {
+                const response = await fetch('php/submit_application.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         job_id: jobId,
-                        worker_id: workerId,
-                        worker_name: user.name || user.displayName || 'Worker',
-                        worker_email: user.email || ''
+                        applicant_id: applicantId,
+                        message: message || '',
+                        experience: experience || ''
                     })
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('✅ Application submitted successfully! The farmer will be notified.');
+                    alert('✅ Application submitted successfully! The farmer will review your application.');
                     applyBtn.innerHTML = '<span class="material-icons-outlined">check_circle</span> Applied';
-                    applyBtn.style.background = '#059669'; // Success green
+                    applyBtn.style.background = '#059669';
                 } else {
                     alert('❌ ' + result.message);
                     applyBtn.innerHTML = originalText;

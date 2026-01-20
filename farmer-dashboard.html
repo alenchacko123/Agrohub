@@ -110,9 +110,10 @@
                         <span class="material-icons-outlined">search</span>
                         <input type="text" placeholder="Search equipment, workers...">
                     </div>
-                    <button class="icon-btn tooltip" data-tooltip="Notifications">
+                    <button id="farmerNotificationsBtn" class="icon-btn tooltip" data-tooltip="Notifications"
+                        onclick="toggleFarmerNotifications()">
                         <span class="material-icons-outlined">notifications</span>
-                        <span class="notification-dot"></span>
+                        <span class="notification-badge" id="farmerNotificationCount" style="display: none;">0</span>
                     </button>
                     <button class="icon-btn tooltip" data-tooltip="Messages">
                         <span class="material-icons-outlined">chat</span>
@@ -203,25 +204,99 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Group 2: Workers Hub -->
-                            <div class="service-hub">
-                                <div class="service-hub-image-container"
-                                    style="height: 280px; overflow: hidden; position: relative;">
-                                    <img src="images/dashboard-labor.png" class="service-hub-image"
-                                        style="width: 100%; height: 100%; object-fit: cover;">
-                                </div>
-                                <div style="padding: 1.25rem;">
-                                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Farm Labor
-                                        Hub</h3>
-                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                                        Post jobs and hire skilled agricultural workers.</p>
-                                    <div style="display: flex; gap: 0.75rem;">
-                                        <button class="quick-action-btn primary"
-                                            onclick="window.location.href='post-job.html'"
-                                            style="flex: 1; font-size: 0.8rem; padding: 0.6rem;">Post Job</button>
-                                        <button class="quick-action-btn secondary"
-                                            onclick="window.location.href='job-portal-dashboard.html'"
-                                            style="flex: 1; font-size: 0.8rem; padding: 0.6rem;">Job Portal</button>
+                            <!-- Group 2: Farm Labor Center -->
+                            <div class="service-hub" style="grid-column: span 2;">
+                                <div style="padding: 1.5rem;">
+                                    <h3
+                                        style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                        <span class="material-icons-outlined"
+                                            style="color: var(--primary-green);">groups</span>
+                                        Farm Labor Center
+                                    </h3>
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                                        <!-- Post Job Card -->
+                                        <div
+                                            style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); border-radius: 16px; padding: 2rem; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+                                            <!-- Decorative Pattern -->
+                                            <div
+                                                style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(40px);">
+                                            </div>
+                                            <div
+                                                style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.08); border-radius: 50%; filter: blur(30px);">
+                                            </div>
+
+                                            <!-- Icon -->
+                                            <div style="position: absolute; top: 20px; right: 20px; opacity: 0.15;">
+                                                <svg width="120" height="120" viewBox="0 0 24 24" fill="none"
+                                                    stroke="white" stroke-width="1.5">
+                                                    <path
+                                                        d="M20 7h-4V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2H4a1 1 0 00-1 1v11a2 2 0 002 2h14a2 2 0 002-2V8a1 1 0 00-1-1zM10 5h4v2h-4V5z" />
+                                                    <path d="M12 12v4M10 14h4" />
+                                                </svg>
+                                            </div>
+
+                                            <div style="position: relative; z-index: 1;">
+                                                <div
+                                                    style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; backdrop-filter: blur(10px);">
+                                                    <span style="font-size: 28px;">📋</span>
+                                                </div>
+                                                <h4
+                                                    style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: white;">
+                                                    Post Job
+                                                </h4>
+                                                <p
+                                                    style="font-size: 0.85rem; color: rgba(255,255,255,0.9); margin-bottom: 1.5rem; line-height: 1.5;">
+                                                    Post job requirements and hire workers for your farm
+                                                </p>
+                                                <button class="quick-action-btn"
+                                                    onclick="window.location.href='post-job.html'"
+                                                    style="width: 100%; background: white; color: #16a34a; font-weight: 600; padding: 0.75rem; border-radius: 12px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                                                    Post a Job
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- My Posted Jobs Card -->
+                                        <div
+                                            style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 16px; padding: 2rem; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+                                            <!-- Decorative Pattern -->
+                                            <div
+                                                style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(40px);">
+                                            </div>
+                                            <div
+                                                style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.08); border-radius: 50%; filter: blur(30px);">
+                                            </div>
+
+                                            <!-- Icon -->
+                                            <div style="position: absolute; top: 20px; right: 20px; opacity: 0.15;">
+                                                <svg width="120" height="120" viewBox="0 0 24 24" fill="none"
+                                                    stroke="white" stroke-width="1.5">
+                                                    <path
+                                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                                    <path d="M9 13l2 2 4-4" />
+                                                </svg>
+                                            </div>
+
+                                            <div style="position: relative; z-index: 1;">
+                                                <div
+                                                    style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; backdrop-filter: blur(10px);">
+                                                    <span style="font-size: 28px;">📊</span>
+                                                </div>
+                                                <h4
+                                                    style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: white;">
+                                                    My Posted Jobs
+                                                </h4>
+                                                <p
+                                                    style="font-size: 0.85rem; color: rgba(255,255,255,0.9); margin-bottom: 1.5rem; line-height: 1.5;">
+                                                    Track your job listings and view worker applications
+                                                </p>
+                                                <button class="quick-action-btn"
+                                                    onclick="window.location.href='my-posted-jobs.html'"
+                                                    style="width: 100%; background: white; color: #10b981; font-weight: 600; padding: 0.75rem; border-radius: 12px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                                                    View My Jobs
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -887,6 +962,182 @@
                     window.location.href = 'hire-workers.html';
                 }
             });
+        });
+    </script>
+
+    <!-- Farmer Notifications Panel -->
+    <div id="farmerNotificationsPanel">
+        <div class="farmer-notification-header">
+            <h3>
+                <span class="material-icons-outlined">notifications_active</span>
+                My Rental Requests
+            </h3>
+            <button class="farmer-close-panel" onclick="toggleFarmerNotifications()">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+        <div class="farmer-notification-list" id="farmerNotificationList">
+            <!-- Notifications will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Toggle Farmer Notifications Panel
+        function toggleFarmerNotifications() {
+            const panel = document.getElementById('farmerNotificationsPanel');
+            panel.classList.toggle('active');
+
+            if (panel.classList.contains('active')) {
+                loadFarmerNotifications();
+            }
+        }
+
+        // Load Farmer's Rental Notifications
+        async function loadFarmerNotifications() {
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            const notificationList = document.getElementById('farmerNotificationList');
+
+            if (!userData.id) {
+                notificationList.innerHTML = `
+                    <div class="farmer-empty-notifications">
+                        <span class="material-icons-outlined">login</span>
+                        <p>Please log in to view notifications</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                notificationList.innerHTML = '<p style="padding: 1.5rem; text-align: center; color: var(--text-secondary);">Loading...</p>';
+
+                const response = await fetch(`php/get_rental_requests.php?user_type=farmer&user_id=${userData.id}`);
+                const data = await response.json();
+
+                if (data.success && data.requests && data.requests.length > 0) {
+                    // Update badge count for non-pending statuses
+                    const newUpdates = data.requests.filter(r => r.status === 'accepted' || r.status === 'declined').length;
+                    const badge = document.getElementById('farmerNotificationCount');
+                    if (newUpdates > 0) {
+                        badge.textContent = newUpdates;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+
+                    notificationList.innerHTML = data.requests.map(request => {
+                        const statusIcon = request.status === 'accepted' ? '✓' :
+                            request.status === 'declined' ? '✗' : '⏳';
+                        const statusText = request.status.charAt(0).toUpperCase() + request.status.slice(1);
+
+                        return `
+                            <div class="farmer-notification-item ${request.status}">
+                                <div class="farmer-notification-status ${request.status}">
+                                    ${statusIcon} ${statusText}
+                                </div>
+                                <div class="farmer-notification-title">
+                                    ${request.equipment_name}
+                                </div>
+                                <div class="farmer-notification-details">
+                                    <div><strong>Duration:</strong> ${request.start_date} to ${request.end_date}</div>
+                                    <div><strong>Days:</strong> ${request.num_days} days</div>
+                                    <div><strong>Total Cost:</strong> ₹${parseFloat(request.total_amount).toLocaleString()}</div>
+                                    <div><strong>Location:</strong> ${request.delivery_address}</div>
+                                    ${request.need_operator ? '<div>✓ With Operator</div>' : ''}
+                                    ${request.need_insurance ? '<div>✓ With Insurance</div>' : ''}
+                                </div>
+                                <div class="farmer-notification-time">
+                                    <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                                    Requested: ${new Date(request.created_at).toLocaleDateString()} at ${new Date(request.created_at).toLocaleTimeString()}
+                                </div>
+                                ${request.status === 'accepted' ? `
+                                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(16,185,129,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--success);">
+                                        <strong>✓ Request Approved!</strong><br>
+                                        The owner has accepted your rental request. You will be contacted shortly.
+                                    </div>
+                                ` : ''}
+                                ${request.status === 'declined' ? `
+                                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(239,68,68,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--danger);">
+                                        <strong>✗ Request Declined</strong><br>
+                                        Unfortunately, this rental request was not approved.
+                                    </div>
+                                ` : ''}
+                                ${request.status === ' pending' ? `
+                                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(245,158,11,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--warning);">
+                                        <strong>⏳ Awaiting Response</strong><br>
+                                        The owner is reviewing your request. You'll be notified once they respond.
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    // No requests
+                    const badge = document.getElementById('farmerNotificationCount');
+                    badge.style.display = 'none';
+
+                    notificationList.innerHTML = `
+                        <div class="farmer-empty-notifications">
+                            <span class="material-icons-outlined">receipt_long</span>
+                            <p>No rental requests yet</p>
+                            <p>Your rental requests and their status will appear here</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading farmer notifications:', error);
+                notificationList.innerHTML = `
+                    <div class="farmer-empty-notifications">
+                        <span class="material-icons-outlined">error</span>
+                        <p>Failed to load notifications</p>
+                        <p>Please try again later</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load notifications on page load and check periodically
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check for updates every 2 minutes
+            setInterval(async () => {
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                if (userData.id) {
+                    try {
+                        const response = await fetch(`php/get_rental_requests.php?user_type=farmer&user_id=${userData.id}`);
+                        const data = await response.json();
+
+                        if (data.success && data.requests) {
+                            const newUpdates = data.requests.filter(r => r.status === 'accepted' || r.status === 'declined').length;
+                            const badge = document.getElementById('farmerNotificationCount');
+                            if (newUpdates > 0) {
+                                badge.textContent = newUpdates;
+                                badge.style.display = 'flex';
+                            } else {
+                                badge.style.display = 'none';
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error checking farmer notifications:', error);
+                    }
+                }
+            }, 120000); // Check every 2 minutes
+
+            // Initial load
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            if (userData.id) {
+                fetch(`php/get_rental_requests.php?user_type=farmer&user_id=${userData.id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success && data.requests) {
+                            const newUpdates = data.requests.filter(r => r.status === 'accepted' || r.status === 'declined').length;
+                            const badge = document.getElementById('farmerNotificationCount');
+                            if (newUpdates > 0) {
+                                badge.textContent = newUpdates;
+                                badge.style.display = 'flex';
+                            }
+                        }
+                    })
+                    .catch(err => console.error('Error loading initial farmer notifications:', err));
+            }
         });
     </script>
 </body>

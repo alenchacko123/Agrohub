@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Job Applications - AgroHub</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #16a34a;
+            --dark-green: #15803d;
+            --light-green: #dcfce7;
+            --text-dark: #1a1a2e;
+            --text-gray: #4a5568;
+            --white: #ffffff;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: #f0fdf4;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--primary-green);
+            font-weight: 500;
+        }
+
+        .application-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .applicant-info h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        .applicant-meta {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-accept {
+            background: var(--light-green);
+            color: var(--dark-green);
+        }
+
+        .btn-accept:hover {
+            background: #bbf7d0;
+        }
+
+        .btn-reject {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-reject:hover {
+            background: #fecaca;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .status-accepted {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-gray);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="my-posted-jobs.html" class="back-btn">
+                <span class="material-icons-outlined">arrow_back</span>
+                Back
+            </a>
+            <h1>Application Management</h1>
+        </div>
+
+        <div id="applications-list">
+            <div style="text-align: center; padding: 2rem;">Loading applications...</div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get('job_id');
+
+        async function loadApplications() {
+            try {
+                const response = await fetch(`php/get_job_applications.php?job_id=${jobId}`);
+                const result = await response.json();
+
+                const container = document.getElementById('applications-list');
+
+                if (!result.success || result.applications.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <span class="material-icons-outlined" style="font-size: 3rem;">inbox</span>
+                            <p>No applications received yet for this job.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = result.applications.map(app => `
+                    <div class="application-card">
+                        <div class="applicant-info">
+                            <h3>${app.worker_name || 'Anonymous Worker'}</h3>
+                            <div class="applicant-meta">
+                                <span><span class="material-icons-outlined" style="font-size: 1rem; vertical-align: text-bottom;">email</span> ${app.worker_email}</span>
+                                <span><span class="material-icons-outlined" style="font-size: 1rem; vertical-align: text-bottom;">schedule</span> Applied: ${app.applied_date}</span>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            ${app.status === 'pending' ? `
+                                <button class="btn btn-accept" onclick="updateStatus(${app.id}, 'accepted')">
+                                    <span class="material-icons-outlined">check</span> Accept
+                                </button>
+                                <button class="btn btn-reject" onclick="updateStatus(${app.id}, 'rejected')">
+                                    <span class="material-icons-outlined">close</span> Reject
+                                </button>
+                            ` : `<span class="status-badge status-${app.status}">${app.status.toUpperCase()}</span>`}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function updateStatus(appId, status) {
+            if (!confirm(`Are you sure you want to ${status} this application?`)) return;
+
+            try {
+                const response = await fetch('php/update_application_status.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ application_id: appId, status: status })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    loadApplications(); // Reload list
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Failed to update status');
+            }
+        }
+
+        if (jobId) {
+            loadApplications();
+        } else {
+            document.body.innerHTML = '<p style="padding: 2rem; color: red;">Error: No Job ID provided</p>';
+        }
+    </script>
+</body>
+
+</html>

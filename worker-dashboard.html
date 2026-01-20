@@ -557,7 +557,7 @@
         <div class="section">
             <div class="section-header">
                 <h2 class="section-title">🌾 Available Jobs</h2>
-                <a href="job-listings.html" class="view-all-btn">
+                <a href="available-jobs.html" class="view-all-btn">
                     View All
                     <span class="material-icons-outlined">arrow_forward</span>
                 </a>
@@ -571,7 +571,7 @@
         <div class="section">
             <div class="section-header">
                 <h2 class="section-title">📋 Active Contracts</h2>
-                <a href="my-contracts.html" class="view-all-btn">
+                <a href="my-jobs.html" class="view-all-btn">
                     View All
                     <span class="material-icons-outlined">arrow_forward</span>
                 </a>
@@ -587,7 +587,7 @@
         <div class="section">
             <div class="section-header">
                 <h2 class="section-title">📝 Recent Applications</h2>
-                <a href="my-applications.html" class="view-all-btn">
+                <a href="my-jobs.html" class="view-all-btn">
                     View All
                     <span class="material-icons-outlined">arrow_forward</span>
                 </a>
@@ -601,16 +601,19 @@
     <script>
         // Check authentication
         function checkAuth() {
-            const token = localStorage.getItem('userToken');
+            // Check for various login tokens
             const userData = localStorage.getItem('userData');
-            const userType = localStorage.getItem('userType');
+            if (userData) return JSON.parse(userData);
 
-            if (!token || !userData || userType !== 'worker') {
-                window.location.href = 'login-worker.html';
-                return null;
-            }
+            const userSimple = localStorage.getItem('user');
+            if (userSimple) return JSON.parse(userSimple);
 
-            return JSON.parse(userData);
+            const agrohubUser = localStorage.getItem('agrohub_user');
+            if (agrohubUser) return JSON.parse(agrohubUser);
+
+            // If no user found, redirect
+            window.location.href = 'login-worker.html';
+            return null;
         }
 
         // Load user info
@@ -618,10 +621,10 @@
             const user = checkAuth();
             if (!user) return;
 
-            document.getElementById('userName').textContent = user.name || 'Worker';
+            const name = user.name || user.fullName || user.displayName || 'Worker';
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
-            // Set user initials
-            const initials = (user.name || 'W').split(' ').map(n => n[0]).join('').toUpperCase();
+            document.getElementById('userName').textContent = name;
             document.getElementById('userInitials').textContent = initials;
         }
 

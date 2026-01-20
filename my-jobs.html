@@ -381,14 +381,6 @@
         </div>
 
         <div class="menu-section">
-            <div class="menu-title">Main Menu</div>
-            <a href="job-portal-dashboard.html" class="menu-item">
-                <span class="material-icons-outlined">dashboard</span>
-                <span>Overview</span>
-            </a>
-        </div>
-
-        <div class="menu-section">
             <div class="menu-title">Work</div>
             <a href="available-jobs.html" class="menu-item">
                 <span class="material-icons-outlined">work</span>
@@ -426,229 +418,290 @@
 
         <!-- Active Jobs -->
         <div class="tab-content active" id="active-tab">
-            <div class="jobs-grid">
-                <!-- Active Job 1 -->
-                <div class="job-card">
-                    <div class="job-header">
-                        <div>
-                            <h3>🌾 Wheat Field Maintenance</h3>
-                        </div>
-                        <span class="job-badge badge-in-progress">In Progress</span>
-                    </div>
-                    <div class="job-meta">
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">location_on</span>
-                            <span>Mandya, Karnataka</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">event</span>
-                            <span>4 days (Jan 10-13)</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">payments</span>
-                            <span>₹850/day</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">person</span>
-                            <span>Farmer: Venkat Reddy</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-label">
-                            <span>Progress</span>
-                            <span>Day 2 of 4</span>
-                        </div>
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: 50%"></div>
-                        </div>
-                    </div>
-                    <p class="job-description">
-                        Ongoing wheat field maintenance including weeding, irrigation management, and pest control
-                        monitoring.
-                    </p>
-                    <div class="job-actions">
-                        <button class="btn btn-success" onclick="markComplete(1)">
-                            <span class="material-icons-outlined">check_circle</span>
-                            Mark Complete
-                        </button>
-                        <button class="btn btn-secondary" onclick="contactFarmer(1)">
-                            <span class="material-icons-outlined">chat</span>
-                            Contact Farmer
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Active Job 2 -->
-                <div class="job-card">
-                    <div class="job-header">
-                        <div>
-                            <h3>💧 Drip Irrigation Setup</h3>
-                        </div>
-                        <span class="job-badge badge-accepted">Accepted - Starting Tomorrow</span>
-                    </div>
-                    <div class="job-meta">
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">location_on</span>
-                            <span>Shimoga, Karnataka</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">event</span>
-                            <span>3 days (Jan 15-17)</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">payments</span>
-                            <span>₹1,000/day</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">person</span>
-                            <span>Farmer: Kiran Kumar</span>
-                        </div>
-                    </div>
-                    <p class="job-description">
-                        Install and test drip irrigation system for tomato farming. Will provide training on system
-                        operation.
-                    </p>
-                    <div class="job-actions">
-                        <button class="btn btn-secondary" onclick="viewJobLocation(2)">
-                            <span class="material-icons-outlined">map</span>
-                            View Location
-                        </button>
-                        <button class="btn btn-secondary" onclick="contactFarmer(2)">
-                            <span class="material-icons-outlined">chat</span>
-                            Contact Farmer
-                        </button>
-                    </div>
+            <div class="jobs-grid" id="active-jobs-grid">
+                <div class="loading-state" style="text-align: center; padding: 2rem;">
+                    <span class="material-icons-outlined" style="animation: spin 1s linear infinite;">refresh</span>
+                    <p>Loading active jobs...</p>
                 </div>
             </div>
         </div>
 
         <!-- Completed Jobs -->
         <div class="tab-content" id="completed-tab">
-            <div class="jobs-grid">
-                <div class="job-card">
-                    <div class="job-header">
-                        <div>
-                            <h3>🌾 Rice Harvesting</h3>
-                        </div>
-                        <span class="job-badge badge-completed">Completed</span>
-                    </div>
-                    <div class="job-meta">
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">location_on</span>
-                            <span>Mysore, Karnataka</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">event</span>
-                            <span>Completed on Jan 8, 2026</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">payments</span>
-                            <span>Earned: ₹3,200</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">star</span>
-                            <span>Rating: 4.8/5</span>
-                        </div>
-                    </div>
-                    <p class="job-description">
-                        Successfully completed 4-day rice harvesting job. Excellent feedback received from farmer.
-                    </p>
+            <div class="jobs-grid" id="completed-jobs-grid">
+                <div class="loading-state" style="text-align: center; padding: 2rem;">
+                    <p>Loading completed jobs...</p>
                 </div>
             </div>
         </div>
 
         <!-- Job Requests -->
         <div class="tab-content" id="requested-tab">
-            <div class="jobs-grid">
-                <div class="job-card">
-                    <div class="job-header">
-                        <div>
-                            <h3>🚜 Combine Harvester Operation</h3>
-                        </div>
-                        <span class="job-badge badge-requested">New Request</span>
-                    </div>
-                    <div class="job-meta">
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">location_on</span>
-                            <span>Hassan, Karnataka</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">event</span>
-                            <span>6 days (Jan 20-25)</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">payments</span>
-                            <span>₹1,500/day</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="material-icons-outlined">person</span>
-                            <span>Farmer: Prakash Shetty</span>
-                        </div>
-                    </div>
-                    <p class="job-description">
-                        Operate combine harvester for paddy harvesting across 50 acres. Accommodation and meals
-                        provided.
-                    </p>
-                    <div class="job-actions">
-                        <button class="btn btn-primary" onclick="acceptJob(1)">
-                            <span class="material-icons-outlined">check</span>
-                            Accept Job
-                        </button>
-                        <button class="btn btn-danger" onclick="rejectJob(1)">
-                            <span class="material-icons-outlined">close</span>
-                            Decline
-                        </button>
-                    </div>
+            <div class="jobs-grid" id="requested-jobs-grid">
+                <div class="loading-state" style="text-align: center; padding: 2rem;">
+                    <p>Loading job requests...</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        let currentWorkerId = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserInfo();
+            if (currentWorkerId) {
+                loadMyJobs(currentWorkerId);
+            } else {
+                showLoginError();
+            }
+        });
+
         function showTab(tabName) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
-
-            // Show selected tab
             document.getElementById(`${tabName}-tab`).classList.add('active');
-            event.target.classList.add('active');
+
+            const buttons = document.querySelectorAll('.tab');
+            if (tabName === 'active') buttons[0].classList.add('active');
+            if (tabName === 'completed') buttons[1].classList.add('active');
+            if (tabName === 'requested') buttons[2].classList.add('active');
         }
 
-        function markComplete(jobId) {
-            if (confirm('Mark this job as complete?')) {
-                alert('✅ Job marked as complete! Payment will be processed within 24 hours.');
+        function loadUserInfo() {
+            let user = null;
+            let loadedFrom = '';
+
+            // Priority 1: Worker Login (userData)
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                try {
+                    user = JSON.parse(userData);
+                    loadedFrom = 'userData';
+                } catch (e) { console.error('Error parsing userData', e); }
             }
+
+            // Priority 2: Generic User (user) - Google Login often uses this
+            if (!user) {
+                const userSimple = localStorage.getItem('user');
+                if (userSimple) {
+                    try {
+                        user = JSON.parse(userSimple);
+                        loadedFrom = 'user';
+                    } catch (e) { console.error('Error parsing user', e); }
+                }
+            }
+
+            // Priority 3: Agrohub User
+            if (!user) {
+                const agrohubUser = localStorage.getItem('agrohub_user');
+                if (agrohubUser) {
+                    try {
+                        user = JSON.parse(agrohubUser);
+                        loadedFrom = 'agrohub_user';
+                    } catch (e) { console.error('Error parsing agrohub_user', e); }
+                }
+            }
+
+            // Priority 4: Applicant Data (Likely no ID)
+            if (!user) {
+                const applicantData = localStorage.getItem('applicantData');
+                if (applicantData) {
+                    try {
+                        const appData = JSON.parse(applicantData);
+                        user = {
+                            name: appData.fullName,
+                            email: appData.email,
+                            id: appData.id || 0
+                        };
+                        loadedFrom = 'applicantData';
+                    } catch (e) { console.error('Error parsing applicantData', e); }
+                }
+            }
+
+            if (user) {
+                // Ensure name is displayed correctly
+                const name = user.name || user.fullName || user.displayName || 'Worker';
+                const initial = name.charAt(0).toUpperCase();
+
+                document.getElementById('userName').textContent = name;
+                document.getElementById('avatarInitial').textContent = initial;
+
+                // Robust ID detection
+                currentWorkerId = user.id || user.user_id || user.userId || 0;
+
+                console.log(`Loaded user from ${loadedFrom}:`, user);
+                console.log('Resolved Worker ID:', currentWorkerId);
+            }
+        }
+
+        function showLoginError() {
+            const debugInfo = `
+                <div style="margin-top: 1rem; font-size: 0.8rem; color: #999;">
+                    Debug: User found but ID is missing/invalid.<br>
+                    Please try logging out and logging in again.
+                </div>
+            `;
+
+            const errorHtml = `
+                <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                    <span class="material-icons-outlined" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;">error_outline</span>
+                    <h3>Authentication Error</h3>
+                    <p>We couldn't verify your user ID. You appear to be logged in as "${document.getElementById('userName').textContent}", but your ID is missing.</p>
+                    <button class="btn btn-primary" onclick="window.location.href='login-worker.html'" style="margin: 1rem auto;">Login Again</button>
+                    ${debugInfo}
+                </div>
+            `;
+            document.getElementById('active-jobs-grid').innerHTML = errorHtml;
+            document.getElementById('completed-jobs-grid').innerHTML = errorHtml;
+            document.getElementById('requested-jobs-grid').innerHTML = errorHtml;
+        }
+
+        async function loadMyJobs(workerId) {
+            try {
+                const response = await fetch(`php/get_worker_applications.php?worker_id=${workerId}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    processJobs(result.jobs);
+                } else {
+                    console.error('Failed to load jobs:', result.message);
+                    showEmptyStates();
+                }
+            } catch (error) {
+                console.error('Error fetching jobs:', error);
+                showEmptyStates();
+            }
+        }
+
+        function processJobs(jobs) {
+            const activeJobs = jobs.filter(job => job.application_status === 'accepted' || job.application_status === 'in_progress');
+            const completedJobs = jobs.filter(job => job.application_status === 'completed');
+            const requestedJobs = jobs.filter(job => job.application_status === 'pending');
+
+            updateTabCounts(activeJobs.length, completedJobs.length, requestedJobs.length);
+
+            renderJobsList(activeJobs, 'active-jobs-grid', 'active');
+            renderJobsList(completedJobs, 'completed-jobs-grid', 'completed');
+            renderJobsList(requestedJobs, 'requested-jobs-grid', 'requested');
+        }
+
+        function updateTabCounts(active, completed, requested) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs[0].textContent = `Active Jobs (${active})`;
+            tabs[1].textContent = `Completed (${completed})`;
+            tabs[2].textContent = `Job Requests (${requested})`;
+        }
+
+        function renderJobsList(jobs, containerId, type) {
+            const container = document.getElementById(containerId);
+
+            if (jobs.length === 0) {
+                let message = `No ${type} jobs found`;
+                if (type === 'active') message = "You don't have any active jobs yet.";
+                if (type === 'requested') message = "You haven't applied for any jobs yet.";
+
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #6b7280;">
+                        <span class="material-icons-outlined" style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;">assignment_late</span>
+                        <h3>${message}</h3>
+                        <p>Browse <a href="available-jobs.html" style="color: #10b981;">Available Jobs</a> to find work.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = jobs.map(job => createJobCard(job, type)).join('');
+        }
+
+        function createJobCard(job, type) {
+            let badgeClass = '';
+            let badgeText = '';
+            let actions = '';
+
+            if (type === 'active') {
+                badgeClass = 'badge-accepted';
+                badgeText = 'Accepted';
+                actions = `
+                    <button class="btn btn-secondary" onclick="contactFarmer(${job.farmer_id})">
+                        <span class="material-icons-outlined">chat</span>
+                        Contact Farmer
+                    </button>
+                `;
+            } else if (type === 'completed') {
+                badgeClass = 'badge-completed';
+                badgeText = 'Completed';
+                actions = `
+                    <button class="btn btn-secondary" disabled>
+                        <span class="material-icons-outlined">check</span>
+                        Completed
+                    </button>
+                `;
+            } else if (type === 'requested') {
+                badgeClass = 'badge-requested';
+                badgeText = 'Pending Approval';
+                actions = `
+                    <button class="btn btn-secondary" disabled style="opacity: 0.7; cursor: default;">
+                        <span class="material-icons-outlined">hourglass_empty</span>
+                        Waiting for Farmer
+                    </button>
+                `;
+            }
+
+            return `
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3>${job.job_title}</h3>
+                        </div>
+                        <span class="job-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                    <div class="job-meta">
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">location_on</span>
+                            <span>${job.location}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">event</span>
+                            <span>${job.date_range} (${job.duration_days} days)</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">payments</span>
+                            <span>₹${job.wage_per_day}/day</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons-outlined">person</span>
+                            <span>Farmer: ${job.farmer_name || 'AgroHub User'}</span>
+                        </div>
+                    </div>
+                    <p class="job-description">
+                        Applied on: ${job.applied_date_formatted}
+                    </p>
+                    <div class="job-actions">
+                        ${actions}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showEmptyStates() {
+            updateTabCounts(0, 0, 0);
+            renderJobsList([], 'active-jobs-grid', 'active');
+            renderJobsList([], 'completed-jobs-grid', 'completed');
+            renderJobsList([], 'requested-jobs-grid', 'requested');
         }
 
         function contactFarmer(farmerId) {
-            alert('📱 Opening chat with farmer...\nThis feature is coming soon!');
-        }
-
-        function viewJobLocation(jobId) {
-            alert('📍 Opening map location...\nThis feature is coming soon!');
-        }
-
-        function acceptJob(jobId) {
-            alert('✅ Job request accepted!\nThe farmer has been notified. Check your schedule for details.');
-        }
-
-        function rejectJob(jobId) {
-            if (confirm('Are you sure you want to decline this job request?')) {
-                alert('❌ Job request declined.');
-            }
+            alert('📱 Feature coming soon: Chat with farmer ID ' + farmerId);
         }
 
         function logout() {
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('userData');
             localStorage.removeItem('applicantData');
+            localStorage.removeItem('user');
+            localStorage.removeItem('agrohub_user');
             window.location.href = 'landingpage.html';
-        }
-
-        // Load user data
-        const applicantData = JSON.parse(localStorage.getItem('applicantData'));
-        if (applicantData) {
-            document.getElementById('userName').textContent = applicantData.fullName;
-            document.getElementById('avatarInitial').textContent = applicantData.fullName.charAt(0);
         }
     </script>
 </body>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroHub - System Test Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            margin: 5px;
+            transition: transform 0.3s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .success {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .info {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎉 AgroHub System Test</h1>
+
+        <div class="card">
+            <h2>✅ System Status</h2>
+            <div class="info">
+                <strong>All fixes have been applied!</strong>
+                <ul>
+                    <li>✅ Rental form now uses <code>bookings</code> table</li>
+                    <li>✅ Owner dashboard URL fixed (removed spaces)</li>
+                    <li>✅ TEST_MODE enabled for easy testing</li>
+                    <li>✅ Sample data removed from owner dashboard</li>
+                    <li>✅ Sidebar badges show dynamic counts</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🧪 Test the System</h2>
+            <p><strong>Farmer Side (Rent Equipment):</strong></p>
+            <a href="rent-equipment.html" class="button">Open Rental Page</a>
+            <p style="margin-top: 10px; color: #666;">
+                TEST_MODE is ON - automatically uses Test Farmer account
+            </p>
+
+            <hr style="margin: 30px 0;">
+
+            <p><strong>Owner Side (Manage Bookings):</strong></p>
+            <a href="owner-dashboard.html" class="button">Open Owner Dashboard</a>
+            <p style="margin-top: 10px; color: #666;">
+                TEST_MODE is ON - automatically uses Test Owner account (ID 5)
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>📋 How to Test</h2>
+            <ol style="line-height: 2;">
+                <li><strong>Rent Equipment:</strong>
+                    <ul>
+                        <li>Click "Open Rental Page"</li>
+                        <li>Click "Rent Now" on any equipment</li>
+                        <li>Fill in dates and address</li>
+                        <li>Click "Confirm Rental"</li>
+                        <li><span class="success">Should see success message!</span></li>
+                    </ul>
+                </li>
+                <li><strong>View Booking in Owner Dashboard:</strong>
+                    <ul>
+                        <li>Click "Open Owner Dashboard"</li>
+                        <li>Click "Booking Requests" in sidebar</li>
+                        <li><span class="success">Should see your rental request!</span></li>
+                        <li>Click "Approve" or "Reject" to manage it</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="card">
+            <h2>🔑 Test Accounts</h2>
+            <div class="info">
+                <strong>Farmer Account:</strong>
+                <ul>
+                    <li>ID: 8</li>
+                    <li>Name: Test Farmer</li>
+                    <li>Email: testfarmer@agrohub.com</li>
+                    <li>Password: password123</li>
+                </ul>
+            </div>
+            <div class="info">
+                <strong>Owner Account:</strong>
+                <ul>
+                    <li>ID: 5</li>
+                    <li>Name: Test Owner</li>
+                    <li>Has equipment ID: 8</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🛠️ Other Testing Tools</h2>
+            <a href="api-test.html" class="button">API Test Page</a>
+            <p style="margin-top: 10px; color: #666;">
+                Test all backend API endpoints
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

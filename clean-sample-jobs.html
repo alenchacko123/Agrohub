@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Sample Jobs - AgroHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #856404;
+        }
+
+        .job-list {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .job-list h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .job-item {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0.5rem;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="icon">🗑️</div>
+        <h1>Remove Sample Job Postings</h1>
+        <p>
+            This will remove all test and sample job postings from the Job Portal dashboard.
+        </p>
+
+        <div class="warning">
+            ⚠️ <strong>Warning:</strong> This will remove ONLY sample/test job postings. Your real farmer jobs will be
+            SAFE!
+        </div>
+
+        <div class="job-list">
+            <h3>What Will Be Deleted:</h3>
+            <div class="job-item">✓ Jobs posted by "Test Farmer"</div>
+            <div class="job-item">✓ Jobs with "Test Job" in the title</div>
+            <div class="job-item">✓ Jobs titled "Sample Job", "Demo Job", or "Example Job"</div>
+        </div>
+
+        <div
+            style="background: #d1fae5; border: 2px solid #10b981; border-radius: 12px; padding: 1rem; margin-bottom: 2rem; color: #065f46;">
+            ✅ <strong>Your Real Jobs Are Safe!</strong><br>
+            <small>Only jobs with "Test Farmer" or "Test Job" keywords will be removed. All other jobs posted by real
+                farmers will remain intact.</small>
+        </div>
+
+        <p style="font-size: 0.9rem; color: #666;">
+            <strong>Note:</strong> The script will first show you a PREVIEW of all jobs, highlighting which ones will be
+            deleted (in RED) and which will be kept (in GREEN).
+        </p>
+
+        <div class="actions">
+            <a href="php/remove_sample_jobs.php" class="btn btn-danger">
+                🔍 Preview & Delete Sample Jobs
+            </a>
+            <a href="job-portal-dashboard.html" class="btn btn-secondary">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+            <h3 style="color: #333; margin-bottom: 1rem;">Alternative Methods:</h3>
+
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; text-align: left; margin-bottom: 1rem;">
+                <strong>Method 1: Run SQL Manually</strong>
+                <p style="font-size: 0.9rem; margin: 0.5rem 0;">
+                    Open phpMyAdmin and run: <code>sql/remove_sample_jobs.sql</code>
+                </p>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; text-align: left;">
+                <strong>Method 2: Use MySQL Terminal</strong>
+                <p style="font-size: 0.9rem; margin: 0.5rem 0;">
+                    Run in terminal:
+                </p>
+                <code
+                    style="background: #1a1a2e; color: #0f0; padding: 0.5rem; border-radius: 4px; display: block; font-size: 0.85rem;">
+                    mysql -u root agrohub &lt; sql/remove_sample_jobs.sql
+                </code>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

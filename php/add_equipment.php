@@ -28,7 +28,7 @@ try {
     }
 
     // Validate required fields
-    $required_fields = ['equipment_name', 'category', 'price_per_day', 'condition', 'availability', 'description'];
+    $required_fields = ['equipment_name', 'category', 'price_per_day', 'condition', 'availability', 'description', 'location'];
     foreach ($required_fields as $field) {
         if (empty($data[$field])) {
             throw new Exception("Missing required field: $field");
@@ -112,9 +112,10 @@ try {
         equipment_condition,
         availability_status,
         description,
+        location,
         image_url,
         created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt = $conn->prepare($sql);
 
@@ -123,7 +124,7 @@ try {
     }
 
     $stmt->bind_param(
-        "isssdssss",
+        "isssdsssss",
         $owner_id,
         $owner_name,
         $data['equipment_name'],
@@ -132,6 +133,7 @@ try {
         $data['condition'],
         $data['availability'],
         $data['description'],
+        $data['location'],
         $image_url
     );
 

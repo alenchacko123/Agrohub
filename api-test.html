@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>API Test - AgroHub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background: #0077b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #005f8a;
+        }
+
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #0077b6;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .error {
+            border-left-color: #ef4444;
+            background: #fee;
+        }
+
+        .success {
+            border-left-color: #22c55e;
+            background: #efe;
+        }
+
+        h2 {
+            color: #0077b6;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 AgroHub API Test Page</h1>
+    <p>This page tests all the API endpoints to ensure they're working correctly.</p>
+
+    <div class="test-section">
+        <h2>1. Test Equipment API</h2>
+        <button onclick="testEquipmentAPI()">Test Get Equipment</button>
+        <div id="equipmentResult" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test Bookings API</h2>
+        <button onclick="testBookingsAPI()">Test Get Bookings</button>
+        <button onclick="testBookingsAPIPending()">Test Pending Bookings</button>
+        <div id="bookingsResult" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test Earnings API</h2>
+        <button onclick="testEarningsAPI()">Test Get Earnings</button>
+        <div id="earningsResult" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Test Database Connection</h2>
+        <button onclick="testDatabaseConnection()">Test Connection</button>
+        <div id="dbResult" class="result" style="display:none;"></div>
+    </div>
+
+    <script>
+        // Helper function to display results
+        function displayResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'result ' + (isError ? 'error' : 'success');
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+
+        // Test Equipment API
+        async function testEquipmentAPI() {
+            const resultDiv = document.getElementById('equipmentResult');
+            resultDiv.textContent = 'Loading...';
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+
+            try {
+                const response = await fetch('php/get_equipment.php?owner_id=1');
+                const data = await response.json();
+                displayResult('equipmentResult', data, !data.success);
+            } catch (error) {
+                displayResult('equipmentResult', { error: error.message }, true);
+            }
+        }
+
+        // Test Bookings API
+        async function testBookingsAPI() {
+            const resultDiv = document.getElementById('bookingsResult');
+            resultDiv.textContent = 'Loading...';
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+
+            try {
+                const response = await fetch('php/get_bookings.php?owner_id=1');
+                const data = await response.json();
+                displayResult('bookingsResult', data, !data.success);
+            } catch (error) {
+                displayResult('bookingsResult', { error: error.message }, true);
+            }
+        }
+
+        // Test Bookings API - Pending Only
+        async function testBookingsAPIPending() {
+            const resultDiv = document.getElementById('bookingsResult');
+            resultDiv.textContent = 'Loading pending bookings...';
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+
+            try {
+                const response = await fetch('php/get_bookings.php?owner_id=1&status=pending');
+                const data = await response.json();
+                displayResult('bookingsResult', data, !data.success);
+            } catch (error) {
+                displayResult('bookingsResult', { error: error.message }, true);
+            }
+        }
+
+        // Test Earnings API
+        async function testEarningsAPI() {
+            const resultDiv = document.getElementById('earningsResult');
+            resultDiv.textContent = 'Loading...';
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+
+            try {
+                const response = await fetch('php/get_earnings.php?owner_id=1');
+                const data = await response.json();
+                displayResult('earningsResult', data, !data.success);
+            } catch (error) {
+                displayResult('earningsResult', { error: error.message }, true);
+            }
+        }
+
+        // Test Database Connection
+        async function testDatabaseConnection() {
+            const resultDiv = document.getElementById('dbResult');
+            resultDiv.textContent = 'Testing database connection...';
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+
+            try {
+                // Test with a simpleequipment query
+                const response = await fetch('php/get_equipment.php?owner_id=1');
+                if (response.ok) {
+                    displayResult('dbResult', {
+                        status: 'SUCCESS',
+                        message: 'Database connection is working!',
+                        responseStatus: response.status
+                    }, false);
+                } else {
+                    displayResult('dbResult', {
+                        status: 'ERROR',
+                        message: 'Database connection failed',
+                        responseStatus: response.status
+                    }, true);
+                }
+            } catch (error) {
+                displayResult('dbResult', {
+                    status: 'ERROR',
+                    error: error.message
+                }, true);
+            }
+        }
+
+        // Auto-run all tests on load
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('API Test Page Loaded');
+            console.log('XAMPP should be running on http://localhost');
+            console.log('Database: agrohub');
+        });
+    </script>
+</body>
+
+</html>

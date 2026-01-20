@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Login Test - AgroHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .status {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: #f0f0f0;
+        }
+
+        .status h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .status-item {
+            margin: 0.75rem 0;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .status-value {
+            font-family: monospace;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .status-value.empty {
+            color: #ef4444;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0.5rem;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .log {
+            background: #1a1a2e;
+            color: #0f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .log-entry {
+            margin: 0.25rem 0;
+        }
+
+        .icon {
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .success {
+            color: #10b981;
+        }
+
+        .error {
+            color: #ef4444;
+        }
+
+        .warning {
+            color: #f59e0b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🧪 Google Login Test</h1>
+        <p style="color: #666; margin-bottom: 2rem;">
+            Use this page to verify that your Google login is working correctly and storing user data.
+        </p>
+
+        <div class="status">
+            <h2>📊 Current localStorage Status</h2>
+            <div class="status-item">
+                <span class="status-label">applicantData:</span>
+                <span class="status-value" id="applicantStatus">Not Set</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">User Name:</span>
+                <span class="status-value" id="userName">N/A</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Email:</span>
+                <span class="status-value" id="userEmail">N/A</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Auth Type:</span>
+                <span class="status-value" id="authType">N/A</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="login-job-portal.html" class="btn btn-primary">
+                <span class="icon">🔐</span> Go to Login Page
+            </a>
+            <a href="job-portal-dashboard.html" class="btn btn-secondary">
+                <span class="icon">📋</span> Go to Dashboard
+            </a>
+            <button onclick="refreshStatus()" class="btn btn-secondary">
+                <span class="icon">🔄</span> Refresh Status
+            </button>
+            <button onclick="clearData()" class="btn btn-danger">
+                <span class="icon">🗑️</span> Clear All Data
+            </button>
+        </div>
+
+        <div class="log" id="log">
+            <div class="log-entry">Console ready. Click buttons to test...</div>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: '#0ff',
+                success: '#0f0',
+                error: '#f00',
+                warning: '#ff0'
+            };
+
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.style.color = colors[type];
+            entry.textContent = `[${timestamp}] ${message}`;
+
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function refreshStatus() {
+            log('Checking localStorage...', 'info');
+
+            const applicantData = localStorage.getItem('applicantData');
+
+            if (applicantData) {
+                try {
+                    const data = JSON.parse(applicantData);
+
+                    document.getElementById('applicantStatus').textContent = '✅ Found';
+                    document.getElementById('applicantStatus').classList.remove('empty');
+
+                    document.getElementById('userName').textContent = data.fullName || 'Not Set';
+                    document.getElementById('userEmail').textContent = data.email || 'Not Set';
+                    document.getElementById('authType').textContent = data.googleAuth ? '🔐 Google' : '📧 Email';
+
+                    log('✅ User data loaded successfully!', 'success');
+                    log(`   Name: ${data.fullName}`, 'success');
+                    log(`   Email: ${data.email}`, 'success');
+
+                } catch (e) {
+                    log('❌ Error parsing applicantData: ' + e.message, 'error');
+                    document.getElementById('applicantStatus').textContent = '⚠️ Invalid Data';
+                    document.getElementById('applicantStatus').classList.add('empty');
+                }
+            } else {
+                document.getElementById('applicantStatus').textContent = '❌ Not Found';
+                document.getElementById('applicantStatus').classList.add('empty');
+                document.getElementById('userName').textContent = 'N/A';
+                document.getElementById('userEmail').textContent = 'N/A';
+                document.getElementById('authType').textContent = 'N/A';
+
+                log('⚠️ No applicantData found in localStorage', 'warning');
+                log('   Please login with Google first', 'warning');
+            }
+        }
+
+        function clearData() {
+            if (confirm('Are you sure you want to clear ALL localStorage data?\n\nThis will log you out.')) {
+                localStorage.clear();
+                log('🗑️ All localStorage data cleared!', 'warning');
+                refreshStatus();
+            }
+        }
+
+        // Auto-refresh on load
+        window.onload = function () {
+            log('🚀 Test page loaded', 'info');
+            refreshStatus();
+
+            // Auto-refresh every 2 seconds to catch real-time changes
+            setInterval(refreshStatus, 2000);
+        };
+    </script>
+</body>
+
+</html>

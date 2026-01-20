@@ -556,15 +556,15 @@
         <!-- Work Menu -->
         <div class="menu-section">
             <div class="menu-title">WORK</div>
-            <a href="job-portal-dashboard.html" class="menu-item active">
+            <a href="available-jobs.html" class="menu-item active">
                 <span class="material-icons-outlined">work</span>
                 <span>Available Jobs</span>
             </a>
-            <a href="#" class="menu-item">
+            <a href="my-jobs.html" class="menu-item">
                 <span class="material-icons-outlined">assignment</span>
                 <span>My Jobs</span>
             </a>
-            <a href="#" class="menu-item">
+            <a href="worker-profile.html" class="menu-item">
                 <span class="material-icons-outlined">person</span>
                 <span>My Profile</span>
             </a>
@@ -669,24 +669,75 @@
 
         // Load user info in sidebar
         function loadUserInfo() {
-            const userData = localStorage.getItem('user') || localStorage.getItem('agrohub_user');
-            if (userData) {
+            let user = null;
+            let source = '';
+
+            // Checks for various login tokens to ensure compatibility
+            const applicantData = localStorage.getItem('applicantData'); // Added this for job portal Google login
+            const userData = localStorage.getItem('userData');
+            const userSimple = localStorage.getItem('user');
+            const agrohubUser = localStorage.getItem('agrohub_user');
+
+            if (applicantData) {
+                user = JSON.parse(applicantData);
+                source = 'applicantData';
+            }
+            else if (userData) {
+                user = JSON.parse(userData);
+                source = 'userData';
+            }
+            else if (userSimple) {
+                user = JSON.parse(userSimple);
+                source = 'user';
+            }
+            else if (agrohubUser) {
+                user = JSON.parse(agrohubUser);
+                source = 'agrohubUser';
+            }
+
+            console.log('Loading user from:', source, user); // Debug log
+
+            if (user) {
                 try {
-                    const user = JSON.parse(userData);
-                    const name = user.name || user.displayName || user.email?.split('@')[0] || 'User';
+                    const name = user.name || user.fullName || user.displayName || user.email?.split('@')[0] || 'User';
                     const initial = name.charAt(0).toUpperCase();
 
-                    document.getElementById('sidebarName').textContent = name;
-                    document.getElementById('sidebarAvatar').textContent = initial;
+                    console.log('Displaying user name:', name); // Debug log
+
+                    // Update DOM elements only if they exist
+                    const nameEl = document.getElementById('sidebarName');
+                    const avatarEl = document.getElementById('sidebarAvatar');
+
+                    if (nameEl) {
+                        nameEl.textContent = name;
+                        console.log('Updated sidebar name to:', name); // Debug log
+                    } else {
+                        console.warn('sidebarName element not found!'); // Debug log
+                    }
+
+                    if (avatarEl) {
+                        avatarEl.textContent = initial;
+                        console.log('Updated avatar to:', initial); // Debug log
+                    } else {
+                        console.warn('sidebarAvatar element not found!'); // Debug log
+                    }
+
+                    // Also update header greeting if it exists
+                    const greetingEl = document.getElementById('userGreeting');
+                    if (greetingEl) greetingEl.textContent = `Hello, ${name}`;
+
                 } catch (e) {
                     console.error('Error loading user info:', e);
                 }
+            } else {
+                console.warn('No user data found in localStorage!'); // Debug log
             }
         }
 
         // Sign out function
         function signOut() {
             // Clear all stored data
+            localStorage.removeItem('applicantData');
             localStorage.removeItem('user');
             localStorage.removeItem('agrohub_user');
             localStorage.removeItem('agrohub_token');
@@ -695,9 +746,37 @@
             window.location.href = 'landingpage.html';
         }
 
+        // Try to load user info immediately (before DOM is ready)
+        // This helps show the username faster when coming from login
+        let userInfoLoaded = false;
+        let retryCount = 0;
+        const maxRetries = 10; // Try for 1 second (10 * 100ms)
+
+        function tryLoadUserInfo() {
+            // Check if we have user data in localStorage
+            const hasUserData = localStorage.getItem('applicantData') ||
+                localStorage.getItem('userData') ||
+                localStorage.getItem('user') ||
+                localStorage.getItem('agrohub_user');
+
+            if (hasUserData && !userInfoLoaded) {
+                loadUserInfo();
+                userInfoLoaded = true;
+            } else if (!hasUserData && retryCount < maxRetries) {
+                retryCount++;
+                setTimeout(tryLoadUserInfo, 100); // Retry after 100ms
+            }
+        }
+
+        // Start trying to load user info immediately
+        tryLoadUserInfo();
+
         // Load jobs on page load
         document.addEventListener('DOMContentLoaded', function () {
-            loadUserInfo();
+            // Load user info again if not already loaded
+            if (!userInfoLoaded) {
+                loadUserInfo();
+            }
             loadJobs();
 
             // Set up filter listeners

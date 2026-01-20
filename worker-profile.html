@@ -342,15 +342,7 @@
         </div>
 
         <div class="menu-section">
-            <div class="menu-title">Main Menu</div>
-            <a href="job-portal-dashboard.html" class="menu-item">
-                <span class="material-icons-outlined">dashboard</span>
-                <span>Overview</span>
-            </a>
-        </div>
-
-        <div class="menu-section">
-            <div class="menu-title">Work</div>
+            <div class="menu-title">WORK</div>
             <a href="available-jobs.html" class="menu-item">
                 <span class="material-icons-outlined">work</span>
                 <span>Available Jobs</span>
@@ -424,17 +416,42 @@
     <script>
         // Load user data
         function loadUserData() {
-            const applicantData = JSON.parse(localStorage.getItem('applicantData'));
-            if (applicantData) {
-                document.getElementById('userName').textContent = applicantData.fullName;
-                document.getElementById('avatarInitial').textContent = applicantData.fullName.charAt(0);
+            let user = null;
+
+            // Priority checks for logged in user data
+            const userData = localStorage.getItem('userData');
+            const userSimple = localStorage.getItem('user');
+            const agrohubUser = localStorage.getItem('agrohub_user');
+            const applicantData = localStorage.getItem('applicantData');
+
+            if (userData) user = JSON.parse(userData);
+            else if (userSimple) user = JSON.parse(userSimple);
+            else if (agrohubUser) user = JSON.parse(agrohubUser);
+
+            // Fallback to applicant data
+            if (!user && applicantData) {
+                const appData = JSON.parse(applicantData);
+                user = {
+                    name: appData.fullName,
+                    email: appData.email,
+                    displayName: appData.fullName
+                };
+            }
+
+            if (user) {
+                const name = user.name || user.fullName || user.displayName || 'Worker';
+                const email = user.email || '';
+
+                // Update Sidebar
+                document.getElementById('userName').textContent = name;
+                document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
 
                 // Populate form
-                document.getElementById('fullName').value = applicantData.fullName;
-                document.getElementById('email').value = applicantData.email;
+                document.getElementById('fullName').value = name;
+                document.getElementById('email').value = email;
 
                 // Set profile avatar
-                const firstLetter = applicantData.fullName.charAt(0).toUpperCase();
+                const firstLetter = name.charAt(0).toUpperCase();
                 document.getElementById('profileAvatar').textContent = firstLetter;
             }
         }

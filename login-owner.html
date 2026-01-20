@@ -723,50 +723,95 @@
                     console.log('Request body:', requestBody);
 
                     // Send to backend for database storage
+                    console.log('Starting fetch to:', 'php/auth.php?action=google-auth');
+
                     const backendResponse = await fetch('php/auth.php?action=google-auth', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify(requestBody)
+                    }).catch(fetchError => {
+                        console.error('Fetch itself failed:', fetchError);
+                        throw new Error('Network request failed: ' + fetchError.message);
                     });
 
                     console.log('Fetch completed. Status:', backendResponse.status);
+                    console.log('Response headers:', backendResponse.headers);
+                    console.log('Response ok:', backendResponse.ok);
 
-                    const data = await backendResponse.json();
+                    // Check if response is OK first
+                    if (!backendResponse.ok) {
+                        const errorText = await backendResponse.text();
+                        console.error('HTTP Error', backendResponse.status, errorText);
+                        throw new Error(`Server returned ${backendResponse.status}: ${errorText.substring(0, 100)}`);
+                    }
+
+                    const responseText = await backendResponse.text();
+                    console.log('Raw response text:', responseText);
+
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (parseError) {
+                        console.error('JSON parse error:', parseError);
+                        console.error('Response was:', responseText.substring(0, 200));
+                        throw new Error('Server returned invalid JSON');
+                    }
+
                     console.log('Backend response data:', data);
 
                     if (data.success) {
                         console.log('Backend reports success!');
-                        console.log('User ID from database:', data.user.id);
+
+                        // The backend wraps data in a 'data' property, so access data.data.user
+                        const userData = data.data && data.data.user ? data.data.user : data.user;
+                        const token = data.data && data.data.token ? data.data.token : data.token;
+
+                        console.log('User data:', userData);
+                        console.log('Token:', token);
+
+                        if (!userData || !userData.id) {
+                            console.error('Full response:', JSON.stringify(data, null, 2));
+                            throw new Error('Backend did not return user data');
+                        }
 
                         // Store complete user info in localStorage
                         const userDataToStore = {
-                            id: data.user.id,
-                            name: data.user.name,
-                            email: data.user.email,
-                            picture: payload.picture,
+                            id: userData.id,
+                            name: userData.name,
+                            email: userData.email,
+                            picture: userData.picture || payload.picture,
                             userType: 'owner',
+                            user_type: 'owner',
                             loginMethod: 'google',
-                            token: data.token
+                            token: token
                         };
                         console.log('Storing in localStorage:', userDataToStore);
                         localStorage.setItem('agrohub_user', JSON.stringify(userDataToStore));
 
-                        showNotification('Welcome, ' + data.user.name + '!', 'success');
+                        showNotification('Welcome, ' + userData.name + '!', 'success');
 
                         setTimeout(() => {
                             console.log('Redirecting to owner-dashboard.html...');
                             window.location.href = 'owner-dashboard.html';
                         }, 1500);
                     } else {
-                        console.error('Backend reported failure:', data.error);
-                        showNotification('Login failed: ' + (data.error || 'Unknown error'), 'error');
+                        console.error('Backend reported failure:', data.error || data.message);
+                        showNotification('Login failed: ' + (data.error || data.message || 'Unknown error'), 'error');
                     }
                 } catch (error) {
                     console.error('Login error (catch block):', error);
+                    console.error('Error name:', error.name);
+                    console.error('Error message:', error.message);
                     console.error('Error stack:', error.stack);
-                    showNotification('Network error. Please try again.', 'error');
+
+                    let errorMsg = 'Network error. Please try again.';
+                    if (error.message) {
+                        errorMsg = error.message;
+                    }
+                    showNotification(errorMsg, 'error');
                 }
             } else {
                 console.error('No credential in response');

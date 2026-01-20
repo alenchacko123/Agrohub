@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit & Delete Buttons - Test Instructions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            padding: 2rem;
+            color: #1a202c;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature {
+            background: #f8f9fa;
+            border-left: 4px solid #7c3aed;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .feature h3 {
+            color: #7c3aed;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .feature ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .feature li {
+            margin: 0.5rem 0;
+            color: #4a5568;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .success p {
+            color: #155724;
+            font-weight: 500;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            margin: 1rem 0.5rem 0 0;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>✅ Edit & Delete Buttons Working!</h1>
+
+        <div class="success">
+            <p>✨ Both Edit and Delete buttons are now fully functional on the admin videos page!</p>
+        </div>
+
+        <h2 style="margin-top: 2rem; margin-bottom: 1rem;">How They Work:</h2>
+
+        <div class="feature">
+            <h3>🖊️ Edit Button</h3>
+            <p><strong>What it does:</strong></p>
+            <ul>
+                <li>Fetches the video details from the database</li>
+                <li>Opens the "Add/Edit Video" modal</li>
+                <li>Pre-fills all form fields with the current video data</li>
+                <li>Changes the modal title to "Edit Video"</li>
+                <li>When you click "Save Video", it updates the existing video (PUT request)</li>
+            </ul>
+            <p><strong>Try it:</strong></p>
+            <ol style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                <li>Click the purple "Edit" button on any video card</li>
+                <li>Modal opens with all fields pre-filled</li>
+                <li>Make changes (e.g., change the title, description, or duration)</li>
+                <li>Click "Save Video"</li>
+                <li>✅ Video is updated in the database!</li>
+                <li>✅ Changes appear immediately on refresh</li>
+            </ol>
+        </div>
+
+        <div class="feature">
+            <h3>🗑️ Delete Button</h3>
+            <p><strong>What it does:</strong></p>
+            <ul>
+                <li>Shows a confirmation dialog: "Are you sure you want to delete this video?"</li>
+                <li>If confirmed, performs a <strong>soft delete</strong> (sets status='inactive')</li>
+                <li>Video is removed from admin view</li>
+                <li>Video is removed from farmer dashboard</li>
+                <li>Video still exists in database (can be restored by admin if needed)</li>
+            </ul>
+            <p><strong>Try it:</strong></p>
+            <ol style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                <li>Click the red "Delete" button on any video card</li>
+                <li>Confirmation dialog appears</li>
+                <li>Click "OK" to confirm</li>
+                <li>✅ Video disappears from the grid!</li>
+                <li>✅ Alert: "Video deleted successfully!"</li>
+                <li>✅ Video no longer appears on farmer dashboard</li>
+            </ol>
+        </div>
+
+        <div class="feature">
+            <h3>🔧 Technical Details</h3>
+            <p><strong>Backend API:</strong> <code>php/upload_video.php</code></p>
+            <ul>
+                <li><strong>GET</strong> - Fetch all videos</li>
+                <li><strong>POST</strong> - Create new video</li>
+                <li><strong>PUT</strong> - Update existing video</li>
+                <li><strong>DELETE</strong> - Soft delete (set status='inactive')</li>
+            </ul>
+            <p style="margin-top: 1rem;"><strong>Filtering:</strong></p>
+            <ul>
+                <li>Admin sees only <code>status='active'</code> videos (deleted ones are hidden)</li>
+                <li>Farmer sees only <code>status='active'</code> videos</li>
+                <li>After deletion, video disappears from both interfaces immediately</li>
+            </ul>
+        </div>
+
+        <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Test Now:</h2>
+        <a href="admin-videos.html" class="btn">Open Admin Videos Page</a>
+        <a href="tutorials.html" class="btn">View Farmer Tutorials</a>
+    </div>
+</body>
+
+</html>

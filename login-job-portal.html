@@ -364,6 +364,26 @@
             box-shadow: 0 8px 25px rgba(3, 105, 161, 0.4);
         }
 
+        /* Info Note */
+        .info-note {
+            text-align: center;
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            background: rgba(3, 105, 161, 0.05);
+            border-left: 3px solid var(--primary-blue);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            line-height: 1.5;
+        }
+
+        .info-note .material-icons-outlined {
+            vertical-align: middle;
+            font-size: 1rem;
+            color: var(--primary-blue);
+            margin-right: 0.25rem;
+        }
+
         /* Signup Link */
         .signup-link {
             text-align: center;
@@ -547,7 +567,8 @@
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <div class="input-wrapper">
-                        <input type="email" id="email" class="form-input" placeholder="owner@example.com" required>
+                        <input type="email" id="email" class="form-input" placeholder="Enter your email address"
+                            autocomplete="off" required>
                         <span class="material-icons-outlined">mail</span>
                     </div>
                 </div>
@@ -576,6 +597,11 @@
                     <span class="material-icons-outlined">login</span>
                     Sign In
                 </button>
+
+                <div class="info-note">
+                    <span class="material-icons-outlined">info</span>
+                    Use your Google account credentials to sign in manually
+                </div>
             </form>
 
             <!-- Other Login Options -->
@@ -622,17 +648,19 @@
                 // Handle Google Auth with Access Token
                 async function handleGoogleAuthWithToken(accessToken) {
                     try {
-                        // Fetch user info from Google
+                        // Fetch user info from Google - Gets the actual Google account name and email
                         const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
                             headers: { Authorization: `Bearer ${accessToken}` }
                         });
 
                         const googleUser = await userInfoResponse.json();
 
-                        // Store user data and redirect to dashboard
+                        console.log('Google User Info:', googleUser); // Debug log
+
+                        // Store user data with Google info (name from Google account)
                         const applicantData = {
                             email: googleUser.email,
-                            fullName: googleUser.name,
+                            fullName: googleUser.name, // This is the actual Google account name
                             phone: '',
                             location: '',
                             skills: '',
@@ -641,6 +669,10 @@
                         };
 
                         localStorage.setItem('applicantData', JSON.stringify(applicantData));
+
+                        // Verify data was stored
+                        const storedData = localStorage.getItem('applicantData');
+                        console.log('Stored applicantData:', storedData); // Debug log
 
                         showNotification('Welcome, ' + googleUser.name + '! Redirecting...', 'success');
 
@@ -712,10 +744,12 @@
                     }, 3000);
                 }
 
-                // Load saved email on page load
+                // Load saved email on page load (only if remember me was checked)
                 window.addEventListener('DOMContentLoaded', function () {
+                    const rememberMeChecked = localStorage.getItem('rememberMeChecked') === 'true';
                     const savedEmail = localStorage.getItem('rememberedEmail');
-                    if (savedEmail) {
+
+                    if (rememberMeChecked && savedEmail) {
                         document.getElementById('email').value = savedEmail;
                         document.getElementById('remember').checked = true;
                     }
@@ -741,8 +775,10 @@
                     // Handle remember me
                     if (rememberMe) {
                         localStorage.setItem('rememberedEmail', email);
+                        localStorage.setItem('rememberMeChecked', 'true');
                     } else {
                         localStorage.removeItem('rememberedEmail');
+                        localStorage.removeItem('rememberMeChecked');
                     }
 
                     submitBtn.disabled = true;

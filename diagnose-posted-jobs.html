@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnose Posted Jobs Issue - AgroHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: #16a34a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .success {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .error {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #15803d;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th,
+        td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔍 Diagnose: Posted Jobs Not Showing</h1>
+        <p class="subtitle">This page will help identify why your posted jobs aren't displaying</p>
+
+        <!-- Section 1: localStorage Info -->
+        <div class="section">
+            <h2>📦 Step 1: Check Your localStorage Data</h2>
+            <div id="localstorageInfo">Loading...</div>
+        </div>
+
+        <!-- Section 2: Database Jobs -->
+        <div class="section">
+            <h2>🗄️ Step 2: Check Database Jobs</h2>
+            <button class="btn btn-primary" onclick="loadDatabaseJobs()">🔄 Load All Jobs from Database</button>
+            <div id="databaseJobs">Click the button above to load jobs from database...</div>
+        </div>
+
+        <!-- Section 3: Diagnosis -->
+        <div class="section">
+            <h2>🎯 Step 3: Diagnosis & Solution</h2>
+            <div id="diagnosis">Analyzing...</div>
+        </div>
+
+        <!-- Actions -->
+        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e5e7eb;">
+            <h3>Quick Actions:</h3>
+            <a href="my-posted-jobs.html" class="btn btn-primary">📋 Go to My Posted Jobs</a>
+            <a href="farmer-dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
+            <a href="post-job.html" class="btn btn-primary">➕ Post New Job</a>
+        </div>
+    </div>
+
+    <script>
+        let diagnosisData = {
+            farmerId: null,
+            farmerEmail: null,
+            localStorageKeys: [],
+            databaseJobs: [],
+            matchingJobs: []
+        };
+
+        // Step 1: Analyze localStorage
+        function analyzeLocalStorage() {
+            const infoDiv = document.getElementById('localstorageInfo');
+            let html = '';
+
+            // Check all possible keys
+            const keys = ['user', 'agrohub_user', 'userData', 'applicantData'];
+            diagnosisData.localStorageKeys = [];
+
+            keys.forEach(key => {
+                const data = localStorage.getItem(key);
+                if (data) {
+                    diagnosisData.localStorageKeys.push(key);
+                    try {
+                        const parsed = JSON.parse(data);
+
+                        // Extract possible IDs
+                        const id = parsed.id || parsed.user_id || parsed.userId || parsed.farmer_id;
+                        const email = parsed.email;
+                        const name = parsed.name || parsed.fullName || parsed.displayName;
+
+                        if (id && !diagnosisData.farmerId) diagnosisData.farmerId = id;
+                        if (email && !diagnosisData.farmerEmail) diagnosisData.farmerEmail = email;
+
+                        html += `
+                            <div class="info-box ${id ? 'success' : 'warning'}">
+                                <strong>✅ Found: localStorage.${key}</strong><br>
+                                ${id ? `<span class="highlight">ID: ${id}</span>` : '<span class="error">⚠️ No ID found!</span>'}<br>
+                                ${email ? `Email: ${email}` : 'No email'}<br>
+                                ${name ? `Name: ${name}` : 'No name'}<br>
+                                <details style="margin-top: 0.5rem;">
+                                    <summary style="cursor: pointer; color: #666;">View Full Data</summary>
+                                    <pre style="margin-top: 0.5rem; font-size: 0.75rem; overflow-x: auto;">${JSON.stringify(parsed, null, 2)}</pre>
+                                </details>
+                            </div>
+                        `;
+                    } catch (e) {
+                        html += `
+                            <div class="info-box error">
+                                <strong>❌ Error parsing: localStorage.${key}</strong><br>
+                                ${e.message}
+                            </div>
+                        `;
+                    }
+                }
+            });
+
+            if (diagnosisData.localStorageKeys.length === 0) {
+                html += `
+                    <div class="info-box error">
+                        <strong>❌ No User Data Found!</strong><br>
+                        You might not be logged in as a farmer. Please login first.
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="info-box ${diagnosisData.farmerId ? 'success' : 'error'}">
+                    <strong>Detected Farmer ID:</strong> ${diagnosisData.farmerId ? `<span class="highlight">${diagnosisData.farmerId}</span>` : '<span class="error">NOT FOUND</span>'}<br>
+                    <strong>Email:</strong> ${diagnosisData.farmerEmail || 'NOT FOUND'}
+                </div>
+            `;
+
+            infoDiv.innerHTML = html;
+
+            // Auto-run diagnosis
+            runDiagnosis();
+        }
+
+        // Step 2: Load database jobs
+        async function loadDatabaseJobs() {
+            const jobsDiv = document.getElementById('databaseJobs');
+            jobsDiv.innerHTML = '<p>Loading jobs from database...</p>';
+
+            try {
+                const response = await fetch('php/list_all_jobs.php');
+                const result = await response.json();
+
+                if (result.success && result.jobs) {
+                    diagnosisData.databaseJobs = result.jobs;
+
+                    // Find matching jobs
+                    diagnosisData.matchingJobs = result.jobs.filter(job => {
+                        return job.farmer_id == diagnosisData.farmerId ||
+                            job.farmer_email == diagnosisData.farmerEmail ||
+                            job.farmer_name?.includes(diagnosisData.farmerEmail?.split('@')[0]);
+                    });
+
+                    let html = `
+                        <div class="info-box ${result.jobs.length > 0 ? 'success' : 'warning'}">
+                            <strong>Total Jobs in Database: ${result.jobs.length}</strong><br>
+                            <strong>Jobs Matching Your ID: ${diagnosisData.matchingJobs.length}</strong>
+                        </div>
+                    `;
+
+                    if (result.jobs.length > 0) {
+                        html += '<table>';
+                        html += '<tr><th>ID</th><th>Job Title</th><th>Farmer ID</th><th>Farmer Name</th><th>Status</th><th>Match?</th></tr>';
+                        result.jobs.forEach(job => {
+                            const isMatch = job.farmer_id == diagnosisData.farmerId || job.farmer_email == diagnosisData.farmerEmail;
+                            html += `
+                                <tr style="${isMatch ? 'background: #d1fae5;' : ''}">
+                                    <td>${job.id}</td>
+                                    <td>${job.job_title}</td>
+                                    <td>${job.farmer_id || 'N/A'}</td>
+                                    <td>${job.farmer_name || 'N/A'}</td>
+                                    <td>${job.status}</td>
+                                    <td>${isMatch ? '✅ YOURS' : '❌'}</td>
+                                </tr>
+                            `;
+                        });
+                        html += '</table>';
+                    } else {
+                        html += '<div class="info-box warning">No jobs found in database. Post a job first!</div>';
+                    }
+
+                    jobsDiv.innerHTML = html;
+
+                    // Re-run diagnosis
+                    runDiagnosis();
+                } else {
+                    jobsDiv.innerHTML = `<div class="info-box error">Failed to load jobs: ${result.message || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                jobsDiv.innerHTML = `<div class="info-box error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Step 3: Run diagnosis
+        function runDiagnosis() {
+            const diagnosisDiv = document.getElementById('diagnosis');
+            let html = '';
+
+            // Problem 1: No farmer ID
+            if (!diagnosisData.farmerId) {
+                html += `
+                    <div class="info-box error">
+                        <h3>❌ Problem: No Farmer ID Found</h3>
+                        <p><strong>Cause:</strong> You're not logged in properly, or the login didn't store your farmer ID.</p>
+                        <p><strong>Solution:</strong></p>
+                        <ol>
+                            <li>Logout and login again as a farmer</li>
+                            <li>Make sure you're using the farmer login page</li>
+                            <li>After login, check if localStorage has your ID</li>
+                        </ol>
+                        <button class="btn btn-primary" onclick="logout()">🚪 Logout & Try Again</button>
+                    </div>
+                `;
+            }
+            // Problem 2: Has ID but no matching jobs
+            else if (diagnosisData.matchingJobs.length === 0 && diagnosisData.databaseJobs.length > 0) {
+                html += `
+                    <div class="info-box warning">
+                        <h3>⚠️ Problem: No Jobs Match Your Farmer ID</h3>
+                        <p><strong>Your Farmer ID:</strong> <span class="highlight">${diagnosisData.farmerId}</span></p>
+                        <p><strong>Cause:</strong> The jobs in the database were posted with a different farmer_id.</p>
+                        <p><strong>Solution:</strong> The jobs might have been posted when you had a different ID, or by another account.</p>
+                        <p><strong>Options:</strong></p>
+                        <ol>
+                            <li>Post new jobs with your current farmer ID</li>
+                            <li>Or, manually update existing jobs in database to use your current farmer_id</li>
+                        </ol>
+                        <button class="btn btn-primary" onclick="window.location.href='post-job.html'">➕ Post New Job</button>
+                    </div>
+                `;
+            }
+            // Success: Has ID and matching jobs
+            else if (diagnosisData.matchingJobs.length > 0) {
+                html += `
+                    <div class="info-box success">
+                        <h3>✅ Good News: Everything Should Work!</h3>
+                        <p><strong>Your Farmer ID:</strong> <span class="highlight">${diagnosisData.farmerId}</span></p>
+                        <p><strong>Matching Jobs:</strong> ${diagnosisData.matchingJobs.length}</p>
+                        <p>The "My Posted Jobs" page should display ${diagnosisData.matchingJobs.length} job(s).</p>
+                        <p>If it's still not showing, try clearing cache or refreshing.</p>
+                        <button class="btn btn-primary" onclick="window.location.href='my-posted-jobs.html'">📋 Go to My Posted Jobs</button>
+                    </div>
+                `;
+            }
+            // No jobs in database at all
+            else if (diagnosisData.databaseJobs.length === 0) {
+                html += `
+                    <div class="info-box warning">
+                        <h3>⚠️ No Jobs Posted Yet</h3>
+                        <p>The database doesn't have any jobs. Post your first job!</p>
+                        <button class="btn btn-primary" onclick="window.location.href='post-job.html'">➕ Post Your First Job</button>
+                    </div>
+                `;
+            }
+
+            diagnosisDiv.innerHTML = html;
+        }
+
+        function logout() {
+            if (confirm('This will logout you from all sessions. Continue?')) {
+                localStorage.clear();
+                window.location.href = 'login-farmer.html';
+            }
+        }
+
+        // Auto-run on page load
+        window.onload = function () {
+            analyzeLocalStorage();
+            // Auto-load database jobs after 1 second
+            setTimeout(loadDatabaseJobs, 1000);
+        };
+    </script>
+</body>
+
+</html>

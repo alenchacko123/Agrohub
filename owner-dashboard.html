@@ -1222,7 +1222,6 @@
             visibility: visible;
         }
 
-        /* Rating Stars */
         .rating-stars {
             display: flex;
             gap: 0.1rem;
@@ -1231,6 +1230,180 @@
 
         .rating-stars .material-icons-outlined {
             font-size: 1rem;
+        }
+
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--error);
+            color: var(--white);
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Notifications Panel */
+        #notificationsPanel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        #notificationsPanel.active {
+            right: 0;
+        }
+
+        .notification-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .notification-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .close-panel {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .close-panel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .notification-list {
+            padding: 1rem;
+        }
+
+        .notification-item {
+            background: var(--white);
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .notification-item:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-item.pending {
+            border-left: 4px solid var(--warning);
+        }
+
+        .notification-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-details {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            margin-bottom: 0.75rem;
+        }
+
+        .notification-details div {
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-accept {
+            flex: 1;
+            padding: 0.6rem;
+            background: linear-gradient(135deg, var(--success), #16a34a);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-decline {
+            flex: 1;
+            padding: 0.6rem;
+            background: linear-gradient(135deg, var(--error), #dc2626);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-decline:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .empty-notifications {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+        }
+
+        .empty-notifications .material-icons-outlined {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
         }
     </style>
 </head>
@@ -1272,7 +1445,7 @@
                 <a href="#" class="nav-item">
                     <span class="material-icons-outlined">inventory_2</span>
                     My Equipment
-                    <span class="badge">12</span>
+                    <span class="badge" id="equipmentCountBadge">0</span>
                 </a>
                 <a href="#" class="nav-item">
                     <span class="material-icons-outlined">add_circle</span>
@@ -1285,12 +1458,12 @@
                 <a href="#" class="nav-item">
                     <span class="material-icons-outlined">event_note</span>
                     Booking Requests
-                    <span class="badge warning">5</span>
+                    <span class="badge warning" id="bookingRequestsBadge">0</span>
                 </a>
                 <a href="#" class="nav-item">
                     <span class="material-icons-outlined">check_circle</span>
                     Active Rentals
-                    <span class="badge success">8</span>
+                    <span class="badge success" id="activeRentalsBadge">0</span>
                 </a>
                 <a href="#" class="nav-item">
                     <span class="material-icons-outlined">history</span>
@@ -1311,7 +1484,7 @@
                 <a href="#" class="nav-item">
                     <span class="material-icons-outlined">description</span>
                     Agreements
-                    <span class="badge">3</span>
+                    <span class="badge" id="agreementsBadge" style="display: none;">0</span>
                 </a>
 
                 <div class="nav-section">
@@ -1355,9 +1528,10 @@
                         <span class="material-icons-outlined">search</span>
                         <input type="text" placeholder="Search equipment, bookings...">
                     </div>
-                    <button class="icon-btn tooltip" data-tooltip="Notifications">
+                    <button id="notificationsBtn" class="icon-btn tooltip" data-tooltip="Notifications"
+                        onclick="toggleNotificationsPanel()">
                         <span class="material-icons-outlined">notifications</span>
-                        <span class="notification-dot"></span>
+                        <span class="notification-badge" id="notificationCount" style="display: none;">0</span>
                     </button>
                     <button class="icon-btn tooltip" data-tooltip="Messages">
                         <span class="material-icons-outlined">chat</span>
@@ -1372,12 +1546,11 @@
                         <div class="stat-icon">
                             <span class="material-icons-outlined">account_balance_wallet</span>
                         </div>
-                        <span class="stat-trend up">
-                            <span class="material-icons-outlined" style="font-size: 1rem;">trending_up</span>
-                            +18%
+                        <span class="stat-trend neutral">
+                            0%
                         </span>
                     </div>
-                    <div class="stat-value">₹1,24,500</div>
+                    <div class="stat-value" id="totalEarnings">₹0</div>
                     <div class="stat-label">Total Earnings (This Month)</div>
                 </div>
 
@@ -1386,12 +1559,11 @@
                         <div class="stat-icon">
                             <span class="material-icons-outlined">event_available</span>
                         </div>
-                        <span class="stat-trend up">
-                            <span class="material-icons-outlined" style="font-size: 1rem;">trending_up</span>
-                            +12%
+                        <span class="stat-trend neutral">
+                            0%
                         </span>
                     </div>
-                    <div class="stat-value">156</div>
+                    <div class="stat-value" id="totalBookings">0</div>
                     <div class="stat-label">Total Bookings</div>
                 </div>
 
@@ -1402,7 +1574,7 @@
                         </div>
                         <span class="stat-trend neutral">0%</span>
                     </div>
-                    <div class="stat-value">12</div>
+                    <div class="stat-value" id="activeListings">0</div>
                     <div class="stat-label">Active Listings</div>
                 </div>
 
@@ -1411,12 +1583,11 @@
                         <div class="stat-icon">
                             <span class="material-icons-outlined">star</span>
                         </div>
-                        <span class="stat-trend up">
-                            <span class="material-icons-outlined" style="font-size: 1rem;">trending_up</span>
-                            +5%
+                        <span class="stat-trend neutral">
+                            0%
                         </span>
                     </div>
-                    <div class="stat-value">4.8</div>
+                    <div class="stat-value" id="avgRating">0.0</div>
                     <div class="stat-label">Average Rating</div>
                 </div>
             </div>
@@ -1511,32 +1682,13 @@
                                 style="text-decoration: none; color: var(--primary-blue); font-size: 0.9rem;">View
                                 All</a>
                         </div>
-                        <div class="bookings-list" style="display: flex; flex-direction: column; gap: 1rem;">
-                            <div class="booking-item"
-                                style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #f1f5f9; border-radius: 16px;">
-                                <div
-                                    style="width: 45px; height: 45px; border-radius: 12px; background: var(--light-blue); color: var(--primary-blue); display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                                    RK</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600;">Rajesh Kumar</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-gray);">Mahindra 575 DI</div>
-                                </div>
-                                <div
-                                    style="padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(34,197,94,0.1); color: var(--success);">
-                                    Confirmed</div>
-                            </div>
-                            <div class="booking-item"
-                                style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #f1f5f9; border-radius: 16px;">
-                                <div
-                                    style="width: 45px; height: 45px; border-radius: 12px; background: rgba(245,158,11,0.1); color: var(--warning); display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                                    AS</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600;">Arun Singh</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-gray);">Rotavator 6ft</div>
-                                </div>
-                                <div
-                                    style="padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(245,158,11,0.1); color: var(--warning);">
-                                    Pending</div>
+                        <div class="bookings-list" id="recentBookingsList"
+                            style="display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- Loading state -->
+                            <div style="padding: 2rem; text-align: center; color: var(--text-light);">
+                                <span class="material-icons-outlined"
+                                    style="font-size: 2rem; animation: spin 1s linear infinite;">sync</span>
+                                <p style="margin-top: 0.5rem;">Loading recent bookings...</p>
                             </div>
                         </div>
                     </div>
@@ -1658,6 +1810,11 @@
                             <option value="booked">Already Booked</option>
                             <option value="maintenance">Under Maintenance</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Location *</label>
+                        <input type="text" id="location" name="location" placeholder="e.g. Bangalore, Karnataka"
+                            required>
                     </div>
                     <div class="form-group">
                         <label>Machine Images</label>
@@ -1793,20 +1950,13 @@
                                 <th style="padding: 1rem;">Earnings</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 1rem;">Mahindra 575 DI</td>
-                                <td style="padding: 1rem;">Rajesh Kumar</td>
-                                <td style="padding: 1rem;">Dec 20 - Dec 25</td>
-                                <td style="padding: 1rem;"><span class="booking-status confirmed">Completed</span></td>
-                                <td style="padding: 1rem; font-weight: 700;">₹12,500</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 1rem;">Rotavator 6ft</td>
-                                <td style="padding: 1rem;">Suresh Singh</td>
-                                <td style="padding: 1rem;">Dec 15 - Dec 18</td>
-                                <td style="padding: 1rem;"><span class="booking-status confirmed">Completed</span></td>
-                                <td style="padding: 1rem; font-weight: 700;">₹2,400</td>
+                        <tbody id="rentalHistoryTableBody">
+                            <tr>
+                                <td colspan="5" style="padding: 3rem; text-align: center;">
+                                    <span class="material-icons-outlined"
+                                        style="font-size: 3rem; animation: spin 1s linear infinite; color: var(--text-light);">sync</span>
+                                    <p style="margin-top: 1rem; color: var(--text-gray);">Loading rental history...</p>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -1830,12 +1980,12 @@
                     <div
                         style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--success);">
                         <div style="color: var(--text-gray); font-size: 0.9rem;">Wallet Balance</div>
-                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-dark);">₹45,200</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-dark);">₹0</div>
                     </div>
                     <div
                         style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--primary-blue);">
                         <div style="color: var(--text-gray); font-size: 0.9rem;">Pending Payouts</div>
-                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-dark);">₹12,400</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-dark);">₹0</div>
                     </div>
                 </div>
                 <button class="btn btn-primary" style="width: 100%;"
@@ -2241,10 +2391,21 @@
             if (!grid) return;
 
             try {
-                const response = await fetch('php/get_equipment.php');
+                // Get owner info from localStorage
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                const ownerId = userData.id || 1;
+
+                // Fetch equipment filtered by owner_id
+                const response = await fetch(`php/get_equipment.php?owner_id=${ownerId}`);
                 const data = await response.json();
 
                 if (data.success && data.equipment && data.equipment.length > 0) {
+                    // Update Active Listings stat
+                    const activeListingsEl = document.getElementById('activeListings');
+                    if (activeListingsEl) {
+                        activeListingsEl.textContent = data.equipment.length;
+                    }
+
                     grid.innerHTML = data.equipment.map(item => `
                         <div class="equipment-card" style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
                             <div style="height: 180px; position: relative; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); display: flex; align-items: center; justify-content: center;">
@@ -2254,26 +2415,32 @@
                                     ${item.availability_status === 'available' ? 'Available' : item.availability_status === 'booked' ? 'Booked' : 'Maintenance'}
                                 </span>
                             </div>
-                            <div style="padding: 1.25rem;">
-                                <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">${item.equipment_name}</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 1rem;">${item.description.substring(0, 50)}...</p>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="font-weight: 700; color: var(--primary-blue);">₹${parseFloat(item.price_per_day).toLocaleString()} <span style="font-weight: 400; font-size: 0.8rem; color: var(--text-gray);">/day</span></div>
-                                    <div style="display: flex; gap: 0.5rem;">
-                                        <button onclick="alert('Edit functionality coming soon!')" style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;">
-                                            <span class="material-icons-outlined" style="font-size: 18px;">edit</span>
-                                        </button>
-                                        <button onclick="alert('View details for: ${item.equipment_name}')" style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;">
-                                            <span class="material-icons-outlined" style="font-size: 18px;">visibility</span>
-                                        </button>
-                                    </div>
+                        <div style="padding: 1.25rem;">
+                            <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">${item.equipment_name}</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 1rem;">${item.description.substring(0, 50)}...</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-weight: 700; color: var(--primary-blue);">₹${parseFloat(item.price_per_day).toLocaleString()} <span style="font-weight: 400; font-size: 0.8rem; color: var(--text-gray);">/day</span></div>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button onclick="alert('Edit functionality coming soon!')" style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;">
+                                        <span class="material-icons-outlined" style="font-size: 18px;">edit</span>
+                                    </button>
+                                    <button onclick="alert('View details for: ${item.equipment_name}')" style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;">
+                                        <span class="material-icons-outlined" style="font-size: 18px;">visibility</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    `).join('');
+                        </div >
+                        `).join('');
                 } else {
+                    // Update Active Listings to 0
+                    const activeListingsEl = document.getElementById('activeListings');
+                    if (activeListingsEl) {
+                        activeListingsEl.textContent = '0';
+                    }
+
                     grid.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 20px; border: 2px dashed #e5e7eb;">
+                        < div style = "grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 20px; border: 2px dashed #e5e7eb;" >
                             <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">inventory_2</span>
                             <h3 style="margin: 1rem 0; color: var(--text-dark);">No Equipment Listed Yet</h3>
                             <p style="color: var(--text-gray); margin-bottom: 1.5rem;">Start by adding your first equipment to begin receiving rental requests</p>
@@ -2281,17 +2448,143 @@
                                 <span class="material-icons-outlined">add</span>
                                 Add Your First Equipment
                             </button>
-                        </div>
-                    `;
+                        </div >
+                        `;
                 }
             } catch (error) {
                 console.error('Error loading equipment:', error);
                 grid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; background: rgba(239, 68, 68, 0.1); border-radius: 20px; border: 2px solid var(--error);">
+                        < div style = "grid-column: 1/-1; text-align: center; padding: 2rem; background: rgba(239, 68, 68, 0.1); border-radius: 20px; border: 2px solid var(--error);" >
                         <span class="material-icons-outlined" style="font-size: 3rem; color: var(--error);">error_outline</span>
                         <p style="margin-top: 1rem; color: var(--error);">Failed to load equipment. Please refresh the page.</p>
+                    </div >
+                        `;
+            }
+        }
+
+        // Load recent bookings for dashboard display
+        async function loadRecentBookings() {
+            const container = document.getElementById('recentBookingsList');
+            if (!container) return;
+
+            try {
+                // Get owner info from localStorage
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                const ownerId = userData.id || 0;
+
+                if (!ownerId) {
+                    container.innerHTML = `
+                        <div style="padding: 2rem; text-align: center; color: var(--text-light);">
+                            <span class="material-icons-outlined" style="font-size: 2rem;">login</span>
+                            <p style="margin-top: 0.5rem;">Please log in to view bookings</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const response = await fetch(`php/get_bookings.php?owner_id=${ownerId}`);
+                const data = await response.json();
+
+                if (data.success && data.bookings && data.bookings.length > 0) {
+                    // Show only the 3 most recent bookings
+                    const recentBookings = data.bookings.slice(0, 3);
+
+                    container.innerHTML = recentBookings.map(booking => {
+                        const initials = booking.farmer_name.split(' ').map(n => n[0]).join('').toUpperCase();
+                        const statusColor = booking.status === 'approved' || booking.status === 'completed' ?
+                            'rgba(34,197,94,0.1)' : booking.status === 'pending' ?
+                                'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)';
+                        const statusTextColor = booking.status === 'approved' || booking.status === 'completed' ?
+                            'var(--success)' : booking.status === 'pending' ?
+                                'var(--warning)' : 'var(--error)';
+                        const statusText = booking.status.charAt(0).toUpperCase() + booking.status.slice(1);
+
+                        return `
+                            <div class="booking-item"
+                                style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #f1f5f9; border-radius: 16px;">
+                                <div
+                                    style="width: 45px; height: 45px; border-radius: 12px; background: var(--light-blue); color: var(--primary-blue); display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                                    ${initials}</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600;">${booking.farmer_name}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-gray);">${booking.equipment_name}</div>
+                                </div>
+                                <div
+                                    style="padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: ${statusColor}; color: ${statusTextColor};">
+                                    ${statusText}</div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = `
+                        <div style="padding: 2rem; text-align: center; color: var(--text-light);">
+                            <span class="material-icons-outlined" style="font-size: 2.5rem;">event_note</span>
+                            <p style="margin-top: 0.5rem;">No bookings yet</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.25rem;">Bookings will appear here when farmers rent your equipment</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading recent bookings:', error);
+                container.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: var(--error);">
+                        <span class="material-icons-outlined" style="font-size: 2rem;">error_outline</span>
+                        <p style="margin-top: 0.5rem;">Failed to load bookings</p>
                     </div>
                 `;
+            }
+        }
+
+        // Update Sidebar Badge Counts
+        async function updateSidebarBadges() {
+            try {
+                // Get owner info from localStorage
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                const ownerId = userData.id || 0;
+
+                if (!ownerId) return;
+
+                // Fetch equipment count
+                const equipmentResponse = await fetch(`php/get_equipment.php?owner_id=${ownerId}`);
+                const equipmentData = await equipmentResponse.json();
+                const equipmentCount = equipmentData.success && equipmentData.equipment ? equipmentData.equipment.length : 0;
+
+                const equipmentBadge = document.getElementById('equipmentCountBadge');
+                if (equipmentBadge) {
+                    equipmentBadge.textContent = equipmentCount;
+                    equipmentBadge.style.display = equipmentCount > 0 ? 'inline-block' : 'none';
+                }
+
+                // Fetch booking requests count (pending bookings)
+                const bookingsResponse = await fetch(`php/get_bookings.php?owner_id=${ownerId}&status=pending`);
+                const bookingsData = await bookingsResponse.json();
+                const pendingCount = bookingsData.success && bookingsData.bookings ? bookingsData.bookings.length : 0;
+
+                const bookingsBadge = document.getElementById('bookingRequestsBadge');
+                if (bookingsBadge) {
+                    bookingsBadge.textContent = pendingCount;
+                    bookingsBadge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+                }
+
+                // Fetch active rentals count (approved bookings)
+                const activeResponse = await fetch(`php/get_bookings.php?owner_id=${ownerId}&status=approved`);
+                const activeData = await activeResponse.json();
+                const activeCount = activeData.success && activeData.bookings ? activeData.bookings.length : 0;
+
+                const activeBadge = document.getElementById('activeRentalsBadge');
+                if (activeBadge) {
+                    activeBadge.textContent = activeCount;
+                    activeBadge.style.display = activeCount > 0 ? 'inline-block' : 'none';
+                }
+
+                // Agreements badge remains hidden as there's no agreements system yet
+                const agreementsBadge = document.getElementById('agreementsBadge');
+                if (agreementsBadge) {
+                    agreementsBadge.style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error('Error updating sidebar badges:', error);
             }
         }
 
@@ -2299,6 +2592,8 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadUserInfo();
             loadOwnerEquipment();
+            loadRecentBookings();
+            updateSidebarBadges();
         });
 
         // Load booking requests for the owner
@@ -2307,11 +2602,23 @@
             if (!tbody) return;
 
             try {
-                // Get owner info from localStorage
-                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
-                const ownerId = userData.id || 1;
+                // ⚠️ TEST MODE - Set to false in production
+                const TEST_MODE = true;
 
-                const response = await fetch(`php/get_bookings.php?owner_id=${ownerId}`);
+                // Get owner info from localStorage
+                let userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+
+                // If TEST_MODE and no user data, use test owner
+                if (TEST_MODE && !userData.id) {
+                    console.log('TEST MODE: Using test owner account (ID 5)');
+                    userData = { id: 5, name: 'Test Owner', user_type: 'owner' };
+                }
+
+                const ownerId = userData.id || 5;
+
+
+                const response = await fetch(`php/get_bookings.php?owner_id=${ownerId}&status=pending`);
+
                 const data = await response.json();
 
                 if (data.success && data.bookings && data.bookings.length > 0) {
@@ -2339,28 +2646,28 @@
                                 `}
                             </td>
                         </tr>
-                    `).join('');
+                        `).join('');
                 } else {
                     tbody.innerHTML = `
-                        <tr>
-                            <td colspan="5" style="padding: 3rem; text-align: center;">
-                                <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">event_busy</span>
-                                <h3 style="margin: 1rem 0; color: var(--text-dark);">No Booking Requests Yet</h3>
-                                <p style="color: var(--text-gray);">When farmers request to rent your equipment, you'll see them here.</p>
-                            </td>
-                        </tr>
-                    `;
+                        < tr >
+                        <td colspan="5" style="padding: 3rem; text-align: center;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">event_busy</span>
+                            <h3 style="margin: 1rem 0; color: var(--text-dark);">No Booking Requests Yet</h3>
+                            <p style="color: var(--text-gray);">When farmers request to rent your equipment, you'll see them here.</p>
+                        </td>
+                        </tr >
+                        `;
                 }
             } catch (error) {
                 console.error('Error loading bookings:', error);
                 tbody.innerHTML = `
-                    <tr>
+                        < tr >
                         <td colspan="5" style="padding: 3rem; text-align: center;">
                             <span class="material-icons-outlined" style="font-size: 3rem; color: var(--error);">error_outline</span>
                             <p style="margin-top: 1rem; color: var(--error);">Failed to load booking requests. Please try again.</p>
                         </td>
-                    </tr>
-                `;
+                    </tr >
+                        `;
             }
         }
 
@@ -2379,6 +2686,7 @@
                 if (data.success) {
                     showNotification('✅ Booking approved successfully!', 'success');
                     loadBookingRequests(); // Reload the list
+                    updateSidebarBadges(); // Update badge counts
                 } else {
                     showNotification('❌ Failed to approve booking: ' + data.error, 'error');
                 }
@@ -2402,6 +2710,7 @@
                 if (data.success) {
                     showNotification('ℹ️ Booking rejected', 'error');
                     loadBookingRequests(); // Reload the list
+                    updateSidebarBadges(); // Update badge counts
                 } else {
                     showNotification('❌ Failed to reject booking: ' + data.error, 'error');
                 }
@@ -2420,7 +2729,7 @@
                 const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
                 const ownerId = userData.id || 1;
 
-                const response = await fetch(`php/get_bookings.php?owner_id=${ownerId}&status=approved`);
+                const response = await fetch(`php / get_bookings.php ? owner_id = ${ownerId} & status=approved`);
                 const data = await response.json();
 
                 if (data.success && data.bookings && data.bookings.length > 0) {
@@ -2433,7 +2742,7 @@
                         });
 
                         return `
-                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                    < tr style = "border-bottom: 1px solid #f1f5f9;" >
                             <td style="padding: 1rem; font-weight: 600;">${rental.equipment_name}</td>
                             <td style="padding: 1rem;">${rental.farmer_name}</td>
                             <td style="padding: 1rem;">${formattedDate}</td>
@@ -2449,30 +2758,30 @@
                                     Message
                                 </button>
                             </td>
-                        </tr>
-                    `;
+                        </tr >
+                        `;
                     }).join('');
                 } else {
                     tbody.innerHTML = `
-                        <tr>
-                            <td colspan="5" style="padding: 3rem; text-align: center;">
-                                <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">inventory_2</span>
-                                <h3 style="margin: 1rem 0; color: var(--text-dark);">No Active Rentals</h3>
-                                <p style="color: var(--text-gray);">When you approve booking requests, they will appear here as active rentals.</p>
-                            </td>
-                        </tr>
-                    `;
+                        < tr >
+                        <td colspan="5" style="padding: 3rem; text-align: center;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">inventory_2</span>
+                            <h3 style="margin: 1rem 0; color: var(--text-dark);">No Active Rentals</h3>
+                            <p style="color: var(--text-gray);">When you approve booking requests, they will appear here as active rentals.</p>
+                        </td>
+                        </tr >
+                        `;
                 }
             } catch (error) {
                 console.error('Error loading active rentals:', error);
                 tbody.innerHTML = `
-                    <tr>
+                        < tr >
                         <td colspan="5" style="padding: 3rem; text-align: center;">
                             <span class="material-icons-outlined" style="font-size: 3rem; color: var(--error);">error_outline</span>
                             <p style="margin-top: 1rem; color: var(--error);">Failed to load active rentals. Please try again.</p>
                         </td>
-                    </tr>
-                `;
+                    </tr >
+                        `;
             }
         }
 
@@ -2598,6 +2907,112 @@
             });
         });
 
+        // Load Earnings Data  
+        async function loadEarningsData() {
+            try {
+                // Get owner info from localStorage
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                const ownerId = userData.id || 0;
+
+                if (!ownerId) {
+                    console.error('Owner ID not found');
+                    return;
+                }
+
+                const response = await fetch(`php/get_earnings.php?owner_id=${ownerId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update wallet balance
+                    const walletBalanceEl = document.querySelector('#earningsModal .modal-body > div > div:nth-child(1) > div:nth-child(2)');
+                    if (walletBalanceEl) {
+                        walletBalanceEl.textContent = '₹' + data.earnings.wallet_balance.toLocaleString('en-IN');
+                    }
+
+                    // Update pending payouts
+                    const pendingPayoutsEl = document.querySelector('#earningsModal .modal-body > div > div:nth-child(2) > div:nth-child(2)');
+                    if (pendingPayoutsEl) {
+                        pendingPayoutsEl.textContent = '₹' + data.earnings.pending_payouts.toLocaleString('en-IN');
+                    }
+
+                    console.log('Earnings data loaded successfully:', data.earnings);
+                } else {
+                    console.error('Failed to load earnings:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading earnings data:', error);
+            }
+        }
+
+        // Load Rental History
+        async function loadRentalHistory() {
+            const tbody = document.getElementById('rentalHistoryTableBody');
+            if (!tbody) return;
+
+            try {
+                // Get owner info from localStorage
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                const ownerId = userData.id || 0;
+
+                if (!ownerId) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="padding: 3rem; text-align: center;">
+                                <span class="material-icons-outlined" style="font-size: 3rem; color: var(--text-light);">login</span>
+                                <p style="margin-top: 1rem; color: var(--text-gray);">Please log in to view rental history</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                const response = await fetch(`php/get_bookings.php?owner_id=${ownerId}&status=completed`);
+                const data = await response.json();
+
+                if (data.success && data.bookings && data.bookings.length > 0) {
+                    tbody.innerHTML = data.bookings.map(rental => {
+                        const startDate = new Date(rental.start_date);
+                        const endDate = new Date(rental.end_date);
+                        const formattedDates = `${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+
+                        return `
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 1rem;">${rental.equipment_name}</td>
+                                <td style="padding: 1rem;">${rental.farmer_name}</td>
+                                <td style="padding: 1rem;">${formattedDates}</td>
+                                <td style="padding: 1rem;">
+                                    <span class="booking-status confirmed" style="padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; background: rgba(34,197,94,0.1); color: var(--success);">
+                                        Completed
+                                    </span>
+                                </td>
+                                <td style="padding: 1rem; font-weight: 700;">₹${parseFloat(rental.total_amount).toLocaleString('en-IN')}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="padding: 3rem; text-align: center;">
+                                <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">history</span>
+                                <h3 style="margin: 1rem 0; color: var(--text-dark);">No Rental History</h3>
+                                <p style="color: var(--text-gray);">Your completed rentals will appear here once farmers rent and return your equipment.</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading rental history:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="padding: 3rem; text-align: center;">
+                            <span class="material-icons-outlined" style="font-size: 3rem; color: var(--error);">error_outline</span>
+                            <p style="margin-top: 1rem; color: var(--error);">Failed to load rental history. Please try again.</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
         // Modal and UI Functions
         function openModal(modalId) {
             document.getElementById(modalId).classList.add('active');
@@ -2611,6 +3026,16 @@
             // Load active rentals when active rentals modal is opened
             if (modalId === 'activeRentalsModal') {
                 loadActiveRentals();
+            }
+
+            // Load earnings when earnings modal is opened
+            if (modalId === 'earningsModal') {
+                loadEarningsData();
+            }
+
+            // Load rental history when rental history modal is opened
+            if (modalId === 'rentalHistoryModal') {
+                loadRentalHistory();
             }
         }
 
@@ -2679,6 +3104,7 @@
             formData.append('condition', document.getElementById('condition').value);
             formData.append('availability', document.getElementById('availability').value);
             formData.append('description', document.getElementById('description').value);
+            formData.append('location', document.getElementById('location').value);
 
             // Get owner info from localStorage
             const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
@@ -2719,6 +3145,7 @@
                         // Reload equipment list to show new item
                         setTimeout(() => {
                             loadOwnerEquipment();
+                            updateSidebarBadges();
                         }, 1000);
                     } else {
                         showNotification('❌ Error: ' + (data.error || 'Failed to list equipment'), 'error');
@@ -2736,17 +3163,17 @@
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 1.25rem 1.5rem;
-                background: ${type === 'success' ? 'linear-gradient(135deg, #22c55e, #16a34a)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
-                color: white;
-                border-radius: 12px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-                z-index: 10000;
-                font-weight: 500;
-                animation: slideInRight 0.3s ease-out;
-            `;
+                    top: 20px;
+                    right: 20px;
+                    padding: 1.25rem 1.5rem;
+                    background: ${type === 'success' ? 'linear-gradient(135deg, #22c55e, #16a34a)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
+                    color: white;
+                    border - radius: 12px;
+                    box - shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                    z - index: 10000;
+                    font - weight: 500;
+                    animation: slideInRight 0.3s ease - out;
+                    `;
             notification.textContent = message;
             document.body.appendChild(notification);
 
@@ -2761,18 +3188,18 @@
             const style = document.createElement('style');
             style.id = 'notification-animations';
             style.textContent = `
-                @keyframes slideInRight {
-                    from { transform: translateX(100%); opacity: 0; }
+                    @keyframes slideInRight {
+                    from { transform: translateX(100 %); opacity: 0; }
                     to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes slideOutRight {
+                    }
+                    @keyframes slideOutRight {
                     from { transform: translateX(0); opacity: 1; }
-                    to { transform: translateX(100%); opacity: 0; }
-                }
-                @keyframes spin {
+                    to { transform: translateX(100 %); opacity: 0; }
+                    }
+                    @keyframes spin {
                     from { transform: rotate(0deg); }
                     to { transform: rotate(360deg); }
-                }
+                    }
             `;
             document.head.appendChild(style);
         }
@@ -2863,6 +3290,178 @@
                 document.body.style.overflow = 'auto';
             }
         }
+    </script>
+
+    <!-- Notifications Panel -->
+    <div id="notificationsPanel">
+        <div class="notification-header">
+            <h3>🔔 Rental Requests</h3>
+            <button class="close-panel" onclick="toggleNotificationsPanel()">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <!-- Notifications will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Toggle Notifications Panel
+        function toggleNotificationsPanel() {
+            const panel = document.getElementById('notificationsPanel');
+            panel.classList.toggle('active');
+
+            if (panel.classList.contains('active')) {
+                loadOwnerNotifications();
+            }
+        }
+
+        // Load Owner's Rental Notifications
+        async function loadOwnerNotifications() {
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            const notificationList = document.getElementById('notificationList');
+
+            if (!userData.id) {
+                notificationList.innerHTML = `
+                    <div class="empty-notifications">
+                        <span class="material-icons-outlined">login</span>
+                        <p>Please log in to view notifications</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                notificationList.innerHTML = '<p style="padding: 1rem; text-align: center; color: var(--text-gray);">Loading...</p>';
+
+                const response = await fetch(`php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=pending`);
+                const data = await response.json();
+
+                if (data.success && data.requests && data.requests.length > 0) {
+                    // Update badge count
+                    const badge = document.getElementById('notificationCount');
+                    badge.textContent = data.count;
+                    badge.style.display = 'flex';
+
+                    notificationList.innerHTML = data.requests.map(request => `
+                        <div class="notification-item pending">
+                            <div class="notification-title">
+                                🚜 New Rental Request
+                            </div>
+                            <div class="notification-details">
+                                <div><strong>Farmer:</strong> ${request.farmer_name}</div>
+                                <div><strong>Equipment:</strong> ${request.equipment_name}</div>
+                                <div><strong>Duration:</strong> ${request.start_date} to ${request.end_date} (${request.num_days} days)</div>
+                                <div><strong>Total:</strong> ₹${parseFloat(request.total_amount).toLocaleString()}</div>
+                                <div><strong>Location:</strong> ${request.delivery_address}</div>
+                                ${request.need_operator ? '<div>✓ Operator Requested</div>' : ''}
+                                ${request.need_insurance ? '<div>✓ Insurance Requested</div>' : ''}
+                            </div>
+                            <div class="notification-time">Requested: ${new Date(request.created_at).toLocaleDateString()} at ${new Date(request.created_at).toLocaleTimeString()}</div>
+                            <div class="notification-actions">
+                                <button class="btn-accept" onclick="updateRentalStatus(${request.id}, 'accepted', ${request.equipment_id})">
+                                    ✓ Accept
+                                </button>
+                                <button class="btn-decline" onclick="updateRentalStatus(${request.id}, 'declined', ${request.equipment_id})">
+                                    ✗ Decline
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    // No pending requests
+                    const badge = document.getElementById('notificationCount');
+                    badge.style.display = 'none';
+
+                    notificationList.innerHTML = `
+                        <div class="empty-notifications">
+                            <span class="material-icons-outlined">notifications_none</span>
+                            <p>No pending requests</p>
+                            <p style="font-size: 0.85rem; margin-top: 0.5rem;">New rental requests will appear here</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                notificationList.innerHTML = `
+                    <div class="empty-notifications">
+                        <span class="material-icons-outlined">error</span>
+                        <p>Failed to load notifications</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Update Rental Request Status
+        async function updateRentalStatus(requestId, status, equipmentId) {
+            try {
+                const response = await fetch('php/update_rental_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        request_id: requestId,
+                        status: status,
+                        equipment_id: equipmentId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Rental request ${status}!`);
+                    loadOwnerNotifications(); // Refresh the list
+                    loadOwnerEquipment(); // Refresh equipment (if status changed to booked)
+                } else {
+                    alert('Failed to update request: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error updating rental status:', error);
+                alert('Network error. Please try again.');
+            }
+        }
+
+        // Load notifications on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check for pending notifications every minute
+            setInterval(async () => {
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                if (userData.id) {
+                    try {
+                        const response = await fetch(`php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=pending`);
+                        const data = await response.json();
+
+                        if (data.success) {
+                            const badge = document.getElementById('notificationCount');
+                            if (data.count > 0) {
+                                badge.textContent = data.count;
+                                badge.style.display = 'flex';
+                            } else {
+                                badge.style.display = 'none';
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error checking notifications:', error);
+                    }
+                }
+            }, 60000); // Check every minute
+
+            // Initial load
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            if (userData.id) {
+                fetch(`php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=pending`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success && data.count > 0) {
+                            const badge = document.getElementById('notificationCount');
+                            badge.textContent = data.count;
+                            badge.style.display = 'flex';
+                        }
+                    })
+                    .catch(err => console.error('Error loading initial notifications:', err));
+            }
+        });
     </script>
 </body>
 

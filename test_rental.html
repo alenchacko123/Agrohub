@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Rental Submission</title>
+</head>
+
+<body>
+    <h1>Test Rental Request Submission</h1>
+    <button onclick="testSubmit()">Test Submit Rental</button>
+    <div id="result"></div>
+
+    <script>
+        async function testSubmit() {
+            const testData = {
+                equipment_id: 1,
+                equipment_name: "Test Tractor",
+                farmer_id: 1,
+                farmer_name: "Test Farmer",
+                farmer_email: "test@farmer.com",
+                owner_id: 1,
+                start_date: "2026-01-19",
+                end_date: "2026-01-21",
+                num_days: 2,
+                total_amount: 3400,
+                delivery_address: "Test Address, Test City",
+                need_operator: 0,
+                need_insurance: 0,
+                special_requirements: "Test requirements"
+            };
+
+            try {
+                const response = await fetch('php/submit_rental_request.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                const result = await response.json();
+                document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+
+                if (result.success) {
+                    alert('✅ Test successful! Rental request submitted.');
+                } else {
+                    alert('❌ Test failed: ' + result.error);
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<pre style="color: red;">ERROR: ' + error.message + '</pre>';
+                alert('❌ Network error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -243,9 +243,24 @@
             overflow: hidden;
         }
 
+        /* Add overlay to make badges more visible on thumbnails */
+        .tutorial-thumbnail::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.1) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
         .tutorial-thumbnail .material-icons-outlined {
             font-size: 64px;
             color: var(--text-light);
+            position: relative;
+            z-index: 2;
         }
 
         .play-overlay {
@@ -260,6 +275,7 @@
             color: var(--white);
             font-size: 2rem;
             transition: all 0.3s ease;
+            z-index: 3;
         }
 
         .tutorial-card:hover .play-overlay {
@@ -276,6 +292,7 @@
             font-size: 0.75rem;
             font-weight: 600;
             backdrop-filter: blur(10px);
+            z-index: 3;
         }
 
         .tutorial-badge.beginner {
@@ -303,6 +320,7 @@
             border-radius: 8px;
             font-size: 0.75rem;
             font-weight: 600;
+            z-index: 3;
         }
 
         .tutorial-content {
@@ -720,254 +738,118 @@
             }
         });
 
-        // Sample tutorial data
-        const tutorialData = [
-            {
-                id: 1,
-                title: "Tractor Operation for Beginners",
-                category: "equipment",
-                level: "beginner",
-                description: "Learn the basics of tractor operation, controls, and safe driving practices.",
-                duration: "25 min",
-                instructor: "Ramesh Kumar",
-                rating: 4.8,
-                views: 1250,
-                topics: ["Controls", "Starting", "Driving", "Safety"],
-                videoId: "dQw4w9WgXcQ", // Replace with actual video ID
-                lessons: [
-                    { number: 1, title: "Introduction to Tractors", duration: "5 min" },
-                    { number: 2, title: "Understanding Controls", duration: "8 min" },
-                    { number: 3, title: "Starting & Operating", duration: "7 min" },
-                    { number: 4, title: "Safety Practices", duration: "5 min" }
-                ]
-            },
-            {
-                id: 2,
-                title: "Harvester Operation & Safety",
-                category: "equipment",
-                level: "intermediate",
-                description: "Master combined harvester operation with safety protocols and efficiency tips.",
-                duration: "40 min",
-                instructor: "Prakash Reddy",
-                rating: 4.9,
-                views: 890,
-                topics: ["Operation", "Adjustment", "Safety", "Maintenance"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Harvester Overview", duration: "8 min" },
-                    { number: 2, title: "Pre-operation Checks", duration: "10 min" },
-                    { number: 3, title: "Operating Procedures", duration: "15 min" },
-                    { number: 4, title: "Safety & Troubleshooting", duration: "7 min" }
-                ]
-            },
-            {
-                id: 3,
-                title: "Rotavator Usage & Maintenance",
-                category: "equipment",
-                level: "beginner",
-                description: "Complete guide to rotavator operation, blade maintenance, and soil preparation.",
-                duration: "18 min",
-                instructor: "Suresh Patil",
-                rating: 4.7,
-                views: 1450,
-                topics: ["Setup", "Operation", "Blade Care", "Depth Control"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Rotavator Basics", duration: "4 min" },
-                    { number: 2, title: "Attachment & Setup", duration: "5 min" },
-                    { number: 3, title: "Operation Techniques", duration: "6 min" },
-                    { number: 4, title: "Maintenance Tips", duration: "3 min" }
-                ]
-            },
-            {
-                id: 4,
-                title: "Equipment Safety Fundamentals",
-                category: "safety",
-                level: "beginner",
-                description: "Essential safety guidelines for all agricultural equipment operators.",
-                duration: "22 min",
-                instructor: "Raghu N",
-                rating: 4.9,
-                views: 2100,
-                topics: ["PPE", "Emergency", "Fire Safety", "First Aid"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Personal Protective Equipment", duration: "6 min" },
-                    { number: 2, title: "Pre-operation Safety", duration: "5 min" },
-                    { number: 3, title: "Emergency Procedures", duration: "7 min" },
-                    { number: 4, title: "First Aid Basics", duration: "4 min" }
-                ]
-            },
-            {
-                id: 5,
-                title: "Tractor Maintenance Guide",
-                category: "maintenance",
-                level: "intermediate",
-                description: "Regular maintenance procedures to keep your tractor running smoothly.",
-                duration: "35 min",
-                instructor: "Venkatesh M",
-                rating: 4.6,
-                views: 780,
-                topics: ["Oil Change", "Filters", "Inspection", "Greasing"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Daily Inspections", duration: "8 min" },
-                    { number: 2, title: "Oil & Filter Change", duration: "12 min" },
-                    { number: 3, title: "Greasing Points", duration: "8 min" },
-                    { number: 4, title: "Seasonal Maintenance", duration: "7 min" }
-                ]
-            },
-            {
-                id: 6,
-                title: "Sprayer Operation & Calibration",
-                category: "equipment",
-                level: "intermediate",
-                description: "Learn proper sprayer operation, calibration, and pest control techniques.",
-                duration: "28 min",
-                instructor: "Raghu N",
-                rating: 4.8,
-                views: 920,
-                topics: ["Calibration", "Mixing", "Application", "Cleaning"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Sprayer Types & Parts", duration: "6 min" },
-                    { number: 2, title: "Calibration Process", duration: "10 min" },
-                    { number: 3, title: "Safe Application", duration: "8 min" },
-                    { number: 4, title: "Cleaning & Storage", duration: "4 min" }
-                ]
-            },
-            {
-                id: 7,
-                title: "Drip Irrigation Setup",
-                category: "farming",
-                level: "beginner",
-                description: "Complete guide to installing and managing drip irrigation systems.",
-                duration: "30 min",
-                instructor: "Manjunath S",
-                rating: 4.7,
-                views: 1340,
-                topics: ["Planning", "Installation", "Scheduling", "Maintenance"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "System Planning", duration: "8 min" },
-                    { number: 2, title: "Installation Steps", duration: "12 min" },
-                    { number: 3, title: "Irrigation Scheduling", duration: "6 min" },
-                    { number: 4, title: "Troubleshooting", duration: "4 min" }
-                ]
-            },
-            {
-                id: 8,
-                title: "Soil Preparation Techniques",
-                category: "farming",
-                level: "beginner",
-                description: "Master proper soil preparation for optimal crop growth and yield.",
-                duration: "32 min",
-                instructor: "Basavaraj K",
-                rating: 4.6,
-                views: 1560,
-                topics: ["Tillage", "Leveling", "pH Testing", "Amendments"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Soil Testing", duration: "8 min" },
-                    { number: 2, title: "Tillage Methods", duration: "10 min" },
-                    { number: 3, title: "Land Leveling", duration: "8 min" },
-                    { number: 4, title: "Soil Amendments", duration: "6 min" }
-                ]
-            },
-            {
-                id: 9,
-                title: "Seed Drill Operation",
-                category: "equipment",
-                level: "beginner",
-                description: "Learn to operate seed drills efficiently for uniform crop planting.",
-                duration: "20 min",
-                instructor: "Krishna Gowda",
-                rating: 4.5,
-                views: 670,
-                topics: ["Setup", "Spacing", "Depth", "Calibration"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Seed Drill Components", duration: "5 min" },
-                    { number: 2, title: "Seed Rate Calibration", duration: "7 min" },
-                    { number: 3, title: "Operating Procedures", duration: "6 min" },
-                    { number: 4, title: "Common Issues", duration: "2 min" }
-                ]
-            },
-            {
-                id: 10,
-                title: "Advanced Harvesting Techniques",
-                category: "farming",
-                level: "advanced",
-                description: "Optimize your harvest with advanced techniques and timing strategies.",
-                duration: "45 min",
-                instructor: "Prakash Reddy",
-                rating: 4.9,
-                views: 540,
-                topics: ["Timing", "Techniques", "Efficiency", "Quality"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Harvest Timing", duration: "10 min" },
-                    { number: 2, title: "Cutting Techniques", duration: "12 min" },
-                    { number: 3, title: "Loss Prevention", duration: "13 min" },
-                    { number: 4, title: "Quality Maintenance", duration: "10 min" }
-                ]
-            },
-            {
-                id: 11,
-                title: "Equipment Winterization",
-                category: "maintenance",
-                level: "intermediate",
-                description: "Prepare and store your equipment properly for the off-season.",
-                duration: "26 min",
-                instructor: "Venkatesh M",
-                rating: 4.7,
-                views: 450,
-                topics: ["Cleaning", "Storage", "Fuel Systems", "Battery Care"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Pre-storage Cleaning", duration: "7 min" },
-                    { number: 2, title: "Fuel System Care", duration: "8 min" },
-                    { number: 3, title: "Battery Maintenance", duration: "6 min" },
-                    { number: 4, title: "Proper Storage", duration: "5 min" }
-                ]
-            },
-            {
-                id: 12,
-                title: "Pest Control Best Practices",
-                category: "farming",
-                level: "intermediate",
-                description: "Integrated pest management strategies for healthy crops.",
-                duration: "38 min",
-                instructor: "Raghu N",
-                rating: 4.8,
-                views: 1120,
-                topics: ["IPM", "Identification", "Treatment", "Prevention"],
-                videoId: "dQw4w9WgXcQ",
-                lessons: [
-                    { number: 1, title: "Pest Identification", duration: "10 min" },
-                    { number: 2, title: "IPM Strategies", duration: "12 min" },
-                    { number: 3, title: "Safe Application Methods", duration: "10 min" },
-                    { number: 4, title: "Prevention & Monitoring", duration: "6 min" }
-                ]
-            }
-        ];
+        // Dynamic tutorial data from database
+        let tutorialData = [];
 
         let currentCategory = 'all';
+
+        // Load videos from database
+        async function loadVideos() {
+            try {
+                const response = await fetch('php/get_videos.php');
+                const data = await response.json();
+
+                if (data.success && data.videos) {
+                    tutorialData = data.videos;
+                    renderTutorials();
+                    updateStats();
+                } else {
+                    console.error('Failed to load videos');
+                    tutorialData = [];
+                    renderTutorials();
+                }
+            } catch (error) {
+                console.error('Error loading videos:', error);
+                tutorialData = [];
+                renderTutorials();
+            }
+        }
+
+        // Update stats based on loaded videos
+        function updateStats() {
+            const videoCount = tutorialData.length;
+            const statsCards = document.querySelectorAll('.stat-card h3');
+            if (statsCards.length > 0) {
+                statsCards[0].textContent = `${videoCount}+`;
+            }
+        }
+
+        // Extract YouTube video ID from URL
+        function getYouTubeVideoId(url) {
+            if (!url) return null;
+
+            let videoId = null;
+
+            // Format: https://www.youtube.com/embed/VIDEO_ID
+            if (url.includes('/embed/')) {
+                videoId = url.split('/embed/')[1].split('?')[0];
+            }
+            // Format: https://www.youtube.com/watch?v=VIDEO_ID
+            else if (url.includes('youtube.com/watch?v=')) {
+                videoId = url.split('v=')[1].split('&')[0];
+            }
+            // Format: https://youtu.be/VIDEO_ID
+            else if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1].split('?')[0];
+            }
+            // Format: https://www.youtube.com/v/VIDEO_ID
+            else if (url.includes('youtube.com/v/')) {
+                videoId = url.split('/v/')[1].split('?')[0];
+            }
+
+            return videoId;
+        }
+
+        // Get YouTube thumbnail URL
+        function getYouTubeThumbnail(videoUrl, customThumbnail = null) {
+            // Use custom thumbnail if provided
+            if (customThumbnail && customThumbnail.trim() !== '') {
+                return customThumbnail;
+            }
+
+            // Extract video ID and get YouTube thumbnail
+            const videoId = getYouTubeVideoId(videoUrl);
+            if (videoId) {
+                // Use high quality thumbnail from YouTube
+                return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+            }
+
+            // Return null if no thumbnail available
+            return null;
+        }
 
         // Render tutorials
         function renderTutorials(data = tutorialData) {
             const grid = document.getElementById('tutorialGrid');
+
+            if (!data || data.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 20px;">
+                        <span class="material-icons-outlined" style="font-size: 4rem; color: #e5e7eb; margin-bottom: 1rem;">video_library</span>
+                        <h3 style="margin-bottom: 0.5rem;">No Videos Available</h3>
+                        <p style="color: var(--text-gray);">Check back soon for new tutorial videos!</p>
+                    </div>
+                `;
+                return;
+            }
+
             grid.innerHTML = data.map(tutorial => {
-                const instructorInitials = tutorial.instructor.split(' ').map(n => n[0]).join('');
+                const instructor = tutorial.instructor || 'Instructor';
+                const instructorInitials = instructor.split(' ').map(n => n[0]).join('');
+                const topics = Array.isArray(tutorial.topics) ? tutorial.topics : [];
+
+                // Get thumbnail URL
+                const thumbnailUrl = getYouTubeThumbnail(tutorial.video_url, tutorial.thumbnail_url);
+
                 return `
                 <div class="tutorial-card" onclick="openTutorialModal(${tutorial.id})">
-                    <div class="tutorial-thumbnail">
-                        <span class="material-icons-outlined">play_circle_filled</span>
+                    <div class="tutorial-thumbnail" style="background-image: url('${thumbnailUrl || ''}'); background-size: cover; background-position: center;">
+                        ${!thumbnailUrl ? '<span class="material-icons-outlined">play_circle_filled</span>' : ''}
                         <div class="play-overlay">
                             <span class="material-icons-outlined">play_arrow</span>
                         </div>
                         <div class="tutorial-badge ${tutorial.level}">${tutorial.level.toUpperCase()}</div>
-                        <div class="duration-badge">${tutorial.duration}</div>
+                        <div class="duration-badge">${tutorial.duration || 'N/A'}</div>
                     </div>
                     <div class="tutorial-content">
                         <div class="tutorial-header">
@@ -975,24 +857,24 @@
                             <div class="tutorial-meta">
                                 <div class="meta-item">
                                     <span class="material-icons-outlined">visibility</span>
-                                    ${tutorial.views.toLocaleString()} views
+                                    ${(tutorial.views || 0).toLocaleString()} views
                                 </div>
                                 <div class="meta-item">
                                     <span class="material-icons-outlined">star</span>
-                                    ${tutorial.rating}
+                                    ${tutorial.rating || '0.0'}
                                 </div>
                             </div>
                         </div>
-                        <p class="tutorial-description">${tutorial.description}</p>
+                        <p class="tutorial-description">${tutorial.description || 'No description available'}</p>
                         <div class="tutorial-topics">
-                            ${tutorial.topics.map(topic => `
+                            ${topics.slice(0, 4).map(topic => `
                                 <span class="topic-tag">${topic}</span>
                             `).join('')}
                         </div>
                         <div class="tutorial-footer">
                             <div class="instructor">
                                 <div class="instructor-avatar">${instructorInitials}</div>
-                                <span class="instructor-name">${tutorial.instructor}</span>
+                                <span class="instructor-name">${instructor}</span>
                             </div>
                         </div>
                         <button class="start-btn">
@@ -1021,9 +903,10 @@
 
             let filtered = tutorialData.filter(tutorial => {
                 const matchesCategory = currentCategory === 'all' || tutorial.category === currentCategory;
+                const topics = Array.isArray(tutorial.topics) ? tutorial.topics : [];
                 const matchesSearch = tutorial.title.toLowerCase().includes(searchTerm) ||
-                    tutorial.description.toLowerCase().includes(searchTerm) ||
-                    tutorial.topics.some(topic => topic.toLowerCase().includes(searchTerm));
+                    (tutorial.description && tutorial.description.toLowerCase().includes(searchTerm)) ||
+                    topics.some(topic => topic.toLowerCase().includes(searchTerm));
 
                 return matchesCategory && matchesSearch;
             });
@@ -1040,26 +923,31 @@
             if (!tutorial) return;
 
             document.getElementById('modalTitle').textContent = tutorial.title;
-            document.getElementById('modalDescription').textContent = tutorial.description;
+            document.getElementById('modalDescription').textContent = tutorial.description || '';
 
-            // Set video (in production, use actual video URLs)
-            document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${tutorial.videoId}?autoplay=1`;
+            // Set video - use the video_url from database
+            const videoUrl = tutorial.video_url || '';
+            document.getElementById('videoFrame').src = videoUrl + (videoUrl.includes('?') ? '&autoplay=1' : '?autoplay=1');
 
-            // Render lessons
+            // Render lessons (if available)
             const lessonList = document.getElementById('lessonList');
-            lessonList.innerHTML = `
-                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Course Contents</h3>
-                ${tutorial.lessons.map(lesson => `
-                    <div class="lesson-item">
-                        <div class="lesson-number">${lesson.number}</div>
-                        <div class="lesson-info">
-                            <div class="lesson-title">${lesson.title}</div>
-                            <div class="lesson-duration">${lesson.duration}</div>
+            if (tutorial.lessons && tutorial.lessons.length > 0) {
+                lessonList.innerHTML = `
+                    <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Course Contents</h3>
+                    ${tutorial.lessons.map(lesson => `
+                        <div class="lesson-item">
+                            <div class="lesson-number">${lesson.number}</div>
+                            <div class="lesson-info">
+                                <div class="lesson-title">${lesson.title}</div>
+                                <div class="lesson-duration">${lesson.duration}</div>
+                            </div>
+                            <span class="material-icons-outlined" style="color: var(--text-light);">play_circle_outline</span>
                         </div>
-                        <span class="material-icons-outlined" style="color: var(--text-light);">play_circle_outline</span>
-                    </div>
-                `).join('')}
-            `;
+                    `).join('')}
+                `;
+            } else {
+                lessonList.innerHTML = '';
+            }
 
             document.getElementById('tutorialModal').classList.add('active');
         }
@@ -1070,8 +958,10 @@
             document.getElementById('videoFrame').src = '';
         }
 
-        // Initialize
-        renderTutorials();
+        // Initialize - Load videos from database
+        window.addEventListener('DOMContentLoaded', () => {
+            loadVideos();
+        });
     </script>
 </body>
 

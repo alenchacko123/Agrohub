@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Jobs - AgroHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .warning {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #991b1b;
+        }
+
+        .job-list {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .job-item {
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #333;
+            border-left: 4px solid #ef4444;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0.5rem;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="icon">🗑️</div>
+        <h1>Delete Jobs (IDs 1-5)</h1>
+        <p style="color: #666; margin-bottom: 2rem;">
+            This will permanently delete the following 5 jobs from the database.
+        </p>
+
+        <div class="warning">
+            ⚠️ <strong>WARNING:</strong> This action cannot be undone!
+        </div>
+
+        <div class="job-list">
+            <h3 style="margin-bottom: 1rem; color: #333;">Jobs to be Deleted:</h3>
+            <div class="job-item">
+                <strong>1.</strong> Rice Harvesting Worker - Ramesh Kumar (Mysore, Karnataka)
+            </div>
+            <div class="job-item">
+                <strong>2.</strong> Tractor Operator - Suresh Patil (Mandya, Karnataka)
+            </div>
+            <div class="job-item">
+                <strong>3.</strong> Crop Planting Assistant - Mahesh Gowda (Bangalore Rural)
+            </div>
+            <div class="job-item">
+                <strong>4.</strong> Irrigation System Operator - Krishna Reddy (Hassan, Karnataka)
+            </div>
+            <div class="job-item">
+                <strong>5.</strong> Pesticide Spray Operator - Venkatesh Naik (Tumkur, Karnataka)
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="php/delete_specific_jobs.php" class="btn btn-danger">
+                🗑️ Delete These 5 Jobs
+            </a>
+            <a href="job-portal-dashboard.html" class="btn btn-secondary">
+                ← Cancel
+            </a>
+        </div>
+
+        <p style="margin-top: 2rem; font-size: 0.85rem; color: #999;">
+            <strong>Alternative:</strong> You can also run the SQL script manually:<br>
+            <code>sql/delete_specific_jobs.sql</code>
+        </p>
+    </div>
+</body>
+
+</html>

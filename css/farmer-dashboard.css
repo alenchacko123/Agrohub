@@ -1169,3 +1169,206 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
+/* Farmer Notification Badge */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--danger);
+    color: var(--surface-white);
+    border-radius: 50%;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    animation: pulse-farmer-badge 2s infinite;
+}
+
+@keyframes pulse-farmer-badge {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Farmer Notifications Panel */
+#farmerNotificationsPanel {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 420px;
+    height: 100vh;
+    background: var(--surface-white);
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+}
+
+#farmerNotificationsPanel.active {
+    right: 0;
+}
+
+.farmer-notification-header {
+    padding: 1.75rem;
+    background: linear-gradient(135deg, var(--primary-green), var(--primary-dark));
+    color: var(--surface-white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.farmer-notification-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.farmer-close-panel {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--surface-white);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background 0.3s;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.farmer-close-panel:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.farmer-notification-list {
+    padding: 1.25rem;
+}
+
+.farmer-notification-item {
+    background: var(--surface-white);
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-sm);
+}
+
+.farmer-notification-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.farmer-notification-item.accepted {
+    border-left: 4px solid var(--success);
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.05), var(--surface-white));
+}
+
+.farmer-notification-item.declined {
+    border-left: 4px solid var(--danger);
+    background: linear-gradient(to right, rgba(239, 68, 68, 0.05), var(--surface-white));
+}
+
+.farmer-notification-item.pending {
+    border-left: 4px solid var(--warning);
+    background: linear-gradient(to right, rgba(245, 158, 11, 0.05), var(--surface-white));
+}
+
+.farmer-notification-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.farmer-notification-status.accepted {
+    background: rgba(16, 185, 129, 0.15);
+    color: #065f46;
+}
+
+.farmer-notification-status.declined {
+    background: rgba(239, 68, 68, 0.15);
+    color: #991b1b;
+}
+
+.farmer-notification-status.pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: #92400e;
+}
+
+.farmer-notification-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+}
+
+.farmer-notification-details {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.farmer-notification-details div {
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.farmer-notification-details strong {
+    color: var(--text-main);
+    min-width: 80px;
+}
+
+.farmer-notification-time {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.farmer-empty-notifications {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-light);
+}
+
+.farmer-empty-notifications .material-icons-outlined {
+    font-size: 4.5rem;
+    margin-bottom: 1.25rem;
+    opacity: 0.5;
+}
+
+.farmer-empty-notifications p {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.farmer-empty-notifications p:last-child {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
