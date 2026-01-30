@@ -391,3 +391,165 @@
 [2026-01-20 06:47:51] Google Auth: User exists, logging in
 [2026-01-20 06:47:51] createSession called for user 1
 [2026-01-20 06:47:51] Google Auth: Session created, success
+[2026-01-22 04:24:42] Google Auth: Access Token provided
+[2026-01-22 04:24:43] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-22 04:24:43] Google Auth: User exists, logging in
+[2026-01-22 04:24:43] createSession called for user 1
+[2026-01-22 04:24:43] Google Auth: Session created, success
+[2026-01-28 16:11:14] Google Auth: Access Token provided
+[2026-01-28 16:11:14] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-28 16:11:15] Google Auth: User exists, logging in
+[2026-01-28 16:11:15] createSession called for user 1
+[2026-01-28 16:11:15] Google Auth: Session created, success
+[2026-01-28 17:23:39] Google Auth: User exists, logging in
+[2026-01-28 17:23:39] createSession called for user 2
+[2026-01-28 17:23:39] Google Auth: Session created, success
+[2026-01-28 17:48:26] Google Auth: Access Token provided
+[2026-01-28 17:48:37] Google Auth cURL Error: OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.googleapis.com:443 
+[2026-01-28 17:48:37] Google Auth: Falling back to file_get_contents
+[2026-01-28 17:48:38] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-28 17:48:38] Google Auth: User exists, logging in
+[2026-01-28 17:48:38] createSession called for user 1
+[2026-01-28 17:48:38] Google Auth: Session created, success
+[2026-01-28 18:10:48] Google Auth: User exists, logging in
+[2026-01-28 18:10:48] createSession called for user 2
+[2026-01-28 18:10:48] Google Auth: Session created, success
+[2026-01-28 18:11:46] Google Auth: Access Token provided
+[2026-01-28 18:11:47] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-28 18:11:47] Google Auth: User exists, logging in
+[2026-01-28 18:11:47] createSession called for user 1
+[2026-01-28 18:11:47] Google Auth: Session created, success
+[2026-01-29 02:33:47] Google Auth: Access Token provided
+[2026-01-29 02:33:48] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 02:33:48] Google Auth: User exists, logging in
+[2026-01-29 02:33:48] createSession called for user 1
+[2026-01-29 02:33:48] Google Auth: Session created, success
+[2026-01-29 03:26:29] Google Auth: Access Token provided
+[2026-01-29 03:26:29] Google Auth: Got user data - sharijohn1975@gmail.com
+[2026-01-29 03:26:29] Google Auth: Creating new user
+[2026-01-29 03:26:29] createSession called for user 9
+[2026-01-29 03:26:29] Google Auth: Session created, success
+[2026-01-29 04:22:21] Google Auth: Access Token provided
+[2026-01-29 04:22:22] Google Auth: Got user data - sharijohn1975@gmail.com
+[2026-01-29 04:22:22] Google Auth: User exists, logging in
+[2026-01-29 04:22:22] createSession called for user 9
+[2026-01-29 04:22:22] Google Auth: Session created, success
+[2026-01-29 04:24:29] Google Auth: Access Token provided
+[2026-01-29 04:24:30] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 04:24:30] Google Auth: User exists, logging in
+[2026-01-29 04:24:30] createSession called for user 1
+[2026-01-29 04:24:30] Google Auth: Session created, success
+[2026-01-29 04:32:46] Google Auth: User exists, logging in
+[2026-01-29 04:32:46] createSession called for user 2
+[2026-01-29 04:32:46] Google Auth: Session created, success
+[2026-01-29 04:33:16] Google Auth: Access Token provided
+[2026-01-29 04:33:17] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 04:33:17] Google Auth: User exists, logging in
+[2026-01-29 04:33:17] createSession called for user 1
+[2026-01-29 04:33:17] Google Auth: Session created, success
+[2026-01-29 04:34:12] Google Auth: User exists, logging in
+[2026-01-29 04:34:12] createSession called for user 2
+[2026-01-29 04:34:12] Google Auth: Session created, success
+[2026-01-29 04:43:34] Google Auth: Access Token provided
+[2026-01-29 04:43:34] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 04:43:34] Google Auth: User exists, logging in
+[2026-01-29 04:43:34] createSession called for user 1
+[2026-01-29 04:43:34] Google Auth: Session created, success
+[2026-01-29 04:49:42] Google Auth: User exists, logging in
+[2026-01-29 04:49:42] createSession called for user 2
+[2026-01-29 04:49:42] Google Auth: Session created, success
+[2026-01-29 05:13:24] Google Auth: Access Token provided
+[2026-01-29 05:13:24] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 05:13:24] Google Auth: User exists, logging in
+[2026-01-29 05:13:24] createSession called for user 1
+[2026-01-29 05:13:24] Google Auth: Session created, success
+[2026-01-29 05:14:47] Google Auth: User exists, logging in
+[2026-01-29 05:14:47] createSession called for user 2
+[2026-01-29 05:14:47] Google Auth: Session created, success
+[2026-01-29 05:15:12] Google Auth: Access Token provided
+[2026-01-29 05:15:13] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 05:15:13] Google Auth: User exists, logging in
+[2026-01-29 05:15:13] createSession called for user 1
+[2026-01-29 05:15:13] Google Auth: Session created, success
+[2026-01-29 05:16:06] Google Auth: User exists, logging in
+[2026-01-29 05:16:06] createSession called for user 2
+[2026-01-29 05:16:06] Google Auth: Session created, success
+[2026-01-29 05:23:58] Google Auth: Access Token provided
+[2026-01-29 05:23:59] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 05:23:59] Google Auth: User exists, logging in
+[2026-01-29 05:23:59] createSession called for user 1
+[2026-01-29 05:23:59] Google Auth: Session created, success
+[2026-01-29 05:39:44] Google Auth: Access Token provided
+[2026-01-29 05:39:45] Google Auth: Got user data - alenchacko2004@gmail.com
+[2026-01-29 05:39:45] Google Auth: User exists, logging in
+[2026-01-29 05:39:45] createSession called for user 2
+[2026-01-29 05:39:45] Google Auth: Session created, success
+[2026-01-29 05:39:58] Google Auth: User exists, logging in
+[2026-01-29 05:39:58] createSession called for user 2
+[2026-01-29 05:39:58] Google Auth: Session created, success
+[2026-01-29 05:40:58] Google Auth: Access Token provided
+[2026-01-29 05:40:58] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 05:40:58] Google Auth: User exists, logging in
+[2026-01-29 05:40:58] createSession called for user 1
+[2026-01-29 05:40:58] Google Auth: Session created, success
+[2026-01-29 07:01:26] Google Auth: Creating new user
+[2026-01-29 07:01:26] createSession called for user 10
+[2026-01-29 07:01:26] Google Auth: Session created, success
+[2026-01-29 10:11:28] Google Auth: Access Token provided
+[2026-01-29 10:11:28] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 10:11:28] Google Auth: User exists, logging in
+[2026-01-29 10:11:28] createSession called for user 1
+[2026-01-29 10:11:28] Google Auth: Session created, success
+[2026-01-29 10:12:42] Google Auth: User exists, logging in
+[2026-01-29 10:12:42] createSession called for user 2
+[2026-01-29 10:12:42] Google Auth: Session created, success
+[2026-01-29 10:13:38] Google Auth: Access Token provided
+[2026-01-29 10:13:38] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 10:13:38] Google Auth: User exists, logging in
+[2026-01-29 10:13:38] createSession called for user 1
+[2026-01-29 10:13:38] Google Auth: Session created, success
+[2026-01-29 10:14:16] Google Auth: User exists, logging in
+[2026-01-29 10:14:16] createSession called for user 2
+[2026-01-29 10:14:16] Google Auth: Session created, success
+[2026-01-29 10:24:43] Google Auth: User exists, logging in
+[2026-01-29 10:24:43] createSession called for user 10
+[2026-01-29 10:24:43] Google Auth: Session created, success
+[2026-01-29 10:25:33] Google Auth: Access Token provided
+[2026-01-29 10:25:33] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-29 10:25:33] Google Auth: User exists, logging in
+[2026-01-29 10:25:33] createSession called for user 1
+[2026-01-29 10:25:33] Google Auth: Session created, success
+[2026-01-29 11:10:11] Google Auth: User exists, logging in
+[2026-01-29 11:10:11] createSession called for user 10
+[2026-01-29 11:10:11] Google Auth: Session created, success
+[2026-01-30 02:34:00] Google Auth: Access Token provided
+[2026-01-30 02:34:01] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-30 02:34:01] Google Auth: User exists, logging in
+[2026-01-30 02:34:01] createSession called for user 1
+[2026-01-30 02:34:01] Google Auth: Session created, success
+[2026-01-30 02:44:53] Google Auth: User exists, logging in
+[2026-01-30 02:44:53] createSession called for user 2
+[2026-01-30 02:44:53] Google Auth: Session created, success
+[2026-01-30 03:02:22] Google Auth: User exists, logging in
+[2026-01-30 03:02:22] createSession called for user 2
+[2026-01-30 03:02:22] Google Auth: Session created, success
+[2026-01-30 03:03:34] Google Auth: Access Token provided
+[2026-01-30 03:03:35] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-30 03:03:35] Google Auth: User exists, logging in
+[2026-01-30 03:03:35] createSession called for user 1
+[2026-01-30 03:03:35] Google Auth: Session created, success
+[2026-01-30 03:05:00] Google Auth: User exists, logging in
+[2026-01-30 03:05:00] createSession called for user 2
+[2026-01-30 03:05:00] Google Auth: Session created, success
+[2026-01-30 03:06:11] Google Auth: Access Token provided
+[2026-01-30 03:06:12] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-30 03:06:12] Google Auth: User exists, logging in
+[2026-01-30 03:06:12] createSession called for user 1
+[2026-01-30 03:06:12] Google Auth: Session created, success
+[2026-01-30 04:43:27] Google Auth: Access Token provided
+[2026-01-30 04:43:27] Google Auth: Got user data - alenchacko2028@mca.ajce.in
+[2026-01-30 04:43:28] Google Auth: User exists, logging in
+[2026-01-30 04:43:28] createSession called for user 1
+[2026-01-30 04:43:28] Google Auth: Session created, success
+[2026-01-30 05:12:56] createSession called for user 1
+[2026-01-30 05:13:28] createSession called for user 1

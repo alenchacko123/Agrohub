@@ -648,38 +648,34 @@
                 // Handle Google Auth with Access Token
                 async function handleGoogleAuthWithToken(accessToken) {
                     try {
-                        // Fetch user info from Google - Gets the actual Google account name and email
-                        const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-                            headers: { Authorization: `Bearer ${accessToken}` }
+                        const res = await fetch('php/auth.php?action=google-auth', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                accessToken: accessToken,
+                                userType: 'worker'
+                            })
                         });
 
-                        const googleUser = await userInfoResponse.json();
+                        if (!res.ok) {
+                            throw new Error(`Server returned ${res.status} ${res.statusText}`);
+                        }
 
-                        console.log('Google User Info:', googleUser); // Debug log
+                        const result = await res.json();
 
-                        // Store user data with Google info (name from Google account)
-                        const applicantData = {
-                            email: googleUser.email,
-                            fullName: googleUser.name, // This is the actual Google account name
-                            phone: '',
-                            location: '',
-                            skills: '',
-                            education: '',
-                            googleAuth: true
-                        };
+                        if (result.success) {
+                            showNotification('Welcome, ' + result.data.user.name + '!', 'success');
+                            localStorage.setItem('agrohub_user', JSON.stringify(result.data.user));
+                            localStorage.setItem('agrohub_token', result.data.token);
+                            localStorage.setItem('userData', JSON.stringify(result.data.user)); // For compatibility
 
-                        localStorage.setItem('applicantData', JSON.stringify(applicantData));
-
-                        // Verify data was stored
-                        const storedData = localStorage.getItem('applicantData');
-                        console.log('Stored applicantData:', storedData); // Debug log
-
-                        showNotification('Welcome, ' + googleUser.name + '! Redirecting...', 'success');
-
-                        setTimeout(() => {
-                            window.location.href = 'job-portal-dashboard.html';
-                        }, 1500);
-
+                            setTimeout(() => {
+                                window.location.href = 'available-jobs.html';
+                            }, 1500);
+                        } else {
+                            console.error('Server reported error:', result.message);
+                            showNotification('Error: ' + result.message, 'error');
+                        }
                     } catch (error) {
                         console.error('Google Auth Error:', error);
                         showNotification('Google authentication failed. Please try again.', 'error');
@@ -785,29 +781,36 @@
                     submitBtn.innerHTML = '<span class="material-icons-outlined">sync</span> Signing in...';
 
                     try {
-                        const response = await fetch(`php/job_portal_api.php?action=get_applications&email=${encodeURIComponent(email)}`);
+                        // Use auth.php with userType='worker'
+                        const response = await fetch('php/auth.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                action: 'login',
+                                email: email,
+                                password: password,
+                                userType: 'worker'
+                            })
+                        });
+
                         const data = await response.json();
 
-                        if (data.success && data.data.applications.length > 0) {
-                            const applicantData = {
-                                email: email,
-                                fullName: data.data.applications[0].full_name,
-                                phone: data.data.applications[0].phone,
-                                location: data.data.applications[0].location,
-                                skills: data.data.applications[0].skills,
-                                education: data.data.applications[0].education
-                            };
-
-                            localStorage.setItem('applicantData', JSON.stringify(applicantData));
+                        if (data.success) {
+                            // Store user data and token
+                            localStorage.setItem('agrohub_user', JSON.stringify(data.data.user));
+                            localStorage.setItem('agrohub_token', data.data.token);
+                            localStorage.setItem('userData', JSON.stringify(data.data.user)); // For compatibility
 
                             showNotification('Login successful! Redirecting...', 'success');
                             submitBtn.innerHTML = '<span class="material-icons-outlined">check_circle</span> Success!';
 
                             setTimeout(() => {
-                                window.location.href = 'job-portal-dashboard.html';
+                                window.location.href = 'available-jobs.html';
                             }, 1000);
                         } else {
-                            showNotification('No account found. Please apply for a job first.', 'error');
+                            showNotification(data.message || 'Login failed. Please check your credentials.', 'error');
                             submitBtn.disabled = false;
                             submitBtn.innerHTML = '<span class="material-icons-outlined">login</span> Sign In';
                         }

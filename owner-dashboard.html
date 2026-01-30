@@ -1551,7 +1551,7 @@
                         </span>
                     </div>
                     <div class="stat-value" id="totalEarnings">₹0</div>
-                    <div class="stat-label">Total Earnings (This Month)</div>
+                    <div class="stat-label">Total Earnings</div>
                 </div>
 
                 <div class="stat-card bookings">
@@ -1593,166 +1593,188 @@
             </div>
 
             <!-- Dashboard Content -->
-            <div class="dashboard-grid">
-                <!-- Quick Actions -->
-                <div class="card" style="margin-bottom: 2rem;">
-                    <div class="card-header">
-                        <h2 class="card-title">⚡ Quick Actions</h2>
-                        <a href="#" class="view-all"><span class="material-icons-outlined">arrow_forward</span></a>
-                    </div>
-                    <div class="services-grid"
-                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
-                        <a href="#" class="service-card"
-                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
-                            onclick="openModal('addEquipmentModal')">
-                            <img src="images/add-equipment.png" style="width: 100%; height: 120px; object-fit: cover;">
-                            <div style="padding: 1.5rem; text-align: center;">
-                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Add Equipment</h3>
-                                <p style="font-size: 0.85rem; color: var(--text-gray);">List new machinery</p>
-                            </div>
-                        </a>
-
-                        <a href="#" class="service-card"
-                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
-                            onclick="openModal('bookingsModal')">
-                            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=400&fit=crop"
-                                style="width: 100%; height: 120px; object-fit: cover;">
-                            <div style="padding: 1.5rem; text-align: center;">
-                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Manage Bookings</h3>
-                                <p style="font-size: 0.85rem; color: var(--text-gray);">Track rental requests</p>
-                            </div>
-                        </a>
-
-                        <a href="#" class="service-card"
-                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
-                            onclick="openModal('earningsModal')">
-                            <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=400&fit=crop"
-                                style="width: 100%; height: 120px; object-fit: cover;">
-                            <div style="padding: 1.5rem; text-align: center;">
-                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Earnings</h3>
-                                <p style="font-size: 0.85rem; color: var(--text-gray);">View revenue reports</p>
-                            </div>
-                        </a>
-
-                        <a href="#" class="service-card"
-                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
-                            onclick="openModal('analyticsModal')">
-                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&fit=crop"
-                                style="width: 100%; height: 120px; object-fit: cover;">
-                            <div style="padding: 1.5rem; text-align: center;">
-                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Analytics</h3>
-                                <p style="font-size: 0.85rem; color: var(--text-gray);">Business performance</p>
-                            </div>
-                        </a>
-
-                        <a href="#" class="service-card"
-                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
-                            onclick="window.location.href='agreements.html'">
-                            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=400&fit=crop"
-                                style="width: 100%; height: 120px; object-fit: cover;">
-                            <div style="padding: 1.5rem; text-align: center;">
-                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Agreements</h3>
-                                <p style="font-size: 0.85rem; color: var(--text-gray);">Digital rental contracts</p>
-                            </div>
-                        </a>
-
-                        <a href="#" class="service-card"
-                            style="display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; text-decoration: none; color: inherit; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;"
-                            onclick="alert('Insurance portal coming soon!')">
-                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=400&fit=crop"
-                                style="width: 100%; height: 120px; object-fit: cover;">
-                            <div style="padding: 1.5rem; text-align: center;">
-                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Insurance</h3>
-                                <p style="font-size: 0.85rem; color: var(--text-gray);">Protect your machines</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Recent Bookings and Listings Row -->
+            <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+                <!-- Recent Bookings and Availability -->
                 <div class="dashboard-row"
-                    style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;margin-bottom: 2rem;">
                     <!-- Recent Bookings -->
                     <div class="card"
-                        style="background: var(--white); padding: 1.5rem; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                        style="background: var(--white); padding: 2rem; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(0,119,182, 0.1);">
                         <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                            <h2 style="font-size: 1.25rem;">Recent Bookings</h2>
-                            <a href="#" class="view-all"
-                                style="text-decoration: none; color: var(--primary-blue); font-size: 0.9rem;">View
-                                All</a>
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <div>
+                                <h2
+                                    style="font-family:var(--font-serif); font-size: 1.5rem; color: var(--text-dark); margin-bottom: 0.25rem;">
+                                    📋 Recent Bookings</h2>
+                                <p style="font-size: 0.85rem; color: var(--text-gray);">Latest rental requests from
+                                    farmers</p>
+                            </div>
+                            <a href="#" class="view-all" onclick="showAllBookings(); return false;"
+                                style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--primary-blue); font-size: 0.9rem; font-weight: 600; padding: 0.5rem 1rem; border-radius: 8px; background: rgba(0,119,182,0.1); transition: all 0.3s;">
+                                View All
+                                <span class="material-icons-outlined" style="font-size: 1.2rem;">arrow_forward</span>
+                            </a>
                         </div>
                         <div class="bookings-list" id="recentBookingsList"
                             style="display: flex; flex-direction: column; gap: 1rem;">
                             <!-- Loading state -->
-                            <div style="padding: 2rem; text-align: center; color: var(--text-light);">
+                            <div style="padding: 3rem; text-align: center; color: var(--text-light);">
                                 <span class="material-icons-outlined"
-                                    style="font-size: 2rem; animation: spin 1s linear infinite;">sync</span>
-                                <p style="margin-top: 0.5rem;">Loading recent bookings...</p>
+                                    style="font-size: 3rem; animation: spin 1s linear infinite; color: var(--primary-blue);">sync</span>
+                                <p style="margin-top: 1rem; font-weight: 500;">Loading recent bookings...</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Equipment Status -->
+                    <!-- Equipment Availability -->
                     <div class="card"
-                        style="background: var(--white); padding: 1.5rem; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                        style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); padding: 2rem; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(0,119,182, 0.1);">
                         <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                            <h2 style="font-size: 1.25rem;">Availability</h2>
-                            <span class="material-icons-outlined" style="color: var(--text-light);">more_horiz</span>
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <div>
+                                <h2
+                                    style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--text-dark); margin-bottom: 0.25rem;">
+                                    📊 Equipment Availability</h2>
+                                <p style="font-size: 0.85rem; color: var(--text-gray);">Real-time status overview</p>
+                            </div>
+                            <span class="material-icons-outlined"
+                                style="color: var(--primary-blue); font-size: 2rem;">inventory_2</span>
                         </div>
-                        <div style="margin-top: 1rem;">
-                            <div
-                                style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
-                                <span>Rented</span>
-                                <span style="font-weight: 600;">15%</span>
+                        <div style="margin-top: 1.5rem;">
+                            <!-- Rented Status -->
+                            <div style="margin-bottom: 1.5rem;">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div
+                                            style="width: 12px; height: 12px; border-radius: 50%; background: var(--accent-orange);">
+                                        </div>
+                                        <span
+                                            style="font-size: 0.95rem; font-weight: 500; color: var(--text-dark);">Currently
+                                            Rented</span>
+                                    </div>
+                                    <span
+                                        style="font-weight: 700; font-size: 1.1rem; color: var(--accent-orange);">15%</span>
+                                </div>
+                                <div
+                                    style="height: 10px; background: rgba(251, 146, 60, 0.1); border-radius: 8px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                                    <div
+                                        style="width: 15%; height: 100%; background: linear-gradient(90deg, var(--accent-orange), #fbbf24); border-radius: 8px; transition: width 0.5s ease;">
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; margin-bottom: 1rem;">
-                                <div style="width: 15%; height: 100%; background: var(--accent-orange);"></div>
+
+                            <!-- Available Status -->
+                            <div style="margin-bottom: 1.5rem;">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div
+                                            style="width: 12px; height: 12px; border-radius: 50%; background: var(--success);">
+                                        </div>
+                                        <span
+                                            style="font-size: 0.95rem; font-weight: 500; color: var(--text-dark);">Available</span>
+                                    </div>
+                                    <span style="font-weight: 700; font-size: 1.1rem; color: var(--success);">75%</span>
+                                </div>
+                                <div
+                                    style="height: 10px; background: rgba(34, 197, 94, 0.1); border-radius: 8px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                                    <div
+                                        style="width: 75%; height: 100%; background: linear-gradient(90deg, var(--success), #4ade80); border-radius: 8px; transition: width 0.5s ease;">
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
-                                <span>Available</span>
-                                <span style="font-weight: 600;">75%</span>
-                            </div>
-                            <div
-                                style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; margin-bottom: 1rem;">
-                                <div style="width: 75%; height: 100%; background: var(--success);"></div>
-                            </div>
-                            <div
-                                style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
-                                <span>Maintenance</span>
-                                <span style="font-weight: 600;">10%</span>
-                            </div>
-                            <div style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
-                                <div style="width: 10%; height: 100%; background: var(--error);"></div>
+
+                            <!-- Maintenance Status -->
+                            <div>
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div
+                                            style="width: 12px; height: 12px; border-radius: 50%; background: var(--error);">
+                                        </div>
+                                        <span
+                                            style="font-size: 0.95rem; font-weight: 500; color: var(--text-dark);">Maintenance</span>
+                                    </div>
+                                    <span style="font-weight: 700; font-size: 1.1rem; color: var(--error);">10%</span>
+                                </div>
+                                <div
+                                    style="height: 10px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                                    <div
+                                        style="width: 10%; height: 100%; background: linear-gradient(90deg, var(--error), #f87171); border-radius: 8px; transition: width 0.5s ease;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Equipment Section -->
-                <section class="equipment-section">
-                    <div class="section-header"
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <h2 class="section-title">🚜 My Equipment Listings</h2>
-                        <a href="#" class="view-all"
-                            style="text-decoration: none; color: var(--primary-blue); font-size: 0.9rem;">Manage All
-                            <span class="material-icons-outlined">arrow_forward</span></a>
-                    </div>
-                    <div class="equipment-grid" id="ownerEquipmentGrid"
-                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
-                        <!-- Equipment will be loaded dynamically -->
-                        <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-gray);">
-                            <span class="material-icons-outlined"
-                                style="font-size: 3rem; animation: spin 1s linear infinite;">sync</span>
-                            <p>Loading your equipment...</p>
-                        </div>
-                    </div>
-                </section>
             </div>
-        </main>
+
+            <!-- My Equipment View (Hidden by default) -->
+            <div id="myEquipmentView" style="display: none;">
+                <div class="section-header"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                    <div>
+                        <h2
+                            style="font-family: var(--font-serif); font-size: 2rem; color: var(--text-dark); margin-bottom: 0.5rem;">
+                            🚜 My Equipment Listings</h2>
+                        <p style="font-size: 0.95rem; color: var(--text-gray);">Manage your agricultural equipment
+                            inventory</p>
+                    </div>
+                    <button onclick="openModal('addEquipmentModal')"
+                        style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.5rem; background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,119,182,0.3);">
+                        <span class="material-icons-outlined">add_circle</span>
+                        Add New Equipment
+                    </button>
+                </div>
+
+                <div class="equipment-grid" id="ownerEquipmentGrid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+                    <!-- Equipment will be loaded dynamically -->
+                    <div
+                        style="grid-column: 1/-1; text-align: center; padding: 4rem; background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                        <span class="material-icons-outlined"
+                            style="font-size: 4rem; animation: spin 1s linear infinite; color: var(--primary-blue);">sync</span>
+                        <p style="margin-top: 1rem; font-weight: 500; font-size: 1.1rem; color: var(--text-gray);">
+                            Loading your equipment...</p>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <!-- All Bookings View (Hidden by default) -->
+    <div id="allBookingsView" style="display: none;">
+        <div class="section-header"
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+            <div>
+                <h2
+                    style="font-family: var(--font-serif); font-size: 2rem; color: var(--text-dark); margin-bottom: 0.5rem;">
+                    📋 All Booking Requests</h2>
+                <p style="font-size: 0.95rem; color: var(--text-gray);">Manage rental requests from farmers</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <select id="bookingStatusFilter" onchange="filterBookings(this.value)"
+                    style="padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 0.9rem; cursor: pointer;">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="allBookingsGrid" style="display: grid; gap: 1.5rem;">
+            <!-- Bookings will be loaded dynamically -->
+            <div
+                style="text-align: center; padding: 4rem; background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <span class="material-icons-outlined"
+                    style="font-size: 4rem; animation: spin 1s linear infinite; color: var(--primary-blue);">sync</span>
+                <p style="margin-top: 1rem; font-weight: 500; font-size: 1.1rem; color: var(--text-gray);">Loading all
+                    bookings...</p>
+            </div>
+        </div>
+    </div>
+    </main>
     </div>
 
     <!-- Add Equipment Modal -->
@@ -1803,6 +1825,42 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Specifications Section -->
+                    <div style="margin-bottom: 0.5rem; margin-top: 1rem;">
+                        <h4 style="font-size: 0.9rem; color: var(--text-gray); text-transform: uppercase;">Technical
+                            Specifications</h4>
+                        <hr
+                            style="border: none; border-top: 1px solid #e2e8f0; margin-top: 0.5rem; margin-bottom: 1rem;">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Model / Variant</label>
+                            <input type="text" id="model" name="model" placeholder="e.g. 5050D PowerPro">
+                        </div>
+                        <div class="form-group">
+                            <label>Year of Manufacture</label>
+                            <input type="number" id="year" name="year" placeholder="e.g. 2023" min="1990" max="2030">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fuel Type</label>
+                            <select id="fuel" name="fuel">
+                                <option value="">Select Fuel Type</option>
+                                <option value="Diesel">Diesel</option>
+                                <option value="Petrol">Petrol</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Capacity / Power</label>
+                            <input type="text" id="capacity" name="capacity" placeholder="e.g. 50 HP or 5 Tons">
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>Availability Status</label>
                         <select id="availability" name="availability">
@@ -2134,6 +2192,99 @@
         </div>
     </div>
 
+    <!-- View Equipment Details Modal -->
+    <div class="modal" id="viewEquipmentDetailsModal">
+        <div class="modal-content" style="max-width: 800px; border-radius: 24px; padding: 0; overflow: hidden;">
+            <button class="close-modal" onclick="closeModal('viewEquipmentDetailsModal')"
+                style="z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; padding: 5px;">
+                <span class="material-icons-outlined">close</span>
+            </button>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 500px;">
+                <!-- Left: Image Section -->
+                <div style="background: #f1f5f9; position: relative;">
+                    <img id="viewEqImage" src="" alt="Equipment Image"
+                        style="width: 100%; height: 100%; object-fit: cover; min-height: 300px;">
+                    <div id="viewEqStatusBadge"
+                        style="position: absolute; top: 20px; left: 20px; padding: 6px 16px; border-radius: 50px; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                        AVAILABLE
+                    </div>
+                </div>
+
+                <!-- Right: Details Section -->
+                <div
+                    style="padding: 2.5rem; display: flex; flex-direction: column; overflow-y: auto; max-height: 80vh;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <h2 id="viewEqName"
+                            style="font-family: var(--font-serif); font-size: 2rem; color: var(--text-dark); line-height: 1.2; margin-bottom: 0.5rem;">
+                            Equipment Name</h2>
+                        <div
+                            style="display: flex; align-items: center; gap: 1rem; color: var(--text-gray); font-size: 0.9rem;">
+                            <span style="display: flex; align-items: center; gap: 0.25rem;">
+                                <span class="material-icons-outlined" style="font-size: 1.1rem;">category</span>
+                                <span id="viewEqCategory">Category</span>
+                            </span>
+                            <span style="display: flex; align-items: center; gap: 0.25rem;">
+                                <span class="material-icons-outlined" style="font-size: 1.1rem;">location_on</span>
+                                <span id="viewEqLocation">Location</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <div
+                            style="display: flex; align-items: baseline; gap: 0.25rem; color: var(--primary-blue); margin-bottom: 0.5rem;">
+                            <span style="font-size: 1.25rem; font-weight: 600;">₹</span>
+                            <span id="viewEqPrice" style="font-size: 2.5rem; font-weight: 700;">0</span>
+                            <span style="color: var(--text-gray); font-weight: 400; font-size: 0.9rem;">/ day</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h4
+                            style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 0.75rem;">
+                            Description</h4>
+                        <p id="viewEqDescription"
+                            style="color: var(--text-gray); line-height: 1.6; font-size: 0.95rem;">
+                            No description provided.
+                        </p>
+                    </div>
+
+                    <div style="background: #f8fafc; border-radius: 16px; padding: 1.5rem; margin-top: auto;">
+                        <h4
+                            style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 1rem;">
+                            Specifications</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <div style="font-size: 0.75rem; color: var(--text-light);">Model</div>
+                                <div id="viewEqModel" style="font-weight: 600; color: var(--text-dark);">--</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: var(--text-light);">Year</div>
+                                <div id="viewEqYear" style="font-weight: 600; color: var(--text-dark);">--</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: var(--text-light);">Fuel Type</div>
+                                <div id="viewEqFuel" style="font-weight: 600; color: var(--text-dark);">--</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: var(--text-light);">Capacity</div>
+                                <div id="viewEqCapacity" style="font-weight: 600; color: var(--text-dark);">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <button id="viewEqDeleteBtn" class="btn"
+                        style="margin-top: 1rem; width: 100%; background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); padding: 1rem; border-radius: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s; cursor: pointer;">
+                        <span class="material-icons-outlined">delete_forever</span>
+                        Delete Listing
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content" style="max-width: 600px;">
@@ -2165,6 +2316,29 @@
                     <button class="btn btn-secondary" style="color: var(--error);"
                         onclick="alert('Password reset link sent!')">Change Password</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteConfirmationModal">
+        <div class="modal-content" style="max-width: 450px; text-align: center; padding: 2.5rem;">
+            <button class="close-modal" onclick="closeModal('deleteConfirmationModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div
+                style="width: 80px; height: 80px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <span class="material-icons-outlined" style="font-size: 3rem; color: var(--error);">delete</span>
+            </div>
+            <h2 class="modal-title" style="font-size: 1.5rem; margin-bottom: 1rem;">Delete Equipment?</h2>
+            <p class="modal-subtitle" style="margin-bottom: 2rem; line-height: 1.6;">Are you sure you want to delete
+                this equipment listing permanently? This action cannot be undone.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button class="btn" onclick="closeModal('deleteConfirmationModal')"
+                    style="background: #f1f5f9; color: var(--text-dark); flex: 1; padding: 1rem;">Cancel</button>
+                <button class="btn" id="confirmDeleteBtn" onclick="confirmDelete()"
+                    style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; flex: 1; padding: 1rem; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);">Yes,
+                    Delete</button>
             </div>
         </div>
     </div>
@@ -2729,11 +2903,19 @@
                 const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
                 const ownerId = userData.id || 1;
 
-                const response = await fetch(`php / get_bookings.php ? owner_id = ${ownerId} & status=approved`);
+                const response = await fetch(`php/get_bookings.php?owner_id=${ownerId}`);
                 const data = await response.json();
 
-                if (data.success && data.bookings && data.bookings.length > 0) {
-                    tbody.innerHTML = data.bookings.map(rental => {
+                let activeRentals = [];
+                if (data.success && data.bookings) {
+                    activeRentals = data.bookings.filter(b =>
+                        ['approved', 'paid', 'active', 'confirmed'].includes(b.status) ||
+                        (['pending'].includes(b.status) && b.payment_status === 'paid')
+                    );
+                }
+
+                if (activeRentals.length > 0) {
+                    tbody.innerHTML = activeRentals.map(rental => {
                         const returnDate = new Date(rental.end_date);
                         const formattedDate = returnDate.toLocaleDateString('en-US', {
                             month: 'short',
@@ -2742,7 +2924,7 @@
                         });
 
                         return `
-                    < tr style = "border-bottom: 1px solid #f1f5f9;" >
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
                             <td style="padding: 1rem; font-weight: 600;">${rental.equipment_name}</td>
                             <td style="padding: 1rem;">${rental.farmer_name}</td>
                             <td style="padding: 1rem;">${formattedDate}</td>
@@ -2752,24 +2934,24 @@
                                 </span>
                             </td>
                             <td style="padding: 1rem;">
-                                <button class="btn btn-secondary" 
+                                <button class="btn btn-secondary"
                                     onclick="alert('Messaging feature coming soon! You can contact ${rental.farmer_name}')"
                                     style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #e5e7eb; background: var(--white); cursor: pointer;">
                                     Message
                                 </button>
                             </td>
-                        </tr >
+                        </tr>
                         `;
                     }).join('');
                 } else {
                     tbody.innerHTML = `
-                        < tr >
+                        <tr>
                         <td colspan="5" style="padding: 3rem; text-align: center;">
                             <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">inventory_2</span>
                             <h3 style="margin: 1rem 0; color: var(--text-dark);">No Active Rentals</h3>
                             <p style="color: var(--text-gray);">When you approve booking requests, they will appear here as active rentals.</p>
                         </td>
-                        </tr >
+                        </tr>
                         `;
                 }
             } catch (error) {
@@ -3104,6 +3286,12 @@
             formData.append('condition', document.getElementById('condition').value);
             formData.append('availability', document.getElementById('availability').value);
             formData.append('description', document.getElementById('description').value);
+
+            // Append specifications
+            formData.append('model', document.getElementById('model').value);
+            formData.append('year', document.getElementById('year').value);
+            formData.append('fuel', document.getElementById('fuel').value);
+            formData.append('capacity', document.getElementById('capacity').value);
             formData.append('location', document.getElementById('location').value);
 
             // Get owner info from localStorage
@@ -3306,6 +3494,40 @@
     </div>
 
     <script>
+        // Load Dashboard Stats (Earnings, Bookings, Listings)
+        async function loadDashboardStats() {
+            try {
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                if (!userData.id) return;
+
+                const response = await fetch(`php/get_earnings.php?owner_id=${userData.id}`);
+                const data = await response.json();
+
+                if (data.success && data.earnings) {
+                    const stats = data.earnings;
+
+                    // Helper to animate or set text
+                    const setStat = (id, value, prefix = '') => {
+                        const el = document.getElementById(id);
+                        if (el) el.textContent = prefix + value;
+                    };
+
+                    setStat('totalEarnings', stats.total_earnings.toLocaleString('en-IN'), '₹');
+                    setStat('totalBookings', stats.total_bookings);
+                    setStat('activeListings', stats.active_listings);
+                    setStat('avgRating', stats.average_rating.toFixed(1));
+
+                    // Update Earnings Widget
+                    const widgetEarnings = document.querySelector('.earnings-widget .earnings-amount');
+                    if (widgetEarnings) {
+                        widgetEarnings.textContent = '₹' + stats.total_earnings.toLocaleString('en-IN');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
         // Toggle Notifications Panel
         function toggleNotificationsPanel() {
             const panel = document.getElementById('notificationsPanel');
@@ -3422,45 +3644,566 @@
             }
         }
 
+        // Load notifications logic
+        async function updateNotificationBadge() {
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            if (!userData.id) return;
+
+            try {
+                // Fetch rental requests count
+                const requestsRes = await fetch(`php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=pending`);
+                const requestsData = await requestsRes.json();
+                const requestsCount = (requestsData.success) ? requestsData.count : 0;
+
+                // Fetch generic notifications count
+                const notifRes = await fetch(`php/get_notifications.php?user_id=${userData.id}`);
+                const notifData = await notifRes.json();
+                const notifCount = (notifData.success) ? notifData.unread_count : 0;
+
+                const totalCount = requestsCount + notifCount;
+                const badge = document.getElementById('notificationCount');
+
+                if (totalCount > 0) {
+                    badge.textContent = totalCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error updating notifications:', error);
+            }
+        }
+
         // Load notifications on page load
         window.addEventListener('DOMContentLoaded', () => {
-            // Check for pending notifications every minute
-            setInterval(async () => {
-                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
-                if (userData.id) {
-                    try {
-                        const response = await fetch(`php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=pending`);
-                        const data = await response.json();
+            loadDashboardStats();
+            updateNotificationBadge();
+            setInterval(updateNotificationBadge, 30000); // Check every 30 seconds
 
-                        if (data.success) {
-                            const badge = document.getElementById('notificationCount');
-                            if (data.count > 0) {
-                                badge.textContent = data.count;
-                                badge.style.display = 'flex';
+            // Check for expired rentals
+            fetch('php/check_expired_rentals.php')
+                .then(res => res.json())
+                .then(data => {
+                    console.log('Expired rentals check:', data);
+                    if (data.updated_count > 0) {
+                        // Refresh views if data changed
+                        loadOwnerEquipment();
+                    }
+                })
+                .catch(err => console.error('Error checking expired rentals:', err));
+        });
+
+        // Global variable to store equipment list
+        let ownerEquipmentList = [];
+        let equipmentToDelete = null;
+
+        // Load Owner's Equipment
+        async function loadOwnerEquipment() {
+            const grid = document.getElementById('ownerEquipmentGrid');
+            if (!grid) return;
+
+            // Show loading state
+            grid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: white; border-radius: 20px;">
+                    <span class="material-icons-outlined" style="font-size: 4rem; animation: spin 1s linear infinite; color: var(--primary-blue);">sync</span>
+                    <p style="margin-top: 1rem; font-weight: 500; color: var(--text-gray);">Loading your equipment...</p>
+                </div>
+            `;
+
+            try {
+                // Get owner info from localStorage
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+
+                if (!userData.id) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: white; border-radius: 20px;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--error);">error_outline</span>
+                            <p style="margin-top: 1rem; color: var(--error);">Please log in to view your equipment</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Fetch equipment from database
+                const response = await fetch(`php/get_equipment.php?owner_id=${userData.id}`);
+                const data = await response.json();
+
+                if (data.success && data.equipment && data.equipment.length > 0) {
+                    // Store equipment data globally
+                    ownerEquipmentList = data.equipment;
+
+                    // Render equipment cards
+                    // Render equipment cards
+                    grid.innerHTML = data.equipment.map(item => `
+                        <div class="equipment-card" style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: all 0.3s;">
+                            <div style="position: relative; height: 200px; overflow: hidden;">
+                                <img src="${item.image_url || 'https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=400'}" 
+                                     style="width: 100%; height: 100%; object-fit: cover;" 
+                                     alt="${item.equipment_name}"
+                                     onerror="this.src='https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=400'">
+                                <div style="position: absolute; top: 1rem; right: 1rem; background: ${item.availability_status === 'available' ? 'var(--success)' : item.availability_status === 'booked' ? 'var(--warning)' : 'var(--error)'}; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                                    ${item.availability_status}
+                                </div>
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-dark);">${item.equipment_name}</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 1rem;">${item.description ? item.description.substring(0, 80) + '...' : 'No description'}</p>
+                                
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <span style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: var(--text-gray);">
+                                        <span class="material-icons-outlined" style="font-size: 1rem;">category</span>
+                                        ${item.category}
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: var(--text-gray);">
+                                        <span class="material-icons-outlined" style="font-size: 1rem;">location_on</span>
+                                        ${item.location || 'Not specified'}
+                                    </span>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                                    <div>
+                                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">₹${parseFloat(item.price_per_day).toLocaleString()}</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-gray);">per day</div>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button onclick="viewEquipmentDetails(${item.id})" 
+                                                style="padding: 0.6rem 1rem; background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                                            View Details
+                                        </button>
+                                        <button onclick="deleteEquipment(event, ${item.id})" 
+                                                style="padding: 0.6rem; background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center;" title="Delete Listing">
+                                            <span class="material-icons-outlined" style="font-size: 1.2rem;">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Update badge count
+                    const badge = document.getElementById('equipmentCountBadge');
+                    if (badge) badge.textContent = data.equipment.length;
+                } else {
+                    // No equipment found
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: white; border-radius: 20px;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">inventory_2</span>
+                            <h3 style="margin-top: 1rem; color: var(--text-dark); font-size: 1.25rem;">No Equipment Listed Yet</h3>
+                            <p style="margin-top: 0.5rem; color: var(--text-gray);">Start adding your equipment to receive rental requests</p>
+                            <button onclick="openModal('addEquipmentModal')" 
+                                    style="margin-top: 1.5rem; padding: 0.85rem 1.5rem; background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">
+                                <span class="material-icons-outlined" style="vertical-align: middle; margin-right: 0.5rem;">add_circle</span>
+                                Add Your First Equipment
+                            </button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading equipment:', error);
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: rgba(239, 68, 68, 0.1); border-radius: 20px; border: 2px dashed var(--error);">
+                        <span class="material-icons-outlined" style="font-size: 4rem; color: var(--error);">error_outline</span>
+                        <h3 style="margin-top: 1rem; color: var(--error);">Error Loading Equipment</h3>
+                        <p style="margin-top: 0.5rem; color: var(--text-gray);">Could not connect to server. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // View Equipment Details
+        function viewEquipmentDetails(equipmentId) {
+            const equipment = ownerEquipmentList.find(e => e.id == equipmentId);
+            if (!equipment) {
+                console.error('Equipment details not found for ID:', equipmentId);
+                return;
+            }
+
+            // Populate Modal
+            document.getElementById('viewEqImage').src = equipment.image_url || 'https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=400';
+            document.getElementById('viewEqName').textContent = equipment.equipment_name;
+            document.getElementById('viewEqCategory').textContent = equipment.category;
+            document.getElementById('viewEqLocation').textContent = equipment.location || 'Not specified';
+            document.getElementById('viewEqPrice').textContent = parseFloat(equipment.price_per_day).toLocaleString();
+            document.getElementById('viewEqDescription').textContent = equipment.description || 'No description provided.';
+
+            // Specifications
+            document.getElementById('viewEqModel').textContent = equipment.model || '--';
+            document.getElementById('viewEqYear').textContent = equipment.year_of_manufacture || '--';
+            document.getElementById('viewEqFuel').textContent = equipment.fuel_type || '--';
+            document.getElementById('viewEqCapacity').textContent = equipment.capacity || '--';
+
+            // Status Badge
+            const statusBadge = document.getElementById('viewEqStatusBadge');
+            statusBadge.textContent = equipment.availability_status;
+
+            if (equipment.availability_status === 'available') {
+                statusBadge.style.background = 'var(--success)';
+            } else if (equipment.availability_status === 'booked') {
+                statusBadge.style.background = 'var(--warning)';
+            } else {
+                statusBadge.style.background = 'var(--error)';
+            }
+
+            // Set Delete Button Handler
+            const deleteBtn = document.getElementById('viewEqDeleteBtn');
+            if (deleteBtn) {
+                deleteBtn.onclick = function (e) {
+                    deleteEquipment(e, equipmentId);
+                };
+            }
+
+            // Open Modal
+            document.getElementById('viewEquipmentDetailsModal').classList.add('active');
+        }
+
+        // Delete Equipment - Open Modal
+        function deleteEquipment(event, equipmentId) {
+            if (event) event.stopPropagation();
+            equipmentToDelete = equipmentId;
+            openModal('deleteConfirmationModal');
+        }
+
+        // Confirm Delete Equipment
+        async function confirmDelete() {
+            if (!equipmentToDelete) return;
+
+            const submitBtn = document.getElementById('confirmDeleteBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Deleting...';
+            submitBtn.disabled = true;
+
+            try {
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                if (!userData.id) {
+                    showNotification('Please log in to perform this action', 'error');
+                    return;
+                }
+
+                const response = await fetch('php/delete_equipment.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        equipment_id: equipmentToDelete,
+                        owner_id: userData.id
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification('🗑️ Equipment deleted successfully', 'success');
+
+                    // Close details modal if it's open
+                    const detailsModal = document.getElementById('viewEquipmentDetailsModal');
+                    if (detailsModal && detailsModal.classList.contains('active')) {
+                        closeModal('viewEquipmentDetailsModal');
+                    }
+
+                    // Reload equipment list
+                    loadOwnerEquipment();
+                    updateSidebarBadges();
+                } else {
+                    showNotification('❌ Failed to delete: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting equipment:', error);
+                showNotification('❌ Network error. Please try again.', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                closeModal('deleteConfirmationModal');
+                equipmentToDelete = null;
+            }
+        }
+
+
+        // Show All Bookings View
+        function showAllBookings() {
+            // Hide dashboard and equipment views
+            const dashboardView = document.querySelector('.dashboard-grid');
+            const equipmentView = document.getElementById('myEquipmentView');
+            const bookingsView = document.getElementById('allBookingsView');
+
+            if (dashboardView) dashboardView.style.display = 'none';
+            if (equipmentView) equipmentView.style.display = 'none';
+            if (bookingsView) {
+                bookingsView.style.display = 'block';
+                loadAllBookings();
+            }
+
+            // Update nav active state
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        }
+
+        // Global variable to store all bookings for filtering
+        let allBookingsData = [];
+
+        // Load All Bookings
+        async function loadAllBookings(status = 'all') {
+            const grid = document.getElementById('allBookingsGrid');
+            if (!grid) return;
+
+            // Show loading state
+            grid.innerHTML = `
+                <div style="text-align: center; padding: 4rem; background: white; border-radius: 20px;">
+                    <span class="material-icons-outlined" style="font-size: 4rem; animation: spin 1s linear infinite; color: var(--primary-blue);">sync</span>
+                    <p style="margin-top: 1rem; font-weight: 500; color: var(--text-gray);">Loading bookings...</p>
+                </div>
+            `;
+
+            try {
+                // Get owner info from localStorage
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+
+                if (!userData.id) {
+                    grid.innerHTML = `
+                        <div style="text-align: center; padding: 4rem; background: white; border-radius: 20px;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--error);">error_outline</span>
+                            <p style="margin-top: 1rem; color: var(--error);">Please log in to view bookings</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Fetch bookings from database
+                const url = status === 'all'
+                    ? `php/get_rental_requests.php?user_type=owner&user_id=${userData.id}`
+                    : `php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=${status}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success && data.requests && data.requests.length > 0) {
+                    allBookingsData = data.requests; // Store for filtering
+                    renderBookings(data.requests);
+                } else {
+                    // No bookings found
+                    grid.innerHTML = `
+                        <div style="text-align: center; padding: 4rem; background: white; border-radius: 20px;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">event_busy</span>
+                            <h3 style="margin-top: 1rem; color: var(--text-dark); font-size: 1.25rem;">No Booking Requests</h3>
+                            <p style="margin-top: 0.5rem; color: var(--text-gray);">${status === 'all' ? 'You haven\'t received any rental requests yet' : `No ${status} requests found`}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                grid.innerHTML = `
+                    <div style="text-align: center; padding: 4rem; background: rgba(239, 68, 68, 0.1); border-radius: 20px; border: 2px dashed var(--error);">
+                        <span class="material-icons-outlined" style="font-size: 4rem; color: var(--error);">error_outline</span>
+                        <h3 style="margin-top: 1rem; color: var(--error);">Error Loading Bookings</h3>
+                        <p style="margin-top: 0.5rem; color: var(--text-gray);">Could not connect to server. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render Bookings Cards
+        function renderBookings(bookings) {
+            const grid = document.getElementById('allBookingsGrid');
+            if (!grid) return;
+
+            grid.innerHTML = bookings.map(booking => {
+                const statusColor = booking.booking_status === 'pending' ? 'var(--warning)' :
+                    booking.booking_status === 'approved' ? 'var(--success)' : 'var(--error)';
+                const statusBg = booking.booking_status === 'pending' ? 'rgba(245, 158, 11, 0.1)' :
+                    booking.booking_status === 'approved' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+
+                return `
+                    <div class="booking-card" style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-left: 4px solid ${statusColor};">
+                        <div style="display: grid; grid-template-columns: auto 1fr auto; gap: 1.5rem; align-items: start;">
+                            <!-- Farmer Avatar -->
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.5rem; flex-shrink: 0;">
+                                ${booking.farmer_name ? booking.farmer_name.charAt(0).toUpperCase() : 'F'}
+                            </div>
+
+                            <!-- Booking Details -->
+                            <div style="flex: 1;">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                                    <div>
+                                        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.25rem;">${booking.farmer_name || 'Unknown Farmer'}</h3>
+                                        <p style="font-size: 0.9rem; color: var(--text-gray);">${booking.equipment_name || 'Equipment'}</p>
+                                    </div>
+                                    <span style="background: ${statusBg}; color: ${statusColor}; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; text-transform: capitalize;">
+                                        ${booking.booking_status}
+                                    </span>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span class="material-icons-outlined" style="color: var(--primary-blue); font-size: 1.2rem;">event</span>
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--text-gray);">Start Date</div>
+                                            <div style="font-weight: 600; color: var(--text-dark);">${booking.start_date}</div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span class="material-icons-outlined" style="color: var(--primary-blue); font-size: 1.2rem;">event_available</span>
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--text-gray);">End Date</div>
+                                            <div style="font-weight: 600; color: var(--text-dark);">${booking.end_date}</div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span class="material-icons-outlined" style="color: var(--success); font-size: 1.2rem;">payments</span>
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--text-gray);">Total Amount</div>
+                                            <div style="font-weight: 700; color: var(--success); font-size: 1.1rem;">₹${parseFloat(booking.total_amount || 0).toLocaleString()}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                ${booking.booking_status === 'pending' ? `
+                                    <div style="display: flex; gap: 1rem;">
+                                        <button onclick="updateBookingStatus(${booking.id}, 'approved', ${booking.equipment_id})"
+                                                style="flex: 1; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--success), #16a34a); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                            <span class="material-icons-outlined">check_circle</span>
+                                            Approve
+                                        </button>
+                                        <button onclick="updateBookingStatus(${booking.id}, 'rejected', ${booking.equipment_id})"
+                                                style="flex: 1; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--error), #dc2626); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                            <span class="material-icons-outlined">cancel</span>
+                                            Reject
+                                        </button>
+                                    </div>
+                                ` : `
+                                    <div style="padding: 0.75rem; background: ${statusBg}; border-radius: 12px; text-align: center; color: ${statusColor}; font-weight: 600;">
+                                        ${booking.booking_status === 'approved' ? '✓ Request Approved' : '✗ Request Rejected'}
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filter Bookings
+        function filterBookings(status) {
+            if (status === 'all') {
+                renderBookings(allBookingsData);
+            } else {
+                const filtered = allBookingsData.filter(b => b.booking_status === status);
+                if (filtered.length > 0) {
+                    renderBookings(filtered);
+                } else {
+                    document.getElementById('allBookingsGrid').innerHTML = `
+                        <div style="text-align: center; padding: 4rem; background: white; border-radius: 20px;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--text-light);">filter_list_off</span>
+                            <h3 style="margin-top: 1rem; color: var(--text-dark);">No ${status.charAt(0).toUpperCase() + status.slice(1)} Bookings</h3>
+                            <p style="margin-top: 0.5rem; color: var(--text-gray);">No bookings found with this status</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Update Booking Status
+        async function updateBookingStatus(bookingId, status, equipmentId) {
+            if (!confirm(`Are you sure you want to ${status} this booking request?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('php/update_rental_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        request_id: bookingId,
+                        status: status,
+                        equipment_id: equipmentId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // If approved, automatically generate agreement
+                    if (status === 'approved') {
+                        try {
+                            const agrResponse = await fetch('php/generate_agreement.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    request_id: bookingId
+                                })
+                            });
+
+                            const agrResult = await agrResponse.json();
+
+                            if (agrResult.success) {
+                                alert(`Booking approved successfully!\n\nAgreement ${agrResult.agreement_number} has been generated.\nThe farmer can now view and sign the agreement in their dashboard.`);
                             } else {
-                                badge.style.display = 'none';
+                                alert(`Booking approved, but agreement generation failed: ${agrResult.error}`);
                             }
+                        } catch (agrError) {
+                            console.error('Error generating agreement:', agrError);
+                            alert('Booking approved, but agreement generation failed. Please try again later.');
                         }
-                    } catch (error) {
-                        console.error('Error checking notifications:', error);
+                    } else {
+                        alert(`Booking ${status} successfully!`);
+                    }
+
+                    loadAllBookings(); // Refresh the list
+                } else {
+                    alert('Failed to update booking: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error updating booking:', error);
+                alert('Network error. Please try again.');
+            }
+        }
+
+        // Handle Sidebar Navigation
+        document.querySelectorAll('.nav-item').forEach((link, index) => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+                // Add active class to clicked item
+                this.classList.add('active');
+
+                // Get the dashboard-grid and myEquipmentView
+                const dashboardView = document.querySelector('.dashboard-grid');
+                const equipmentView = document.getElementById('myEquipmentView');
+                const bookingsView = document.getElementById('allBookingsView');
+
+                // Handle different views based on which link was clicked
+                const linkText = this.textContent.trim();
+
+                if (linkText.includes('Dashboard')) {
+                    // Show dashboard overview, hide other views
+                    if (dashboardView) dashboardView.style.display = 'block';
+                    if (equipmentView) equipmentView.style.display = 'none';
+                    if (bookingsView) bookingsView.style.display = 'none';
+                } else if (linkText.includes('My Equipment')) {
+                    // Hide dashboard overview, show equipment view
+                    if (dashboardView) dashboardView.style.display = 'none';
+                    if (bookingsView) bookingsView.style.display = 'none';
+                    if (equipmentView) {
+                        equipmentView.style.display = 'block';
+                        // Load equipment when view is shown
+                        loadOwnerEquipment();
+                    }
+                } else if (linkText.includes('Booking Requests')) {
+                    // Hide other views, show bookings view
+                    if (dashboardView) dashboardView.style.display = 'none';
+                    if (equipmentView) equipmentView.style.display = 'none';
+                    if (bookingsView) {
+                        bookingsView.style.display = 'block';
+                        loadAllBookings();
                     }
                 }
-            }, 60000); // Check every minute
-
-            // Initial load
-            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
-            if (userData.id) {
-                fetch(`php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=pending`)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success && data.count > 0) {
-                            const badge = document.getElementById('notificationCount');
-                            badge.textContent = data.count;
-                            badge.style.display = 'flex';
-                        }
-                    })
-                    .catch(err => console.error('Error loading initial notifications:', err));
-            }
+                // Add more conditions here for other views as needed
+            });
         });
     </script>
 </body>

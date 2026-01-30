@@ -17,6 +17,11 @@
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
         :root {
             --primary-blue: #0077b6;
@@ -240,24 +245,26 @@
 
         .agreement-footer {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
             padding-top: 1rem;
             border-top: 1px solid #e5e7eb;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 0.75rem 1.25rem;
-            border-radius: 10px;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.35rem;
             flex: 1;
             justify-content: center;
+            min-width: fit-content;
         }
 
         .btn-primary {
@@ -277,6 +284,16 @@
 
         .btn-secondary:hover {
             background: #e5e7eb;
+        }
+
+        .btn .material-icons-outlined {
+            font-size: 1rem;
+        }
+
+        .payment-method-btn:hover {
+            border-color: var(--primary-blue) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 119, 182, 0.2);
         }
 
         /* Insurance Cards */
@@ -677,144 +694,311 @@
                 <button type="button" class="btn btn-primary" onclick="purchaseInsurance()">Purchase Insurance</button>
             </div>
         </div>
+    </div>
 
-        <script>
-            // Function to redirect to the appropriate dashboard based on referrer or sessionStorage
-            function goBackToDashboard() {
-                // First check sessionStorage for the dashboard type
-                const dashboardType = sessionStorage.getItem('dashboardType');
+    <!-- Payment Modal (Card & QR) -->
+    <div class="modal" id="qrPaymentModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('qrPaymentModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="paymentTitle">Payment</h2>
+                <p class="modal-subtitle">Secure payment gateway</p>
+            </div>
 
-                if (dashboardType === 'owner') {
-                    window.location.href = 'owner-dashboard.html';
-                    return;
-                } else if (dashboardType === 'admin') {
-                    window.location.href = 'admin-dashboard.html';
-                    return;
-                } else if (dashboardType === 'farmer') {
-                    window.location.href = 'farmer-dashboard.html';
-                    return;
-                }
+            <div class="modal-body">
+                <div class="info-box" style="margin-bottom: 2rem;">
+                    <h4>
+                        <span class="material-icons-outlined">info</span>
+                        Payment Details
+                    </h4>
+                    <p id="qrPaymentDetails"></p>
+                </div>
 
-                // Fallback: Check the referrer URL
-                const referrer = document.referrer;
-                if (referrer.includes('owner-dashboard.html')) {
-                    window.location.href = 'owner-dashboard.html';
-                } else if (referrer.includes('admin-dashboard.html')) {
-                    window.location.href = 'admin-dashboard.html';
-                } else {
-                    // Default to farmer dashboard
-                    window.location.href = 'farmer-dashboard.html';
-                }
+                <!-- Payment Method Selection -->
+                <div id="paymentMethodSelection" style="display: block;">
+                    <h4 style="text-align: center; margin-bottom: 1.5rem; color: var(--text-dark);">Choose Payment
+                        Method</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                        <!-- Card Payment Option -->
+                        <button class="payment-method-btn" onclick="selectPaymentMethod('card')"
+                            style="padding: 2rem 1rem; background: white; border: 2px solid #e5e7eb; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; width: 100%;">
+                            <div style="text-align: center;">
+                                <span class="material-icons-outlined"
+                                    style="font-size: 3rem; color: #3b82f6; margin-bottom: 0.5rem;">credit_card</span>
+                                <h5 style="margin: 0.5rem 0; font-size: 1rem; font-weight: 600;">Card Payment</h5>
+                                <p style="margin: 0; font-size: 0.8rem; color: var(--text-gray);">Debit/Credit Card
+                                </p>
+                            </div>
+                        </button>
+
+                        <!-- GPay Option -->
+                        <button class="payment-method-btn" onclick="selectPaymentMethod('gpay')"
+                            style="padding: 2rem 1rem; background: white; border: 2px solid #e5e7eb; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; width: 100%;">
+                            <div style="text-align: center;">
+                                <span class="material-icons-outlined"
+                                    style="font-size: 3rem; color: #10b981; margin-bottom: 0.5rem;">account_balance_wallet</span>
+                                <h5 style="margin: 0.5rem 0; font-size: 1rem; font-weight: 600;">Google Pay</h5>
+                                <p style="margin: 0; font-size: 0.8rem; color: var(--text-gray);">UPI Payment</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card Payment Form (Hidden by default) -->
+                <div id="cardPaymentForm" style="display: none;">
+                    <button onclick="backToPaymentMethods()"
+                        style="background: none; border: none; color: var(--primary-blue); cursor: pointer; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">
+                        <span class="material-icons-outlined">arrow_back</span>
+                        Back to payment methods
+                    </button>
+
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px;">
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Card
+                                Number</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19"
+                                style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Expiry</label>
+                                <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5"
+                                    style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">CVV</label>
+                                <input type="text" id="cardCVV" placeholder="123" maxlength="3"
+                                    style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 0;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Cardholder
+                                Name</label>
+                            <input type="text" id="cardName" placeholder="JOHN DOE"
+                                style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; text-transform: uppercase;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GPay/UPI QR Code (Hidden by default) -->
+                <div id="gpayQRCode" style="display: none;">
+                    <button onclick="backToPaymentMethods()"
+                        style="background: none; border: none; color: var(--primary-blue); cursor: pointer; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">
+                        <span class="material-icons-outlined">arrow_back</span>
+                        Back to payment methods
+                    </button>
+
+                    <div id="qrCodeContainer" style="display: flex; justify-content: center; margin: 2rem 0;">
+                        <div id="qrcode"></div>
+                    </div>
+
+                    <p style="color: var(--text-gray); margin-top: 1rem; text-align: center;">
+                        Scan this QR code with any UPI app (Google Pay, PhonePe, Paytm, etc.)
+                    </p>
+                </div>
+
+                <div
+                    style="margin-top: 2rem; padding: 1rem; background: #f0fdf4; border-radius: 12px; border: 2px solid #86efac;">
+                    <p style="font-weight: 600; color: var(--success); margin-bottom: 0.5rem;">
+                        <span class="material-icons-outlined" style="vertical-align: middle;">check_circle</span>
+                        Safe & Secure Payment
+                    </p>
+                    <p style="font-size: 0.85rem; color: var(--text-gray); margin: 0;">
+                        Your payment is processed securely
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('qrPaymentModal')">Close</button>
+                <button type="button" class="btn btn-primary" onclick="markPaymentComplete()">
+                    <span class="material-icons-outlined">check_circle</span>
+                    Mark as Paid
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Function to redirect to the appropriate dashboard based on referrer or sessionStorage
+        function goBackToDashboard() {
+            // First check sessionStorage for the dashboard type
+            const dashboardType = sessionStorage.getItem('dashboardType');
+
+            if (dashboardType === 'owner') {
+                window.location.href = 'owner-dashboard.html';
+                return;
+            } else if (dashboardType === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+                return;
+            } else if (dashboardType === 'farmer') {
+                window.location.href = 'farmer-dashboard.html';
+                return;
             }
 
-            // Store dashboard type when page loads (based on referrer)
-            window.addEventListener('DOMContentLoaded', function () {
-                const referrer = document.referrer;
-                if (referrer.includes('owner-dashboard.html')) {
-                    sessionStorage.setItem('dashboardType', 'owner');
-                } else if (referrer.includes('admin-dashboard.html')) {
-                    sessionStorage.setItem('dashboardType', 'admin');
-                } else if (referrer.includes('farmer-dashboard.html')) {
-                    sessionStorage.setItem('dashboardType', 'farmer');
+            // Fallback: Check the referrer URL
+            const referrer = document.referrer;
+            if (referrer.includes('owner-dashboard.html')) {
+                window.location.href = 'owner-dashboard.html';
+            } else if (referrer.includes('admin-dashboard.html')) {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                // Default to farmer dashboard
+                window.location.href = 'farmer-dashboard.html';
+            }
+        }
+
+        // Store dashboard type when page loads (based on referrer)
+        window.addEventListener('DOMContentLoaded', function () {
+            const referrer = document.referrer;
+            if (referrer.includes('owner-dashboard.html')) {
+                sessionStorage.setItem('dashboardType', 'owner');
+            } else if (referrer.includes('admin-dashboard.html')) {
+                sessionStorage.setItem('dashboardType', 'admin');
+            } else if (referrer.includes('farmer-dashboard.html')) {
+                sessionStorage.setItem('dashboardType', 'farmer');
+            }
+        });
+
+        // Agreement data - will be loaded from database
+        let agreements = [];
+
+        // Load real agreements from database
+        async function loadAgreementsFromDatabase() {
+            try {
+                // Get user info from localStorage
+                const userDataStr = localStorage.getItem('agrohub_user');
+                if (!userDataStr) {
+                    console.error('No user data found');
+                    renderAgreements(); // Show empty state
+                    return;
                 }
-            });
 
-            // Sample agreement data
-            const agreements = [
-                {
-                    id: 'AGR-2024-001',
-                    title: 'John Deere 5050D Tractor',
-                    status: 'active',
-                    startDate: '2024-01-15',
-                    endDate: '2024-02-15',
-                    amount: 75000,
-                    owner: 'Rajesh Equipment Rentals',
-                    deposit: 15000
-                },
-                {
-                    id: 'AGR-2024-002',
-                    title: 'Rotavator 6ft Rental',
-                    status: 'pending',
-                    startDate: '2024-01-20',
-                    endDate: '2024-01-27',
-                    amount: 5600,
-                    owner: 'Kumar Agri Services',
-                    deposit: 2000
-                },
-                {
-                    id: 'AGR-2023-089',
-                    title: 'Combined Harvester',
-                    status: 'expired',
-                    startDate: '2023-11-10',
-                    endDate: '2023-11-20',
-                    amount: 50000,
-                    owner: 'Hassan Machinery',
-                    deposit: 10000
+                const userData = JSON.parse(userDataStr);
+                const userId = userData.id;
+                const userType = userData.userType || userData.user_type;
+
+                console.log('Loading agreements for:', userType, userId);
+
+                // Determine which API endpoint to use based on user type
+                let apiUrl = '';
+                if (userType === 'owner') {
+                    // Owner sees bookings for their equipment
+                    apiUrl = `php/get_bookings.php?owner_id=${userId}`;
+                } else if (userType === 'farmer') {
+                    // Farmer sees their rental bookings
+                    apiUrl = `php/get_bookings.php?farmer_id=${userId}`;
+                } else {
+                    console.warn('Unknown user type:', userType);
+                    renderAgreements();
+                    return;
                 }
-            ];
 
-            // Sample insurance plans
-            const insurancePlans = [
-                {
-                    id: 1,
-                    name: 'Basic Protection',
-                    type: 'Basic Coverage',
-                    price: 499,
-                    period: 'month',
-                    features: [
-                        'Theft Protection',
-                        'Accidental Damage Cover',
-                        '24/7 Customer Support',
-                        'Up to ₹50,000 coverage',
-                        'Instant claim processing'
-                    ],
-                    popular: false
-                },
-                {
-                    id: 2,
-                    name: 'Premium Shield',
-                    type: 'Comprehensive Coverage',
-                    price: 999,
-                    period: 'month',
-                    features: [
-                        'All Basic features',
-                        'Fire & Natural Disasters',
-                        'Third-party Liability',
-                        'Up to ₹2,00,000 coverage',
-                        'Zero deductible',
-                        'Free annual maintenance'
-                    ],
-                    popular: true
-                },
-                {
-                    id: 3,
-                    name: 'Enterprise Plus',
-                    type: 'Premium Coverage',
-                    price: 1999,
-                    period: 'month',
-                    features: [
-                        'All Premium features',
-                        'Equipment Breakdown',
-                        'Business Interruption',
-                        'Unlimited coverage',
-                        'Legal assistance',
-                        'Replacement equipment',
-                        'Premium support'
-                    ],
-                    popular: false
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.success && data.bookings) {
+                    // Transform bookings into agreements format
+                    agreements = data.bookings.map(booking => {
+                        const endDate = new Date(booking.end_date);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0); // Reset time to start of day
+
+                        // Check if agreement has expired
+                        const isExpired = endDate < today;
+
+                        return {
+                            id: `AGR-${booking.id}`,
+                            bookingId: booking.id, // Store actual booking ID for deletion
+                            title: booking.equipment_name,
+                            status: isExpired ? 'expired' : 'active',
+                            startDate: booking.start_date,
+                            endDate: booking.end_date,
+                            amount: parseFloat(booking.total_amount),
+                            owner: userType === 'farmer' ? 'Equipment Owner' : booking.farmer_name,
+                            deposit: Math.round(parseFloat(booking.total_amount) * 0.2), // 20% deposit
+                            paymentStatus: booking.payment_status || 'pending',
+                            paidAmount: booking.paid_amount ? parseFloat(booking.paid_amount) : 0,
+                            paidAt: booking.paid_at || null
+                        };
+                    });
+
+                    console.log('Loaded agreements:', agreements);
+                    renderAgreements();
+                } else {
+                    console.log('No agreements found');
+                    renderAgreements();
                 }
-            ];
+            } catch (error) {
+                console.error('Error loading agreements:', error);
+                renderAgreements(); // Show empty state
+            }
+        }
 
-            let currentInsurance = null;
+        // Sample insurance plans
+        const insurancePlans = [
+            {
+                id: 1,
+                name: 'Basic Protection',
+                type: 'Basic Coverage',
+                price: 499,
+                period: 'month',
+                features: [
+                    'Theft Protection',
+                    'Accidental Damage Cover',
+                    '24/7 Customer Support',
+                    'Up to ₹50,000 coverage',
+                    'Instant claim processing'
+                ],
+                popular: false
+            },
+            {
+                id: 2,
+                name: 'Premium Shield',
+                type: 'Comprehensive Coverage',
+                price: 999,
+                period: 'month',
+                features: [
+                    'All Basic features',
+                    'Fire & Natural Disasters',
+                    'Third-party Liability',
+                    'Up to ₹2,00,000 coverage',
+                    'Zero deductible',
+                    'Free annual maintenance'
+                ],
+                popular: true
+            },
+            {
+                id: 3,
+                name: 'Enterprise Plus',
+                type: 'Premium Coverage',
+                price: 1999,
+                period: 'month',
+                features: [
+                    'All Premium features',
+                    'Equipment Breakdown',
+                    'Business Interruption',
+                    'Unlimited coverage',
+                    'Legal assistance',
+                    'Replacement equipment',
+                    'Premium support'
+                ],
+                popular: false
+            }
+        ];
 
-            // Render agreements
-            function renderAgreements() {
-                const grid = document.getElementById('agreementsGrid');
-                grid.innerHTML = agreements.map(agreement => {
-                    const statusText = agreement.status === 'active' ? 'Active' :
-                        agreement.status === 'pending' ? 'Pending Signature' :
-                            'Expired';
-                    return `
+        let currentInsurance = null;
+
+        // Render agreements
+        function renderAgreements() {
+            const grid = document.getElementById('agreementsGrid');
+            grid.innerHTML = agreements.map(agreement => {
+                const statusText = agreement.status === 'active' ? 'Active' :
+                    agreement.status === 'pending' ? 'Pending Signature' :
+                        'Expired';
+                return `
                 <div class="agreement-card ${agreement.status}" onclick="viewAgreement('${agreement.id}')">
                     <div class="agreement-header">
                         <div>
@@ -823,9 +1007,9 @@
                         </div>
                         <span class="status-badge ${agreement.status}">
                             <span class="material-icons-outlined" style="font-size: 1rem;">${agreement.status === 'active' ? 'check_circle' :
-                            agreement.status === 'pending' ? 'pending' :
-                                'cancel'
-                        }</span>
+                        agreement.status === 'pending' ? 'pending' :
+                            'cancel'
+                    }</span>
                             ${statusText}
                         </span>
                     </div>
@@ -850,6 +1034,12 @@
                     </div>
 
                     <div class="agreement-footer">
+                        ${getCurrentUserType() === 'farmer' ? `
+                        <button class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="event.stopPropagation(); openPaymentModal(${agreement.bookingId}, '${agreement.title}', ${agreement.amount})">
+                            <span class="material-icons-outlined">payment</span>
+                            Proceed to Payment
+                        </button>
+                        ` : ''}
                         <button class="btn btn-primary" onclick="event.stopPropagation(); viewAgreement('${agreement.id}')">
                             <span class="material-icons-outlined">visibility</span>
                             View Details
@@ -858,15 +1048,19 @@
                             <span class="material-icons-outlined">download</span>
                             Download
                         </button>
+                        <button class="btn btn-secondary" style="background: #ef4444; color: white;" onclick="event.stopPropagation(); deleteAgreement(${agreement.bookingId}, '${agreement.id}')">
+                            <span class="material-icons-outlined">delete</span>
+                            Delete
+                        </button>
                     </div>
                 </div>
             `}).join('');
-            }
+        }
 
-            // Render insurance plans
-            function renderInsurance() {
-                const grid = document.getElementById('insuranceGrid');
-                grid.innerHTML = insurancePlans.map(plan => `
+        // Render insurance plans
+        function renderInsurance() {
+            const grid = document.getElementById('insuranceGrid');
+            grid.innerHTML = insurancePlans.map(plan => `
                 <div class="insurance-card" style="position: relative;">
                     ${plan.popular ? '<div class="popular-badge">⭐ MOST POPULAR</div>' : ''}
                     <div class="insurance-header">
@@ -890,28 +1084,22 @@
                     </div>
                 </div>
             `).join('');
-            }
+        }
 
-            // Switch tabs
-            function switchTab(tab) {
-                // Update tab buttons
-                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                event.target.closest('.tab-btn').classList.add('active');
+        // Switch tabs
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
 
-                // Update content
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                document.getElementById(`${tab}-tab`).classList.add('active');
-            }
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
 
-            // View agreement details
-            function viewAgreement(agreementId) {
-                const agreement = agreements.find(a => a.id === agreementId);
-                if (!agreement) return;
-
-                document.getElementById('agreementModalTitle').textContent = agreement.title;
-                document.getElementById('agreementModalId').textContent = agreement.id;
-
-                const documentHTML = `
+        // Generate HTML for agreement
+        function generateAgreementHTML(agreement) {
+            return `
                 <h3>EQUIPMENT RENTAL AGREEMENT</h3>
                 
                 <div class="section">
@@ -941,7 +1129,25 @@
                 </div>
 
                 <div class="section">
-                    <div class="section-title">5. TERMS & CONDITIONS</div>
+                    <div class="section-title">5. PAYMENT STATUS</div>
+                     <p><strong>Payment Status:</strong> <span style="color: ${agreement.paymentStatus === 'paid' ? '#10b981' : '#f59e0b'}; font-weight: 700; text-transform: uppercase;">${agreement.paymentStatus === 'paid' ? '✅ PAID' : '⏳ PENDING'}</span></p>
+                    ${agreement.paymentStatus === 'paid' ? `
+                        <p><strong>Amount Paid:</strong> ₹${agreement.paidAmount.toLocaleString()}</p>
+                        <p><strong>Payment Date:</strong> ${new Date(agreement.paidAt).toLocaleDateString()}</p>
+                        <div style="padding: 1rem; background: #d1fae5; border-left: 4px solid #10b981; border-radius: 8px; margin-top: 1rem;">
+                            <p style="color: #059669; font-weight: 600; margin: 0;">✅ Payment Completed Successfully</p>
+                            <p style="color: #047857; font-size: 0.85rem; margin: 0.25rem 0 0 0;">Thank you for your payment!</p>
+                        </div>
+                    ` : `
+                        <div style="padding: 1rem; background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; margin-top: 1rem;">
+                            <p style="color: #d97706; font-weight: 600; margin: 0;">⏳ Payment Pending</p>
+                            <p style="color: #b45309; font-size: 0.85rem; margin: 0.25rem 0 0 0;">Please complete the payment using the "Pay with QR" button</p>
+                        </div>
+                    `}
+                </div>
+
+                <div class="section">
+                    <div class="section-title">6. TERMS & CONDITIONS</div>
                     <p>• The lessee shall use the equipment for agricultural purposes only.</p>
                     <p>• The lessee is responsible for daily maintenance and fuel costs.</p>
                     <p>• Any damage to the equipment must be reported immediately.</p>
@@ -950,82 +1156,367 @@
                 </div>
 
                 <div class="section">
-                    <div class="section-title">6. LIABILITY</div>
+                    <div class="section-title">7. LIABILITY</div>
                     <p>The lessee assumes full responsibility for the equipment during the rental period and agrees to return it in the same condition as received, normal wear and tear excepted.</p>
                 </div>
 
-                <div class="signature-section">
-                    <div class="signature-box">
-                        <div class="signature-line"></div>
-                        <p><strong>Lessor Signature</strong></p>
-                        <p>${agreement.owner}</p>
+                <div class="signature-section" style="margin-top: 3rem; display: flex; justify-content: space-between;">
+                    <div class="signature-box" style="text-align: center;">
+                        <div class="signature-line" style="border-bottom: 2px solid #000; width: 200px; margin-bottom: 0.5rem;"></div>
+                        <p>Lessor Signature</p>
                     </div>
-                    <div class="signature-box">
-                        <div class="signature-line"></div>
-                        <p><strong>Lessee Signature</strong></p>
-                        <p>Date: ${new Date().toLocaleDateString()}</p>
+                    <div class="signature-box" style="text-align: center;">
+                        <div class="signature-line" style="border-bottom: 2px solid #000; width: 200px; margin-bottom: 0.5rem;"></div>
+                        <p>Lessee Signature</p>
                     </div>
                 </div>
             `;
+        }
 
-                document.getElementById('agreementDocument').innerHTML = documentHTML;
-                document.getElementById('agreementModal').classList.add('active');
+        // View agreement details
+        function viewAgreement(agreementId) {
+            const agreement = agreements.find(a => a.id === agreementId);
+            if (!agreement) return;
+
+            document.getElementById('agreementModalTitle').textContent = agreement.title;
+            document.getElementById('agreementModalId').textContent = agreement.id;
+
+            const documentHTML = generateAgreementHTML(agreement);
+
+            document.getElementById('agreementDocument').innerHTML = documentHTML;
+            document.getElementById('agreementModal').classList.add('active');
+        }
+
+        // Open insurance modal
+        function openInsuranceModal(planId) {
+            const plan = insurancePlans.find(p => p.id === planId);
+            if (!plan) return;
+
+            currentInsurance = plan;
+            document.getElementById('insuranceModalTitle').textContent = `Purchase ${plan.name}`;
+            document.getElementById('insuranceCoverage').textContent = plan.features.join(' • ');
+            document.getElementById('totalPremium').value = `₹${plan.price}/month`;
+
+            document.getElementById('insuranceModal').classList.add('active');
+        }
+
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Download agreement
+        function downloadAgreement(agreementId) {
+            const agreement = agreements.find(a => a.id === agreementId);
+            if (!agreement) {
+                alert('Agreement details not found.');
+                return;
             }
 
-            // Open insurance modal
-            function openInsuranceModal(planId) {
-                const plan = insurancePlans.find(p => p.id === planId);
-                if (!plan) return;
+            // Create a temporary container for generate the PDF content
+            const element = document.createElement('div');
+            element.className = 'agreement-document';
+            // Inline explicit styles to ensure PDF renders correctly without relying on external css loading
+            element.style.padding = '40px';
+            element.style.fontFamily = 'Courier New, monospace';
+            element.style.background = 'white';
+            element.style.color = '#1a1a2e';
 
-                currentInsurance = plan;
-                document.getElementById('insuranceModalTitle').textContent = `Purchase ${plan.name}`;
-                document.getElementById('insuranceCoverage').textContent = plan.features.join(' • ');
-                document.getElementById('totalPremium').value = `₹${plan.price}/month`;
+            // Add the content
+            element.innerHTML = generateAgreementHTML(agreement);
 
-                document.getElementById('insuranceModal').classList.add('active');
+            // Add Logo or Header
+            const headerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem; border-bottom: 2px solid #10b981; padding-bottom: 1rem;">
+                    <h1 style="font-family: serif; color: #10b981; margin: 0;">AgroHub</h1>
+                    <p style="margin: 0; font-size: 0.8rem; color: #666;">Digital Agricultural Services</p>
+                </div>
+            `;
+            element.innerHTML = headerHTML + element.innerHTML;
+
+            const opt = {
+                margin: 10,
+                filename: `AgroHub_Agreement_${agreement.id}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Show a "Downloading..." toast or alert
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-icons-outlined">downloading</span> Generating...';
+            btn.disabled = true;
+
+            html2pdf().from(element).set(opt).save().then(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error('PDF Error:', err);
+                alert('Could not generate PDF.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        // Delete agreement
+        async function deleteAgreement(bookingId, agreementId) {
+            // Confirm deletion
+            const confirmDelete = confirm(`Are you sure you want to delete agreement ${agreementId}?\n\nThis action cannot be undone.`);
+
+            if (!confirmDelete) {
+                return;
             }
 
-            // Close modal
-            function closeModal(modalId) {
-                document.getElementById(modalId).classList.remove('active');
-            }
+            try {
+                const response = await fetch('php/delete_agreement.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        booking_id: bookingId
+                    })
+                });
 
-            // Download agreement
-            function downloadAgreement(agreementId) {
-                console.log('Downloading agreement:', agreementId || 'current');
-                alert('Agreement PDF download will start shortly. In production, this would generate and download a PDF file.');
-            }
+                const result = await response.json();
 
-            // Purchase insurance
-            function purchaseInsurance() {
-                const form = document.getElementById('insuranceForm');
-
-                if (!form.checkValidity()) {
-                    alert('Please fill in all required fields');
-                    return;
+                if (result.success) {
+                    alert('✅ Agreement deleted successfully!');
+                    // Reload agreements
+                    loadAgreementsFromDatabase();
+                } else {
+                    alert('❌ Error: ' + result.message);
                 }
+            } catch (error) {
+                console.error('Error deleting agreement:', error);
+                alert('❌ An error occurred while deleting the agreement. Please try again.');
+            }
+        }
 
-                const purchaseData = {
-                    plan: currentInsurance.name,
-                    equipment: document.getElementById('equipmentSelect').value,
-                    period: document.getElementById('coveragePeriod').value,
-                    name: document.getElementById('buyerName').value,
-                    phone: document.getElementById('buyerPhone').value,
-                    premium: currentInsurance.price
-                };
+        // Purchase insurance
+        function purchaseInsurance() {
+            const form = document.getElementById('insuranceForm');
 
-                console.log('Insurance Purchase:', purchaseData);
-
-                alert(`Insurance purchased successfully!\n\nPlan: ${purchaseData.plan}\nEquipment: ${purchaseData.equipment}\nCoverage: ${purchaseData.period} month(s)\n\nYour policy documents will be sent to your email.`);
-
-                closeModal('insuranceModal');
-                form.reset();
+            if (!form.checkValidity()) {
+                alert('Please fill in all required fields');
+                return;
             }
 
-            // Initialize
-            renderAgreements();
-            renderInsurance();
-        </script>
+            const purchaseData = {
+                plan: currentInsurance.name,
+                equipment: document.getElementById('equipmentSelect').value,
+                period: document.getElementById('coveragePeriod').value,
+                name: document.getElementById('buyerName').value,
+                phone: document.getElementById('buyerPhone').value,
+                premium: currentInsurance.price
+            };
+
+            console.log('Insurance Purchase:', purchaseData);
+
+            alert(`Insurance purchased successfully!\n\nPlan: ${purchaseData.plan}\nEquipment: ${purchaseData.equipment}\nCoverage: ${purchaseData.period} month(s)\n\nYour policy documents will be sent to your email.`);
+
+            closeModal('insuranceModal');
+            form.reset();
+        }
+
+        // Get current user type
+        function getCurrentUserType() {
+            const userDataStr = localStorage.getItem('agrohub_user');
+            if (!userDataStr) return null;
+            const userData = JSON.parse(userDataStr);
+            return userData.userType || userData.user_type;
+        }
+
+
+        // Open Payment Modal
+        let currentPaymentBookingId = null;
+        let currentPaymentAmount = 0;
+        function openPaymentModal(bookingId, equipmentName, amount) {
+            currentPaymentBookingId = bookingId;
+            currentPaymentAmount = amount;
+
+            // Set payment details
+            document.getElementById('qrPaymentDetails').textContent =
+                `Equipment: ${equipmentName} | Amount: ₹${amount.toLocaleString()}`;
+
+            // Reset to payment method selection
+            document.getElementById('paymentMethodSelection').style.display = 'block';
+            document.getElementById('cardPaymentForm').style.display = 'none';
+            document.getElementById('gpayQRCode').style.display = 'none';
+
+            // Open modal
+            document.getElementById('qrPaymentModal').classList.add('active');
+        }
+
+        // Select Payment Method
+        function selectPaymentMethod(method) {
+            // Hide payment method selection
+            // document.getElementById('paymentMethodSelection').style.display = 'none';
+
+            if (method === 'card' || method === 'gpay') {
+                // Trigger Razorpay for both options
+                startRazorpayPayment();
+            }
+        }
+
+        // Start Razorpay Payment
+        function startRazorpayPayment() {
+            // Get user data for prefill
+            const userDataStr = localStorage.getItem('agrohub_user');
+            const userData = userDataStr ? JSON.parse(userDataStr) : {};
+            const userEmail = userData.email || 'farmer@example.com';
+            const userPhone = userData.phone || '9999999999';
+            const userName = userData.name || 'AgroHub Farmer';
+
+            var options = {
+                "key": "rzp_test_S9eMM7lUO4r17Y", // Enter the Key ID generated from the Dashboard
+                "amount": currentPaymentAmount * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "AgroHub",
+                "description": "Equipment Rental Payment",
+                "image": "https://cdn-icons-png.flaticon.com/512/3712/3712196.png", // Agrohub logo placeholder
+                "handler": function (response) {
+                    // Payment successful
+                    console.log("Payment ID: " + response.razorpay_payment_id);
+                    verifyPayment(response.razorpay_payment_id);
+                },
+                "prefill": {
+                    "name": userName,
+                    "email": userEmail,
+                    "contact": userPhone
+                },
+                "notes": {
+                    "booking_id": currentPaymentBookingId
+                },
+                "theme": {
+                    "color": "#0077b6"
+                }
+            };
+
+            var rzp1 = new Razorpay(options);
+
+            rzp1.on('payment.failed', function (response) {
+                alert("Payment Failed: " + response.error.description);
+                console.error(response.error);
+            });
+
+            rzp1.open();
+
+            // Close the manual method modal
+            // closeModal('qrPaymentModal'); // Optional: keep it open to show success later? Better to close or show processing.
+        }
+
+        async function verifyPayment(paymentId) {
+            const paymentModalContent = document.querySelector('#qrPaymentModal .modal-content');
+            const originalContent = paymentModalContent.innerHTML;
+
+            // Show processing state
+            paymentModalContent.innerHTML = `
+                <div style="padding: 3rem; text-align: center;">
+                    <span class="material-icons-outlined" style="font-size: 4rem; animation: spin 1s linear infinite; color: var(--primary-blue);">sync</span>
+                    <h3 style="margin-top: 1rem;">Verifying Payment...</h3>
+                </div>
+             `;
+
+            try {
+                const response = await fetch('php/verify_razorpay_payment.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: paymentId,
+                        booking_id: currentPaymentBookingId,
+                        amount: currentPaymentAmount
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Show success state
+                    paymentModalContent.innerHTML = `
+                        <div style="padding: 3rem; text-align: center;">
+                            <span class="material-icons-outlined" style="font-size: 4rem; color: var(--success);">check_circle</span>
+                            <h3 style="margin-top: 1rem; color: var(--success);">Payment Successful!</h3>
+                            <p style="margin-top: 0.5rem; color: var(--text-gray);">Transaction ID: ${paymentId}</p>
+                            <button class="btn btn-primary" onclick="closeModal('qrPaymentModal'); loadAgreementsFromDatabase();" style="margin-top: 2rem;">Close</button>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(result.message || 'Verification failed');
+                }
+            } catch (error) {
+                console.error('Payment verification error:', error);
+
+                // Show error state in modal instead of alert
+                paymentModalContent.innerHTML = `
+                    <div style="padding: 3rem; text-align: center;">
+                        <span class="material-icons-outlined" style="font-size: 4rem; color: var(--error);">error_outline</span>
+                        <h3 style="margin-top: 1rem; color: var(--error);">Verification Failed</h3>
+                        <p style="margin-top: 0.5rem; color: var(--text-gray); max-width: 300px; margin-left: auto; margin-right: auto;">
+                            Payment was successful at gateway, but verification failed: ${error.message}
+                        </p>
+                        <p style="font-size: 0.85rem; color: var(--text-gray); margin-top: 0.5rem;">
+                            Please contact support with Transaction ID: ${paymentId}
+                        </p>
+                        <button class="btn btn-secondary" onclick="closeModal('qrPaymentModal')" style="margin-top: 2rem;">Close</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Back to Payment Methods
+        function backToPaymentMethods() {
+            document.getElementById('paymentMethodSelection').style.display = 'block';
+            document.getElementById('cardPaymentForm').style.display = 'none';
+            document.getElementById('gpayQRCode').style.display = 'none';
+        }
+
+        // Mark Payment as Complete
+        async function markPaymentComplete() {
+            if (!currentPaymentBookingId) return;
+
+            try {
+                // Call API to update payment status
+                const response = await fetch('php/update_payment_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        booking_id: currentPaymentBookingId,
+                        amount: currentPaymentAmount
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ Payment marked as complete!\n\nThank you for your payment. The owner will be notified.');
+
+                    // Close modal
+                    closeModal('qrPaymentModal');
+
+                    // Reload agreements to show updated payment status
+                    loadAgreementsFromDatabase();
+                } else {
+                    alert('❌ Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error updating payment status:', error);
+                alert('❌ An error occurred while recording the payment. Please try again.');
+            }
+
+            currentPaymentBookingId = null;
+            currentPaymentAmount = 0;
+        }
+
+        // Initialize
+        loadAgreementsFromDatabase(); // Load real data from database
+        renderInsurance();
+    </script>
 </body>
 
 </html>

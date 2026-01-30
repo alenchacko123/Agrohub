@@ -520,6 +520,200 @@
             font-size: 0.9rem;
         }
 
+        /* Success Modal */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .success-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .success-modal-content {
+            background: linear-gradient(135deg, #ffffff, #f9fafb);
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            padding: 0;
+            position: relative;
+            animation: slideUp 0.4s ease-out;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            animation: checkmarkPop 0.6s ease-out 0.2s both;
+        }
+
+        .success-icon .material-icons-outlined {
+            font-size: 3rem;
+            color: white;
+        }
+
+        @keyframes checkmarkPop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-header h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .success-body {
+            padding: 2rem;
+        }
+
+        .booking-details {
+            background: #f3f4f6;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-label .material-icons-outlined {
+            font-size: 1.2rem;
+            color: var(--primary-green);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.15));
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-message p {
+            margin: 0;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .success-footer {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .success-btn {
+            flex: 1;
+            padding: 0.85rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .success-btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+        }
+
+        .success-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        .success-btn-secondary {
+            background: white;
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .success-btn-secondary:hover {
+            background: var(--primary-green);
+            color: white;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .equipment-grid {
@@ -668,6 +862,35 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeRentalModal()">Cancel</button>
                 <button type="button" class="btn btn-primary" onclick="submitRental()">Confirm Rental</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-modal-content">
+            <div class="success-header">
+                <div class="success-icon">
+                    <span class="material-icons-outlined">check_circle</span>
+                </div>
+                <h3>Booking Request Submitted!</h3>
+            </div>
+            <div class="success-body">
+                <div class="booking-details" id="bookingDetails">
+                    <!-- Details will be populated dynamically -->
+                </div>
+                <div class="success-message">
+                    <p><strong>📧 The owner will be notified.</strong></p>
+                    <p>You will receive a confirmation once your booking is approved.</p>
+                </div>
+                <div class="success-footer">
+                    <button class="success-btn success-btn-secondary" onclick="closeSuccessModal()">
+                        Stay Here
+                    </button>
+                    <button class="success-btn success-btn-primary" onclick="goToDashboard()">
+                        Go to Dashboard
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -998,12 +1221,9 @@
                 submitBtn.disabled = false;
 
                 if (result.success) {
-                    alert(`✅ Booking request submitted successfully!\n\nEquipment: ${currentEquipment.name}\nDates: ${bookingData.start_date} to ${bookingData.end_date}\nTotal: ₹${totalAmount.toLocaleString()}\n\n📧 The owner will be notified.\nYou will receive a confirmation once approved.`);
+                    // Show beautiful success modal instead of alert
+                    showSuccessModal(currentEquipment.name, bookingData.start_date, bookingData.end_date, totalAmount);
                     closeRentalModal();
-                    // Optionally redirect to dashboard
-                    setTimeout(() => {
-                        window.location.href = 'farmer-dashboard.html';
-                    }, 2000);
                 } else {
                     alert('❌ Failed to submit booking:\n' + (result.error || 'Unknown error'));
                 }
@@ -1031,6 +1251,51 @@
 
                 alert(errorMessage);
             }
+        }
+
+        // Success Modal Functions
+        function showSuccessModal(equipmentName, startDate, endDate, totalAmount) {
+            const bookingDetails = document.getElementById('bookingDetails');
+            bookingDetails.innerHTML = `
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <span class="material-icons-outlined">agriculture</span>
+                        Equipment
+                    </div>
+                    <div class="detail-value">${equipmentName}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <span class="material-icons-outlined">event</span>
+                        Start Date
+                    </div>
+                    <div class="detail-value">${startDate}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <span class="material-icons-outlined">event_available</span>
+                        End Date
+                    </div>
+                    <div class="detail-value">${endDate}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <span class="material-icons-outlined">payments</span>
+                        Total Amount
+                    </div>
+                    <div class="detail-value" style="color: var(--primary-green); font-size: 1.1rem;">₹${totalAmount.toLocaleString()}</div>
+                </div>
+            `;
+
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        function goToDashboard() {
+            window.location.href = 'farmer-dashboard.html';
         }
 
         // Initialize - load equipment from database

@@ -114,8 +114,12 @@ try {
         description,
         location,
         image_url,
+        model,
+        year_of_manufacture,
+        fuel_type,
+        capacity,
         created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt = $conn->prepare($sql);
 
@@ -123,8 +127,13 @@ try {
         throw new Exception('Database error: ' . $conn->error);
     }
 
+    $model = $data['model'] ?? null;
+    $year = $data['year'] ?? null;
+    $fuel = $data['fuel'] ?? null;
+    $capacity = $data['capacity'] ?? null;
+
     $stmt->bind_param(
-        "isssdsssss",
+        "isssdsssssssss",
         $owner_id,
         $owner_name,
         $data['equipment_name'],
@@ -134,7 +143,11 @@ try {
         $data['availability'],
         $data['description'],
         $data['location'],
-        $image_url
+        $image_url,
+        $model,
+        $year,
+        $fuel,
+        $capacity
     );
 
     if ($stmt->execute()) {

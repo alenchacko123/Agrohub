@@ -17,19 +17,19 @@ try {
     $input = json_decode(file_get_contents('php://input'), true);
     
     // Validate required fields
-    if (!isset($input['job_id']) || !isset($input['applicant_id'])) {
-        throw new Exception('Job ID and Applicant ID are required');
+    if (!isset($input['job_id']) || !isset($input['worker_id'])) {
+        throw new Exception('Job ID and Worker ID are required');
     }
     
     $job_id = intval($input['job_id']);
-    $applicant_id = intval($input['applicant_id']);
+    $worker_id = intval($input['worker_id']);
     $message = isset($input['message']) ? trim($input['message']) : '';
     $experience = isset($input['experience']) ? trim($input['experience']) : '';
     
     // Check if already applied
-    $check_query = "SELECT id FROM job_applications WHERE job_id = ? AND applicant_id = ?";
+    $check_query = "SELECT id FROM job_applications WHERE job_id = ? AND worker_id = ?";
     $check_stmt = $conn->prepare($check_query);
-    $check_stmt->bind_param('ii', $job_id, $applicant_id);
+    $check_stmt->bind_param('ii', $job_id, $worker_id);
     $check_stmt->execute();
     $check_result = $check_stmt->get_result();
     
@@ -38,11 +38,11 @@ try {
     }
     
     // Insert new application
-    $query = "INSERT INTO job_applications (job_id, applicant_id, message, experience, status, created_at) 
+    $query = "INSERT INTO job_applications (job_id, worker_id, message, experience, status, applied_at) 
               VALUES (?, ?, ?, ?, 'pending', NOW())";
     
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('iiss', $job_id, $applicant_id, $message, $experience);
+    $stmt->bind_param('iiss', $job_id, $worker_id, $message, $experience);
     
     if ($stmt->execute()) {
         echo json_encode([

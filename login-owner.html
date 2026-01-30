@@ -858,20 +858,52 @@
         });
 
         // Form submission
-        document.getElementById('login-form').addEventListener('submit', function (e) {
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
             e.preventDefault();
-            // Get the email entered by user
             const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const submitBtn = this.querySelector('button[type="submit"]');
 
-            // Store user info in localStorage
-            localStorage.setItem('agrohub_user', JSON.stringify({
-                email: email,
-                userType: 'owner',
-                loginMethod: 'email'
-            }));
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons-outlined">sync</span> Signing in...';
 
-            console.log('Owner login');
-            window.location.href = 'owner-dashboard.html';
+            try {
+                const response = await fetch('php/auth.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'login',
+                        email: email,
+                        password: password,
+                        userType: 'owner'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store user data and token
+                    localStorage.setItem('agrohub_user', JSON.stringify(data.data.user));
+                    localStorage.setItem('agrohub_token', data.data.token);
+
+                    showNotification('Login successful! Redirecting...', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = 'owner-dashboard.html';
+                    }, 1000);
+                } else {
+                    showNotification(data.message || 'Invalid email or password', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="material-icons-outlined">login</span> Sign In';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showNotification('Connection error. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="material-icons-outlined">login</span> Sign In';
+            }
         });
     </script>
 </body>

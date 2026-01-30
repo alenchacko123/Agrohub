@@ -7,10 +7,11 @@ $conn = getDBConnection();
 
 try {
     $owner_id = isset($_GET['owner_id']) ? intval($_GET['owner_id']) : 0;
+    $farmer_id = isset($_GET['farmer_id']) ? intval($_GET['farmer_id']) : 0;
     $status_filter = isset($_GET['status']) ? $_GET['status'] : '';
     
-    if ($owner_id === 0) {
-        throw new Exception('Owner ID is required');
+    if ($owner_id === 0 && $farmer_id === 0) {
+        throw new Exception('Owner ID or Farmer ID is required');
     }
 
     // Build the SQL query
@@ -23,13 +24,23 @@ try {
                 b.end_date,
                 b.total_amount,
                 b.status,
+                b.payment_status,
+                b.paid_amount,
+                b.paid_at,
                 b.created_at,
                 e.equipment_name,
                 e.equipment_condition,
                 DATEDIFF(b.end_date, b.start_date) as duration
             FROM bookings b
             INNER JOIN equipment e ON b.equipment_id = e.id
-            WHERE e.owner_id = ?";
+            WHERE ";
+    
+    // Add owner_id or farmer_id filter
+    if ($owner_id > 0) {
+        $sql .= "e.owner_id = ?";
+    } else {
+        $sql .= "b.farmer_id = ?";
+    }
     
     // Add status filter if provided
     if (!empty($status_filter)) {
@@ -47,10 +58,12 @@ try {
     
     $stmt = $conn->prepare($sql);
     
+    $id_param = $owner_id > 0 ? $owner_id : $farmer_id;
+    
     if (!empty($status_filter)) {
-        $stmt->bind_param("is", $owner_id, $status_filter);
+        $stmt->bind_param("is", $id_param, $status_filter);
     } else {
-        $stmt->bind_param("i", $owner_id);
+        $stmt->bind_param("i", $id_param);
     }
     
     $stmt->execute();

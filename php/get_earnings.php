@@ -81,11 +81,24 @@ try {
     $stmt3->bind_param("i", $owner_id);
     $stmt3->execute();
     $monthly_result = $stmt3->get_result();
+    // Removed duplicate execution
     $monthly_data = $monthly_result->fetch_assoc();
     
+    // Get Active Listings Count (Total Equipment)
+    $listings_sql = "SELECT COUNT(*) as count FROM equipment WHERE owner_id = ?";
+    $stmt4 = $conn->prepare($listings_sql);
+    $stmt4->bind_param("i", $owner_id);
+    $stmt4->execute();
+    $listings_result = $stmt4->get_result();
+    $listings_data = $listings_result->fetch_assoc();
+    $active_listings = $listings_data['count'];
+    $stmt4->close();
+
     echo json_encode([
         'success' => true,
         'earnings' => [
+            'active_listings' => intval($active_listings),
+            'average_rating' => 0.0,
             'total_earnings' => floatval($earnings_data['total_earnings']),
             'wallet_balance' => floatval($earnings_data['wallet_balance']),
             'pending_payouts' => floatval($earnings_data['pending_payouts']),

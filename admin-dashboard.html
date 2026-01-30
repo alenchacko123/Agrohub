@@ -505,20 +505,13 @@
     </div>
 
     <script>
-        // Mock User Data
-        const mockUsers = [
-            { name: "John Doe", role: "Farmer", email: "john.doe@example.com", status: "Verified" },
-            { name: "Sarah Smith", role: "Owner", email: "sarah.smith@agri.com", status: "Verified" },
-            { name: "Michael Seed", role: "Farmer", email: "mike.seed@farm.net", status: "Pending" },
-            { name: "Green Acres Ltd", role: "Owner", email: "contact@greenacres.ie", status: "Verified" },
-            { name: "Robert Field", role: "Farmer", email: "bob.field@gmail.com", status: "Verified" },
-            { name: "Tractor Co.", role: "Owner", email: "sales@tractorco.com", status: "Creating..." }
-        ];
+        // Store users data
+        let allUsers = [];
 
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('agrohub_user');
-                window.location.href = 'login-farmer.html'; // Check this redirect, might need to be login-admin or generic
+                window.location.href = 'login-farmer.html';
             }
         }
 
@@ -536,7 +529,6 @@
 
             // Update Nav State
             navItems.forEach(item => item.classList.remove('active'));
-            // Very simple match for demo
             navItems.forEach(item => {
                 if (item.textContent.trim().toLowerCase().includes(viewName)) {
                     item.classList.add('active');
@@ -544,12 +536,88 @@
             });
         }
 
+        // Get user role label with proper capitalization
+        function getRoleLabel(userType) {
+            const roleMap = {
+                'farmer': 'Farmer',
+                'owner': 'Owner (Equipment Rental)',
+                'worker': 'Worker (Job Seeker)',
+                'admin': 'Administrator'
+            };
+            return roleMap[userType.toLowerCase()] || userType;
+        }
+
+        // Get role badge colors
+        function getRoleBadgeColors(userType) {
+            const colorMap = {
+                'farmer': { bg: '#dbeafe', color: '#1e40af' },      // Blue
+                'owner': { bg: '#fae8ff', color: '#86198f' },       // Purple
+                'worker': { bg: '#dcfce7', color: '#166534' },      // Green
+                'admin': { bg: '#fef3c7', color: '#92400e' }        // Yellow
+            };
+            return colorMap[userType.toLowerCase()] || { bg: '#f3f4f6', color: '#374151' };
+        }
+
+        // Fetch users from database
+        async function fetchUsers() {
+            try {
+                const response = await fetch('php/get_all_users.php');
+                const data = await response.json();
+
+                if (data.success) {
+                    allUsers = data.users;
+                    renderUsers(allUsers);
+                    updateUserCount(data.count);
+                } else {
+                    console.error('Failed to fetch users:', data.error);
+                    // Show error in table
+                    const tbody = document.getElementById('user-table-body');
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="padding: 2rem; text-align: center; color: var(--error);">
+                                Failed to load users: ${data.error}
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                const tbody = document.getElementById('user-table-body');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="padding: 2rem; text-align: center; color: var(--error);">
+                            Error loading users. Please check your database connection.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Update user count in stats
+        function updateUserCount(count) {
+            const statValue = document.querySelector('.stat-card:first-child .stat-value');
+            if (statValue) {
+                statValue.textContent = count.toLocaleString();
+            }
+        }
+
         // Populate User Table
-        function renderUsers() {
+        function renderUsers(users) {
             const tbody = document.getElementById('user-table-body');
             tbody.innerHTML = '';
 
-            mockUsers.forEach(user => {
+            if (!users || users.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-gray);">
+                            No users found in the database.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            users.forEach(user => {
                 const tr = document.createElement('tr');
                 tr.style.borderBottom = '1px solid #f3f4f6';
 
@@ -557,16 +625,19 @@
                 const badgeBg = user.status === 'Verified' ? '#dcfce7' : (user.status === 'Pending' ? '#fef3c7' : '#f3f4f6');
                 const badgeColor = user.status === 'Verified' ? '#166534' : (user.status === 'Pending' ? '#92400e' : '#374151');
 
+                const roleColors = getRoleBadgeColors(user.user_type);
+                const roleLabel = getRoleLabel(user.user_type);
+
                 tr.innerHTML = `
                     <td style="padding: 1rem; display: flex; align-items: center; gap: 0.75rem;">
-                        <div style="width: 32px; height: 32px; background: #e0e7ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                            ${user.name.charAt(0)}
+                        <div style="width: 32px; height: 32px; background: ${roleColors.bg}; color: ${roleColors.color}; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            ${user.name.charAt(0).toUpperCase()}
                         </div>
                         <span style="font-weight: 500;">${user.name}</span>
                     </td>
                     <td style="padding: 1rem;">
-                        <span style="background: ${user.role === 'Farmer' ? '#dbeafe' : '#fae8ff'}; color: ${user.role === 'Farmer' ? '#1e40af' : '#86198f'}; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600;">
-                            ${user.role}
+                        <span style="background: ${roleColors.bg}; color: ${roleColors.color}; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600;">
+                            ${roleLabel}
                         </span>
                     </td>
                     <td style="padding: 1rem; color: var(--text-gray);">${user.email}</td>
@@ -586,6 +657,22 @@
             });
         }
 
+        // Search functionality
+        function setupSearch() {
+            const searchInput = document.querySelector('input[placeholder="Search users..."]');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filteredUsers = allUsers.filter(user =>
+                        user.name.toLowerCase().includes(searchTerm) ||
+                        user.email.toLowerCase().includes(searchTerm) ||
+                        user.user_type.toLowerCase().includes(searchTerm)
+                    );
+                    renderUsers(filteredUsers);
+                });
+            }
+        }
+
         // Initialize
         window.addEventListener('DOMContentLoaded', () => {
             const userStr = localStorage.getItem('agrohub_user');
@@ -596,15 +683,17 @@
                 }
             }
 
-            // Bind click events to sidebar for demo
+            // Bind click events to sidebar
             navItems[0].addEventListener('click', () => switchView('dashboard'));
-            navItems[2].addEventListener('click', () => switchView('users')); // Index 2 is likely 'Users' based on the HTML structure
+            navItems[2].addEventListener('click', () => switchView('users'));
 
-            // Initial Render
-            renderUsers();
+            // Setup search functionality
+            setupSearch();
 
-            // Check if we arrived here just now login logic, default to Users view if requested or just Dashboard
-            // For this specific request, let's default to Users view to show the work immediately
+            // Fetch and render users from database
+            fetchUsers();
+
+            // Default to Users view to show the work immediately
             switchView('users');
         });
     </script>

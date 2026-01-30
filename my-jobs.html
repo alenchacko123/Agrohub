@@ -472,16 +472,27 @@
             let user = null;
             let loadedFrom = '';
 
-            // Priority 1: Worker Login (userData)
-            const userData = localStorage.getItem('userData');
-            if (userData) {
+            // Priority 1: Agrohub User (used by farmer login and Google login)
+            const agrohubUser = localStorage.getItem('agrohub_user');
+            if (agrohubUser) {
                 try {
-                    user = JSON.parse(userData);
-                    loadedFrom = 'userData';
-                } catch (e) { console.error('Error parsing userData', e); }
+                    user = JSON.parse(agrohubUser);
+                    loadedFrom = 'agrohub_user';
+                } catch (e) { console.error('Error parsing agrohub_user', e); }
             }
 
-            // Priority 2: Generic User (user) - Google Login often uses this
+            // Priority 2: Worker Login (userData)
+            if (!user) {
+                const userData = localStorage.getItem('userData');
+                if (userData) {
+                    try {
+                        user = JSON.parse(userData);
+                        loadedFrom = 'userData';
+                    } catch (e) { console.error('Error parsing userData', e); }
+                }
+            }
+
+            // Priority 3: Generic User (user) - Google Login sometimes uses this
             if (!user) {
                 const userSimple = localStorage.getItem('user');
                 if (userSimple) {
@@ -489,17 +500,6 @@
                         user = JSON.parse(userSimple);
                         loadedFrom = 'user';
                     } catch (e) { console.error('Error parsing user', e); }
-                }
-            }
-
-            // Priority 3: Agrohub User
-            if (!user) {
-                const agrohubUser = localStorage.getItem('agrohub_user');
-                if (agrohubUser) {
-                    try {
-                        user = JSON.parse(agrohubUser);
-                        loadedFrom = 'agrohub_user';
-                    } catch (e) { console.error('Error parsing agrohub_user', e); }
                 }
             }
 
@@ -527,29 +527,60 @@
                 document.getElementById('userName').textContent = name;
                 document.getElementById('avatarInitial').textContent = initial;
 
-                // Robust ID detection
-                currentWorkerId = user.id || user.user_id || user.userId || 0;
+                // Robust ID detection - Check all possible ID field names
+                currentWorkerId = user.id || user.user_id || user.userId || user.worker_id || null;
 
                 console.log(`Loaded user from ${loadedFrom}:`, user);
+                console.log('User object:', JSON.stringify(user));
                 console.log('Resolved Worker ID:', currentWorkerId);
+
+                // Additional debug info
+                if (!currentWorkerId || currentWorkerId === 0) {
+                    console.warn('⚠️ User ID is missing or zero!');
+                    console.warn('Available user properties:', Object.keys(user));
+                }
+            } else {
+                console.error('❌ No user data found in localStorage');
             }
         }
 
         function showLoginError() {
-            const debugInfo = `
-                <div style="margin-top: 1rem; font-size: 0.8rem; color: #999;">
-                    Debug: User found but ID is missing/invalid.<br>
-                    Please try logging out and logging in again.
-                </div>
-            `;
+            // Check if user is logged in as a farmer
+            const userName = document.getElementById('userName').textContent;
+            const agrohubUser = localStorage.getItem('agrohub_user');
+            let userType = '';
+
+            try {
+                if (agrohubUser) {
+                    const userData = JSON.parse(agrohubUser);
+                    userType = userData.userType || userData.user_type || '';
+                }
+            } catch (e) {
+                console.error('Error parsing user type', e);
+            }
+
+            const isFarmer = userType === 'farmer';
 
             const errorHtml = `
                 <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
-                    <span class="material-icons-outlined" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;">error_outline</span>
-                    <h3>Authentication Error</h3>
-                    <p>We couldn't verify your user ID. You appear to be logged in as "${document.getElementById('userName').textContent}", but your ID is missing.</p>
-                    <button class="btn btn-primary" onclick="window.location.href='login-worker.html'" style="margin: 1rem auto;">Login Again</button>
-                    ${debugInfo}
+                    <span class="material-icons-outlined" style="font-size: 3rem; color: ${isFarmer ? '#f59e0b' : '#ef4444'}; margin-bottom: 1rem;">${isFarmer ? 'warning' : 'error_outline'}</span>
+                    <h3>${isFarmer ? 'Wrong Portal' : 'Authentication Error'}</h3>
+                    <p>${isFarmer
+                    ? `You are logged in as a <strong>Farmer</strong> ("${userName}"). This page is for <strong>Workers</strong> only.`
+                    : `We couldn't verify your user ID. You appear to be logged in as "${userName}", but your ID is missing.`}</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                        ${isFarmer
+                    ? `<button class="btn btn-primary" onclick="window.location.href='farmer-dashboard.html'" style="margin: 0;">Go to Farmer Dashboard</button>
+                               <button class="btn btn-secondary" onclick="logout()" style="margin: 0;">Logout</button>`
+                    : `<button class="btn btn-primary" onclick="window.location.href='login-worker.html'" style="margin: 0;">Login as Worker</button>
+                               <button class="btn btn-secondary" onclick="window.location.href='landingpage.html'" style="margin: 0;">Go Home</button>`
+                }
+                    </div>
+                    <div style="margin-top: 1.5rem; font-size: 0.85rem; color: #6b7280;">
+                        ${isFarmer
+                    ? 'Tip: Farmers manage job postings from the Farmer Dashboard → "Farm Labor Hub" → "View Posted Jobs"'
+                    : 'Debug: User found but ID is missing/invalid. Please try logging in again.'}
+                    </div>
                 </div>
             `;
             document.getElementById('active-jobs-grid').innerHTML = errorHtml;
