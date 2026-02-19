@@ -658,17 +658,13 @@
             const token = localStorage.getItem('userToken');
 
             try {
-                const response = await fetch('php/job_search.php?limit=3', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+                const response = await fetch('php/get_jobs.php?status=Open');
 
-                const data = await response.json();
+                const result = await response.json();
 
-                if (data.success && data.data.jobs && data.data.jobs.length > 0) {
-                    container.innerHTML = data.data.jobs.map(job => `
-                        <div class="job-card" onclick="window.location.href='job-listings.html?job=${job.id}'">
+                if (result.success && result.jobs && result.jobs.length > 0) {
+                    container.innerHTML = result.jobs.slice(0, 3).map(job => `
+                        <div class="job-card" onclick="window.location.href='job-details.html?job_id=${job.id}'">
                             <div class="job-header">
                                 <div class="job-info">
                                     <h4>${job.job_title}</h4>
@@ -719,7 +715,7 @@
                 <div class="empty-state">
                     <span class="material-icons-outlined">assignment</span>
                     <p>No active contracts</p>
-                    <a href="job-listings.html" class="btn btn-primary" style="margin-top: 1rem;">Browse Jobs</a>
+                    <a href="available-jobs.html" class="btn btn-primary" style="margin-top: 1rem;">Browse Jobs</a>
                 </div>
             `;
         }
@@ -731,7 +727,7 @@
                 <div class="empty-state">
                     <span class="material-icons-outlined">description</span>
                     <p>No applications yet</p>
-                    <a href="job-listings.html" class="btn btn-primary" style="margin-top: 1rem;">Apply for Jobs</a>
+                    <a href="available-jobs.html" class="btn btn-primary" style="margin-top: 1rem;">Apply for Jobs</a>
                 </div>
             `;
         }

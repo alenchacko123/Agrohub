@@ -851,13 +851,24 @@
             loadJobDetails();
         });
 
+        let jobData = null;
+        let applicantStatus = null;
+        let farmerContact = { phone: null, email: null };
+
         async function loadJobDetails() {
             try {
+                // 1. Fetch Job Details (Public Info)
                 const response = await fetch(`php/get_job_details.php?job_id=${jobId}`);
                 const result = await response.json();
 
                 if (result.success) {
-                    displayJobDetails(result.job);
+                    jobData = result.job;
+
+                    // 2. Check Application Status & Fetch Private Info (if logged in)
+                    await checkApplicationStatus();
+
+                    // 3. Display
+                    displayJobDetails(jobData);
                 } else {
                     showError('Job not found');
                 }
@@ -867,15 +878,66 @@
             }
         }
 
+        async function checkApplicationStatus() {
+            const applicantData = localStorage.getItem('applicantData') || localStorage.getItem('user') || localStorage.getItem('agrohub_user');
+            if (!applicantData) return;
+
+            try {
+                const user = JSON.parse(applicantData);
+                const workerId = user.id || user.user_id;
+
+                if (!workerId) return;
+
+                const response = await fetch(`php/get_worker_applications.php?worker_id=${workerId}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const application = result.jobs.find(app => app.job_id == jobId);
+                    if (application) {
+                        applicantStatus = application.application_status; // 'Applied', 'Hired', 'Rejected'
+
+                        // If hired, use the contact info from THIS response, as get_job_details hides it
+                        if (applicantStatus === 'Hired' || applicantStatus === 'In Progress') {
+                            farmerContact.phone = application.farmer_phone;
+                            farmerContact.email = application.farmer_email;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('Error checking application status:', e);
+            }
+        }
+
         function displayJobDetails(job) {
             const content = document.getElementById('jobContent');
+
+            // Determine button states based on status
+            let applyBtnText = 'Apply for This Job';
+            let applyBtnState = '';
+            let applyBtnIcon = 'send';
+
+            if (applicantStatus === 'Applied') {
+                applyBtnText = 'Application Sent';
+                applyBtnState = 'disabled style="background: #059669; opacity: 0.8;"';
+                applyBtnIcon = 'check_circle';
+            } else if (applicantStatus === 'Hired') {
+                applyBtnText = 'You are Hired!';
+                applyBtnState = 'disabled style="background: #059669;"';
+                applyBtnIcon = 'verified';
+            }
+
+            // Check if saved
+            const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+            const isSaved = savedJobs.includes(parseInt(job.id));
+            const saveIcon = isSaved ? 'bookmark' : 'bookmark_border';
+            const saveText = isSaved ? 'Saved' : 'Save for Later';
 
             content.innerHTML = `
                 <!-- Header Card -->
                 <div class="job-header-card">
                     <div class="job-badge">
                         <span class="material-icons-outlined">verified</span>
-                        ${job.status === 'active' ? 'Available' : job.status}
+                        ${(job.status === 'active' || job.status === 'Open' || job.status === 'open') ? 'Available' : job.status}
                     </div>
                     <h1 class="job-title">🌾 ${job.job_title}</h1>
                     <p class="job-posted">${job.posted_ago}</p>
@@ -1031,8 +1093,8 @@
                             </h2>
                             
                             <div class="farmer-header">
-                                <div class="farmer-avatar-large">${job.farmer_name.charAt(0).toUpperCase()}</div>
-                                <div class="farmer-name">${job.farmer_name}</div>
+                                <div class="farmer-avatar-large">${(job.farmer_name || 'Farmer').charAt(0).toUpperCase()}</div>
+                                <div class="farmer-name">${job.farmer_name || 'AgroHub Farmer'}</div>
                                 <div class="farmer-role">Farm Owner</div>
                                 <div class="farmer-rating">
                                     <span class="material-icons-outlined">star</span>
@@ -1040,33 +1102,33 @@
                                 </div>
                             </div>
 
-                            <div class="farmer-info-list">
+                            <div class="farmer-info-list" id="contactInfoList">
                                 <div class="info-item">
                                     <span class="material-icons-outlined info-icon">location_on</span>
-                                    <span class="info-text">${job.farmer_location || job.location}</span>
+                                    <span class="info-text">${job.farmer_location || job.location || 'Location Hidden'}</span>
                                 </div>
-                                <div class="info-item">
+                                <div class="info-item" style="opacity: ${farmerContact.phone ? 1 : 0.5};">
                                     <span class="material-icons-outlined info-icon">phone</span>
-                                    <span class="info-text">${job.farmer_phone || '+91 98765 43210'}</span>
+                                    <span class="info-text">${farmerContact.phone || 'Hidden until hired'}</span>
                                 </div>
-                                <div class="info-item">
+                                <div class="info-item" style="opacity: ${farmerContact.email ? 1 : 0.5};">
                                     <span class="material-icons-outlined info-icon">email</span>
-                                    <span class="info-text">${job.farmer_email}</span>
+                                    <span class="info-text">${farmerContact.email || 'Hidden until hired'}</span>
                                 </div>
                             </div>
 
                             <div class="action-buttons">
-                                <button class="btn btn-primary" onclick="applyForJob(${job.id})">
-                                    <span class="material-icons-outlined">send</span>
-                                    Apply for This Job
+                                <button class="btn btn-primary" onclick="applyForJob(${job.id})" ${applyBtnState}>
+                                    <span class="material-icons-outlined">${applyBtnIcon}</span>
+                                    ${applyBtnText}
                                 </button>
-                                <button class="btn btn-secondary" onclick="contactFarmer('${job.farmer_phone || '+91 98765 43210'}')">
+                                <button class="btn btn-secondary" onclick="contactFarmer()" ${farmerContact.phone ? '' : 'style="opacity: 0.7;"'}>
                                     <span class="material-icons-outlined">call</span>
                                     Call Farmer
                                 </button>
-                                <button class="btn btn-outline" onclick="saveLater(${job.id})">
-                                    <span class="material-icons-outlined">bookmark_border</span>
-                                    Save for Later
+                                <button class="btn btn-outline" onclick="saveLater(${job.id})" id="saveBtn">
+                                    <span class="material-icons-outlined">${saveIcon}</span>
+                                    ${saveText}
                                 </button>
                             </div>
 
@@ -1089,7 +1151,8 @@
             `;
         }
 
-        async function applyForJob(jobId) {
+
+        function applyForJob(jobId) {
             // Check if user is logged in
             const applicantData = localStorage.getItem('applicantData') || localStorage.getItem('user') || localStorage.getItem('agrohub_user');
             if (!applicantData) {
@@ -1098,80 +1161,138 @@
                 return;
             }
 
+            // Open Modal with animation
+            const modal = document.getElementById('applyModal');
+            modal.style.display = 'flex';
+            // Slight delay to allow display:flex to apply before adding active class for transition
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeApplyModal() {
+            const modal = document.getElementById('applyModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); // 300ms matches CSS transition
+        }
+
+        async function submitApplication(event) {
+            event.preventDefault();
+
+            const applicantData = localStorage.getItem('applicantData') || localStorage.getItem('user') || localStorage.getItem('agrohub_user');
+            if (!applicantData) return;
+
             try {
                 const user = JSON.parse(applicantData);
                 const applicantId = user.id || user.user_id;
 
                 if (!applicantId) {
-                    alert('Error: Could not determine user ID. Please try logging in again.');
+                    alert('Error: Could not determine user ID.');
                     return;
                 }
 
-                // Ask for optional message and experience
-                const message = prompt('Why are you a good fit for this job? (Optional)', '');
-                const experience = prompt('Your relevant experience (e.g., "2 years in harvesting"). Optional:', '');
+                const message = document.getElementById('applicantMessage').value;
+                const experience = document.getElementById('applicantExperience').value;
 
-                // Show loading state
-                const applyBtn = document.querySelector('.btn-primary');
-                const originalText = applyBtn.innerHTML;
-                applyBtn.innerHTML = '<span class="material-icons-outlined" style="animation: spin 1s infinite linear;">refresh</span> Sending...';
-                applyBtn.disabled = true;
+                // Show loading on submit button
+                const submitBtn = document.getElementById('finalApplyBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="material-icons-outlined" style="animation: spin 1s infinite linear; font-size: 1.2rem; margin-right: 0.5rem;">refresh</span> Sending...';
+                submitBtn.disabled = true;
 
                 const response = await fetch('php/submit_application.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         job_id: jobId,
                         worker_id: applicantId,
-                        message: message || '',
-                        experience: experience || ''
+                        message: message,
+                        experience: experience
                     })
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
+                    closeApplyModal();
                     alert('✅ Application submitted successfully! The farmer will review your application.');
-                    applyBtn.innerHTML = '<span class="material-icons-outlined">check_circle</span> Applied';
-                    applyBtn.style.background = '#059669';
+
+                    // Update main Apply button
+                    const mainBtn = document.querySelector('.btn-primary');
+                    mainBtn.innerHTML = '<span class="material-icons-outlined">check_circle</span> Application Sent';
+                    mainBtn.style.background = '#059669';
+                    mainBtn.disabled = true;
+                    applicantStatus = 'Applied';
                 } else {
                     alert('❌ ' + result.message);
-                    applyBtn.innerHTML = originalText;
-                    applyBtn.disabled = false;
                 }
             } catch (error) {
-                console.error('Error applying for job:', error);
-                alert('An error occurred while applying. Please try again.');
-                const applyBtn = document.querySelector('.btn-primary');
-                if (applyBtn) {
-                    applyBtn.innerHTML = '<span class="material-icons-outlined">send</span> Apply for This Job';
-                    applyBtn.disabled = false;
-                }
+                console.error('Error applying:', error);
+                alert('An error occurred. Please try again.');
+            } finally {
+                // Reset submit button inside modal
+                const submitBtn = document.getElementById('finalApplyBtn');
+                submitBtn.innerHTML = 'Submit Application';
+                submitBtn.disabled = false;
             }
         }
 
-        function contactFarmer(phone) {
-            window.location.href = `tel:${phone}`;
+        function contactFarmer() {
+            if (farmerContact.phone) {
+                window.location.href = `tel:${farmerContact.phone}`;
+            } else {
+                alert('🔒 Privacy Protected: You must be HIRED for this job to view/call the farmer\'s contact details. Please apply first.');
+            }
         }
 
         function saveLater(jobId) {
-            alert('Job saved! You can find it in your saved jobs section.');
+            let savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+            const jobIndex = savedJobs.indexOf(parseInt(jobId));
+            const btn = document.getElementById('saveBtn');
+
+            if (jobIndex === -1) {
+                // Add to saved
+                savedJobs.push(parseInt(jobId));
+                localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+
+                // Update UI
+                btn.innerHTML = '<span class="material-icons-outlined">bookmark</span> Saved';
+                alert('Job saved successfully!');
+            } else {
+                // Remove from saved
+                savedJobs.splice(jobIndex, 1);
+                localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+
+                // Update UI
+                btn.innerHTML = '<span class="material-icons-outlined">bookmark_border</span> Save for Later';
+            }
         }
 
         function sendMessage() {
-            alert('Messaging feature coming soon!');
+            if (farmerContact.email) {
+                window.location.href = `mailto:${farmerContact.email}?subject=Regarding Job: ${jobData.job_title}`;
+            } else if (farmerContact.phone) {
+                // Fallback if email missing but phone present (rare)
+                window.location.href = `sms:${farmerContact.phone}`;
+            } else {
+                alert('🔒 Privacy Protected: You must be HIRED for this job to message the farmer. Please apply first.');
+            }
         }
 
         function shareJob() {
             if (navigator.share) {
                 navigator.share({
-                    title: 'Job Opportunity on AgroHub',
+                    title: `Job at AgroHub: ${jobData.job_title}`,
+                    text: `Check out this farming job: ${jobData.job_title} at ${jobData.location}. Wage: ₹${jobData.wage_per_day}/day`,
                     url: window.location.href
-                });
+                }).catch(console.error);
             } else {
-                alert('Share this link: ' + window.location.href);
+                // Fallback to clipboard
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => alert('Link copied to clipboard!'))
+                    .catch(() => alert('Share this link: ' + window.location.href));
             }
         }
 
@@ -1191,7 +1312,135 @@
         }
     </script>
 
+
+    <!-- Apply Modal -->
+    <div id="applyModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Apply for this Job</h3>
+                <button class="close-modal" onclick="closeApplyModal()">
+                    <span class="material-icons-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="applyForm" onsubmit="submitApplication(event)">
+                    <div class="form-group">
+                        <label for="applicantMessage">Why are you a good fit? (Optional)</label>
+                        <textarea id="applicantMessage" rows="4"
+                            placeholder="Briefly describe your skills or interest..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="applicantExperience">Relevant Experience (Optional)</label>
+                        <input type="text" id="applicantExperience" placeholder="e.g., 2 years in harvesting">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline" onclick="closeApplyModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="finalApplyBtn">
+                            Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-gray);
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--error);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group textarea,
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group textarea:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
         @keyframes spin {
             from {
                 transform: rotate(0deg);

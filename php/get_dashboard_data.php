@@ -28,6 +28,9 @@ if (empty($token)) {
 
 $conn = getDBConnection();
 
+// Check for expired rentals whenever dashboard is loaded
+require_once 'expire_rentals.php';
+
 // Validate Token
 $stmt = $conn->prepare("SELECT u.id, u.name, u.email, u.user_type, u.profile_picture AS picture 
                         FROM user_sessions s 

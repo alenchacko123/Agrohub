@@ -14,6 +14,8 @@ if (empty($user_type) || $user_id === 0) {
 
 try {
     // Base query - joins rental_requests with equipment and users
+    require_once 'expire_rentals.php';
+
     $query = "SELECT 
         rr.id as request_id,
         rr.farmer_id,

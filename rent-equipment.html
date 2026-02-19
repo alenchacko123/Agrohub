@@ -430,6 +430,36 @@
             gap: 1rem;
         }
 
+        .input-error {
+            border-color: var(--error) !important;
+            animation: shake 0.3s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: none;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
         .checkbox-group {
             display: flex;
             align-items: center;
@@ -773,7 +803,7 @@
                     <select id="availabilityFilter">
                         <option value="">All</option>
                         <option value="available">Available Now</option>
-                        <option value="limited">Limited Stock</option>
+                        <option value="out">Out of Stock</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -840,17 +870,18 @@
                         <label>Delivery Address *</label>
                         <textarea id="deliveryAddress" rows="3" placeholder="Enter your farm or delivery address"
                             required></textarea>
+                        <div id="addressError" class="error-message">
+                            <span class="material-icons-outlined" style="font-size: 1rem;">error_outline</span>
+                            Address is too short. Please include landmark and pincode (min 10 chars).
+                        </div>
                     </div>
 
                     <div class="checkbox-group">
                         <input type="checkbox" id="needOperator">
-                        <label for="needOperator">Need a trained operator (+₹500/day)</label>
+                        <label for="needOperator">Need a trained operator (+₹1,500/day)</label>
                     </div>
 
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="needInsurance">
-                        <label for="needInsurance">Add insurance coverage (+₹200/day)</label>
-                    </div>
+
 
                     <div class="form-group">
                         <label>Special Requirements (Optional)</label>
@@ -950,22 +981,33 @@
 
                 if (data.success && data.equipment && data.equipment.length > 0) {
                     // Transform database data to match our format
-                    equipmentData = data.equipment.map(item => ({
-                        id: item.id,
-                        name: item.equipment_name,
-                        category: item.category,
-                        description: item.description.substring(0, 50) + '...',
-                        price: parseFloat(item.price_per_day),
-                        location: item.location || 'Not specified',
-                        stock: item.availability_status,
-                        stockCount: item.availability_status === 'available' ? 5 : item.availability_status === 'booked' ? 0 : 2,
-                        image: item.image_url,
-                        owner_id: item.owner_id,
-                        specs: {
-                            condition: item.equipment_condition,
-                            category: item.category
+                    equipmentData = data.equipment.map(item => {
+                        // Map DB status to UI status
+                        let uiStockStatus = 'out';
+                        if (item.availability_status === 'available' || item.availability_status === 'limited') {
+                            uiStockStatus = 'available';
+                        } else {
+                            // rented, maintenance, etc.
+                            uiStockStatus = 'out';
                         }
-                    }));
+
+                        return {
+                            id: item.id,
+                            name: item.equipment_name,
+                            category: item.category,
+                            description: item.description.substring(0, 50) + '...',
+                            price: parseFloat(item.price_per_day),
+                            location: item.location || 'Not specified',
+                            stock: uiStockStatus, // Use mapped status
+                            stockCount: uiStockStatus === 'available' ? 5 : 0,
+                            image: item.image_url,
+                            owner_id: item.owner_id,
+                            specs: {
+                                condition: item.equipment_condition,
+                                category: item.category
+                            }
+                        };
+                    });
 
                     renderEquipment();
                 } else {
@@ -1008,9 +1050,7 @@
                              onerror="this.src='https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=400&fit=crop'">
                         <div class="stock-badge ${item.stock}">
                             <span class="stock-indicator"></span>
-                            ${item.stock === 'available' ? `${item.stockCount} Available` :
-                    item.stock === 'limited' ? `Only ${item.stockCount} Left` :
-                        'Out of Stock'}
+                            ${item.stock === 'available' ? 'Available' : 'Out of Stock'}
                         </div>
                     </div>
                     <div class="equipment-content">
@@ -1104,37 +1144,127 @@
             currentEquipment = null;
         }
 
-        // Calculate rental details
-        function calculateRental() {
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
+        // Check availability and calculate cost
+        async function checkAvailability() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+            // FIXED: Button is in modal-footer, not inside rentalForm
+            const submitBtn = document.querySelector('#rentalModal .modal-footer .btn-primary');
+            const totalAmountField = document.getElementById('totalAmount');
+            const numDaysField = document.getElementById('numDays');
 
-            if (startDate && endDate && endDate >= startDate) {
-                const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-                document.getElementById('numDays').value = days;
+            // clear previous states
+            totalAmountField.value = 'Calculating...';
+            // numDaysField.value = '...'; // Keep default or previous value to avoid jumping
+            submitBtn.disabled = true;
 
-                let total = currentEquipment.price * days;
+            if (!startDate || !endDate) {
+                totalAmountField.value = '₹0';
+                return;
+            }
 
-                if (document.getElementById('needOperator').checked) {
-                    total += 500 * days;
+            if (new Date(endDate) < new Date(startDate)) {
+                alert('End date must be after start date');
+                endDateInput.value = '';
+                totalAmountField.value = '₹0';
+                return;
+            }
+
+            // Controller for timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+            try {
+                // Call backend to check availability and get cost
+                console.log('Checking availability for:', currentEquipment.id, startDate, endDate);
+
+                const response = await fetch('php/check_availability.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        equipment_id: currentEquipment.id,
+                        start_date: startDate,
+                        end_date: endDate
+                    }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status} ${response.statusText}`);
                 }
 
-                if (document.getElementById('needInsurance').checked) {
-                    total += 200 * days;
+                const data = await response.json();
+                console.log('Availability response:', data);
+
+                if (data.success && data.available) {
+                    numDaysField.value = data.days;
+
+                    let total = parseFloat(data.total_amount);
+                    if (document.getElementById('needOperator').checked) {
+                        total += 1500 * data.days;
+                    }
+
+                    totalAmountField.value = `₹${total.toLocaleString()}`;
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Confirm Rental';
+                } else {
+                    // Availability check failed or dates taken
+                    const reason = data.reason || (data.error ? data.error : 'Unknown availability error');
+                    alert('Selected dates are not available: ' + reason);
+                    totalAmountField.value = 'Not Available';
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Dates Unavailable';
                 }
 
-                document.getElementById('totalAmount').value = `₹${total.toLocaleString()}`;
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.error('Request timed out');
+                    alert('Server took too long to respond. Please check your connection.');
+                } else {
+                    console.error('Error checking availability:', error);
+                    alert('Error checking availability. Please try again.');
+                }
+                totalAmountField.value = 'Error';
             }
         }
 
         // Event listeners for rental calculation
         document.getElementById('startDate').addEventListener('change', function () {
             document.getElementById('endDate').min = this.value;
-            calculateRental();
+            checkAvailability();
         });
-        document.getElementById('endDate').addEventListener('change', calculateRental);
-        document.getElementById('needOperator').addEventListener('change', calculateRental);
-        document.getElementById('needInsurance').addEventListener('change', calculateRental);
+        document.getElementById('endDate').addEventListener('change', checkAvailability);
+        document.getElementById('needOperator').addEventListener('change', checkAvailability);
+
+        // Real-time validation for address
+        const addressInput = document.getElementById('deliveryAddress');
+        const addressError = document.getElementById('addressError');
+
+        addressInput.addEventListener('input', function () {
+            const val = this.value.trim();
+            if (val.length > 0 && val.length < 10) {
+                this.classList.add('input-error');
+                addressError.style.display = 'flex';
+            } else {
+                this.classList.remove('input-error');
+                addressError.style.display = 'none';
+            }
+        });
+
+        // Clear validation on modal close
+        const originalCloseRentalModal = closeRentalModal;
+        closeRentalModal = function () {
+            originalCloseRentalModal();
+            const addrInput = document.getElementById('deliveryAddress');
+            const addrErr = document.getElementById('addressError');
+            if (addrInput) addrInput.classList.remove('input-error');
+            if (addrErr) addrErr.style.display = 'none';
+        };
+
 
         // Submit rental
         async function submitRental() {
@@ -1145,22 +1275,15 @@
                 return;
             }
 
-            // ⚠️ TEST MODE - Remove in production
-            const TEST_MODE = true; // Set to false in production
+            const deliveryAddress = document.getElementById('deliveryAddress').value.trim();
+            if (deliveryAddress.length < 10) {
+                alert('Please enter a complete delivery address (at least 10 characters) including landmark/pincode.');
+                document.getElementById('deliveryAddress').focus();
+                return;
+            }
 
             // Get farmer info from localStorage
             let userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
-
-            // If TEST_MODE and no user data, use test farmer
-            if (TEST_MODE && !userData.id) {
-                console.log('TEST MODE: Using test farmer account');
-                userData = {
-                    id: 8,
-                    name: 'Test Farmer',
-                    email: 'testfarmer@agrohub.com',
-                    user_type: 'farmer'
-                };
-            }
 
             if (!userData.id) {
                 alert('Please log in to submit a rental request');
@@ -1184,31 +1307,48 @@
                 return;
             }
 
-            // Simplified booking data - only what's needed for bookings table
-            const bookingData = {
+            // Calculate days for the payload
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            const numDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+            // Full request data for renal request table
+            const requestData = {
                 equipment_id: currentEquipment.id,
+                equipment_name: currentEquipment.name,
+                owner_id: currentEquipment.owner_id,
                 farmer_id: userData.id,
                 farmer_name: userData.name || userData.email || 'Unknown Farmer',
+                farmer_email: userData.email || 'no-email@example.com',
                 start_date: document.getElementById('startDate').value,
                 end_date: document.getElementById('endDate').value,
-                total_amount: totalAmount
+                num_days: numDays,
+                total_amount: totalAmount,
+                delivery_address: deliveryAddress,
+                need_operator: document.getElementById('needOperator').checked ? 1 : 0,
+                need_insurance: 0, // Insurance removed
+                special_requirements: document.getElementById('specialRequirements').value
             };
 
-            console.log('Submitting booking:', bookingData);
+            console.log('Submitting rental request:', requestData);
 
             try {
                 // Show loading state
-                const submitBtn = event.target;
-                const originalText = submitBtn.textContent;
-                submitBtn.textContent = 'Submitting...';
-                submitBtn.disabled = true;
+                const submitBtn = document.querySelector('#rentalForm').parentElement.parentElement.querySelector('.modal-footer .btn-primary');
+                let originalText = 'Confirm Rental';
 
-                const response = await fetch('php/submit_booking.php', {
+                if (submitBtn) {
+                    originalText = submitBtn.textContent;
+                    submitBtn.textContent = 'Processing...';
+                    submitBtn.disabled = true;
+                }
+
+                const response = await fetch('php/submit_rental_request.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(bookingData)
+                    body: JSON.stringify(requestData)
                 });
 
                 console.log('Response status:', response.status);
@@ -1217,85 +1357,28 @@
                 console.log('Response from server:', result);
 
                 // Reset button
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+                if (submitBtn) {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
 
                 if (result.success) {
-                    // Show beautiful success modal instead of alert
-                    showSuccessModal(currentEquipment.name, bookingData.start_date, bookingData.end_date, totalAmount);
-                    closeRentalModal();
+                    // Redirect to Agreements page to sign agreement
+                    // We pass the new request ID so agreements page can open it immediately if we implement that logic
+                    alert('Rental booked successfully! Redirecting to agreement page...');
+                    window.location.href = 'agreements.html?open_agreement=' + result.request_id;
                 } else {
-                    alert('❌ Failed to submit booking:\n' + (result.error || 'Unknown error'));
+                    alert(result.error || 'An error occurred while submitting your request.');
                 }
             } catch (error) {
                 console.error('Error submitting rental:', error);
 
-                // Reset button if it exists
-                try {
-                    const submitBtn = document.querySelector('.btn-primary');
-                    submitBtn.textContent = 'Confirm Rental';
-                    submitBtn.disabled = false;
-                } catch (e) {
-                    console.error('Could not reset button:', e);
-                }
+                // Reset button
+                constbtn = document.querySelector('#rentalForm .btn-primary');
+                if (constbtn) { constbtn.disabled = false; constbtn.textContent = 'Confirm Rental'; }
 
-                // More detailed error message
-                let errorMessage = 'Network error. ';
-                if (error.message.includes('HTTP error')) {
-                    errorMessage += 'Server returned an error. Make sure XAMPP/Apache is running.';
-                } else if (error.message.includes('Failed to fetch')) {
-                    errorMessage += 'Cannot connect to server. Please check:\n\n1. XAMPP/Apache is running\n2. You are accessing via localhost\n3. The PHP file exists';
-                } else {
-                    errorMessage += error.message;
-                }
-
-                alert(errorMessage);
+                alert('Network error or server issue. Please check console for details.');
             }
-        }
-
-        // Success Modal Functions
-        function showSuccessModal(equipmentName, startDate, endDate, totalAmount) {
-            const bookingDetails = document.getElementById('bookingDetails');
-            bookingDetails.innerHTML = `
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <span class="material-icons-outlined">agriculture</span>
-                        Equipment
-                    </div>
-                    <div class="detail-value">${equipmentName}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <span class="material-icons-outlined">event</span>
-                        Start Date
-                    </div>
-                    <div class="detail-value">${startDate}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <span class="material-icons-outlined">event_available</span>
-                        End Date
-                    </div>
-                    <div class="detail-value">${endDate}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <span class="material-icons-outlined">payments</span>
-                        Total Amount
-                    </div>
-                    <div class="detail-value" style="color: var(--primary-green); font-size: 1.1rem;">₹${totalAmount.toLocaleString()}</div>
-                </div>
-            `;
-
-            document.getElementById('successModal').classList.add('active');
-        }
-
-        function closeSuccessModal() {
-            document.getElementById('successModal').classList.remove('active');
-        }
-
-        function goToDashboard() {
-            window.location.href = 'farmer-dashboard.html';
         }
 
         // Initialize - load equipment from database

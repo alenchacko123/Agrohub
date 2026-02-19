@@ -56,7 +56,7 @@ if (strlen($password) < 8) {
 }
 
 // Validate worker type
-$validWorkerTypes = ['laborer', 'operator', 'specialist'];
+$validWorkerTypes = ['laborer', 'operator'];
 if (!in_array($workerType, $validWorkerTypes)) {
     jsonResponse(false, 'Invalid worker type');
 }

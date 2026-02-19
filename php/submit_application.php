@@ -38,8 +38,8 @@ try {
     }
     
     // Insert new application
-    $query = "INSERT INTO job_applications (job_id, worker_id, message, experience, status, applied_at) 
-              VALUES (?, ?, ?, ?, 'pending', NOW())";
+    $query = "INSERT INTO job_applications (job_id, worker_id, message, experience, status, created_at) 
+              VALUES (?, ?, ?, ?, 'Applied', NOW())";
     
     $stmt = $conn->prepare($query);
     $stmt->bind_param('iiss', $job_id, $worker_id, $message, $experience);

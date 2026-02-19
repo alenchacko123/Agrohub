@@ -44,13 +44,65 @@ try {
         throw new Exception('Database connection failed');
     }
     
-    // Insert rental request
+    // 0. Cleanup Expired 'Initiated' Requests (Timeout Logic)
+    // Cancel requests that have been 'initiated' for more than 10 minutes without payment
+    $cleanup = $conn->query("UPDATE rental_requests SET status = 'cancelled' WHERE status = 'initiated' AND created_at < (NOW() - INTERVAL 10 MINUTE)");
+    
+    // 1. Check Date Overlaps in rental_requests
+    // We check for any request that is NOT cancelled or rejected or expired
+    // We treat 'initiated' and 'pending_payment' as locked slots.
+    $checkOverlap = $conn->prepare("
+        SELECT id FROM rental_requests 
+        WHERE equipment_id = ? 
+        AND status NOT IN ('cancelled', 'rejected', 'expired') 
+        AND (
+            (start_date <= ? AND end_date >= ?)
+        )
+    ");
+    
+    if (!$checkOverlap) {
+        throw new Exception("Database error checking overlaps: " . $conn->error);
+    }
+    
+    // Logic: If (RequestStart <= NewEnd) AND (RequestEnd >= NewStart) -> Overlap
+    $checkOverlap->bind_param("iss", $input['equipment_id'], $input['end_date'], $input['start_date']);
+    $checkOverlap->execute();
+    $overlapResult = $checkOverlap->get_result();
+    
+    if ($overlapResult->num_rows > 0) {
+        throw new Exception("Selected dates are not available (overlap with existing request)");
+    }
+    $checkOverlap->close();
+
+    // 2. Check Overlaps in bookings table (confirmed bookings)
+    // Assuming bookings table exists and is used for active rentals
+    $checkBooking = $conn->prepare("
+        SELECT id FROM bookings 
+        WHERE equipment_id = ? 
+        AND status IN ('active', 'confirmed', 'paid') 
+        AND (
+            (start_date <= ? AND end_date >= ?)
+        )
+    ");
+    
+    if ($checkBooking) {
+        $checkBooking->bind_param("iss", $input['equipment_id'], $input['end_date'], $input['start_date']);
+        $checkBooking->execute();
+        $bookingResult = $checkBooking->get_result();
+        
+        if ($bookingResult->num_rows > 0) {
+            throw new Exception("Selected dates are not available (already booked)");
+        }
+        $checkBooking->close();
+    }
+
+    // Insert rental request with status 'initiated'
     $stmt = $conn->prepare("
         INSERT INTO rental_requests 
         (equipment_id, equipment_name, farmer_id, farmer_name, farmer_email, owner_id,
          start_date, end_date, num_days, total_amount, delivery_address, 
          need_operator, need_insurance, special_requirements, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'initiated')
     ");
     
     if (!$stmt) {
@@ -63,7 +115,7 @@ try {
     $specialReq = isset($input['special_requirements']) ? $input['special_requirements'] : '';
     
     $stmt->bind_param(
-        "isississdiiis",
+        "isississidsiis",
         $input['equipment_id'],
         $input['equipment_name'],
         $input['farmer_id'],
@@ -83,11 +135,13 @@ try {
     if ($stmt->execute()) {
         $requestId = $stmt->insert_id;
         
+        // Success! Return the ID so frontend can redirect to agreements page
         ob_clean(); // Clear any output
         echo json_encode([
             'success' => true,
-            'message' => 'Rental request submitted successfully',
-            'request_id' => $requestId
+            'message' => 'Rental request initiated successfully',
+            'request_id' => $requestId,
+            'status' => 'initiated'
         ]);
     } else {
         throw new Exception('Failed to execute statement: ' . $stmt->error);
@@ -96,8 +150,9 @@ try {
     $stmt->close();
     $conn->close();
     
-} catch (Exception $e) {
+} catch (Throwable $e) {
     ob_clean(); // Clear any output
+    http_response_code(500); // Set error code
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage()

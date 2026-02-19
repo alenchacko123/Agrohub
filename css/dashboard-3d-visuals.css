@@ -1,0 +1,210 @@
+/* 3D Animative Styles for Dashboard Cards */
+
+/* Container for the 3D visual */
+.animative-visual {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s ease;
+}
+
+/* Base styles for all visuals */
+.machinery-visual {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.labor-visual {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+}
+
+.learn-visual {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+/* Main Icon Styles (3D Effect) */
+.main-icon {
+    font-size: 6rem !important;
+    /* Large size */
+    z-index: 10;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+}
+
+/* Machinery Specifics */
+.machinery-visual .main-icon {
+    color: #d97706;
+    /* Amber 600 */
+    animation: floatTractor 3s ease-in-out infinite;
+}
+
+.machinery-visual .bg-icon {
+    position: absolute;
+    color: rgba(245, 158, 11, 0.1);
+    font-size: 8rem !important;
+}
+
+.machinery-visual .bg-icon.gear-1 {
+    top: -20px;
+    right: -20px;
+    animation: spinGear 10s linear infinite;
+}
+
+.machinery-visual .bg-icon.gear-2 {
+    bottom: -30px;
+    left: -10px;
+    font-size: 6rem !important;
+    animation: spinGearReverse 15s linear infinite;
+}
+
+/* Labor Specifics */
+.labor-visual .main-icon {
+    color: #059669;
+    /* Emerald 600 */
+    animation: bounceWorker 2s ease-in-out infinite;
+}
+
+.labor-visual .bg-icon {
+    position: absolute;
+    color: rgba(16, 185, 129, 0.15);
+}
+
+.labor-visual .bg-icon.leaf-1 {
+    top: 20px;
+    left: 20px;
+    font-size: 4rem !important;
+    animation: swayLeaf 4s ease-in-out infinite;
+}
+
+.labor-visual .bg-icon.leaf-2 {
+    bottom: 40px;
+    right: 30px;
+    font-size: 3rem !important;
+    animation: swayLeaf 5s ease-in-out infinite reverse;
+}
+
+/* Learn Specifics */
+.learn-visual .main-icon {
+    color: #2563eb;
+    /* Blue 600 */
+    animation: pulseLearn 3s ease-in-out infinite;
+}
+
+.learn-visual .bg-icon {
+    position: absolute;
+    color: rgba(59, 130, 246, 0.1);
+}
+
+.learn-visual .bg-icon.shield {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.5);
+    font-size: 8rem !important;
+    z-index: 5;
+    opacity: 0.1;
+}
+
+.learn-visual .bg-icon.bulb {
+    top: 20px;
+    right: 20px;
+    font-size: 3rem !important;
+    animation: glowBulb 2s ease-in-out infinite alternate;
+}
+
+/* Animations */
+@keyframes floatTractor {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(2deg);
+    }
+}
+
+@keyframes spinGear {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spinGearReverse {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes bounceWorker {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes swayLeaf {
+
+    0%,
+    100% {
+        transform: rotate(-10deg);
+    }
+
+    50% {
+        transform: rotate(10deg);
+    }
+}
+
+@keyframes pulseLearn {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes glowBulb {
+    from {
+        opacity: 0.3;
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    to {
+        opacity: 0.8;
+        text-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+    }
+}
+
+/* Card Hover Effects */
+.service-hub:hover .machinery-visual .main-icon {
+    transform: scale(1.1) translateY(-5px);
+}
+
+.service-hub:hover .labor-visual .main-icon {
+    transform: scale(1.1);
+}
+
+.service-hub:hover .learn-visual .main-icon {
+    transform: rotateY(10deg) scale(1.1);
+}

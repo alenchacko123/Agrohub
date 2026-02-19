@@ -821,7 +821,7 @@
 
             // Filter by category
             if (currentCategory !== 'all') {
-                filtered = filtered.filter(job => job.job_category === currentCategory);
+                filtered = filtered.filter(job => job.job_category.toLowerCase() === currentCategory.toLowerCase());
             }
 
             // Filter by location

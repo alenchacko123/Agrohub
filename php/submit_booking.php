@@ -58,6 +58,12 @@ try {
     
     if ($stmt->execute()) {
         $bookingId = $stmt->insert_id;
+
+        // Update equipment status to 'booked'
+        $updateStmt = $conn->prepare("UPDATE equipment SET availability_status = 'booked' WHERE id = ?");
+        $updateStmt->bind_param("i", $input['equipment_id']);
+        $updateStmt->execute();
+        $updateStmt->close();
         
         echo json_encode([
             'success' => true,

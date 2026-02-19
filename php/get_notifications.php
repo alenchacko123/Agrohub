@@ -1,20 +1,38 @@
 <?php
+/**
+ * Get Notifications for User
+ * Fetches notifications for the logged-in user
+ */
+
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+
 require_once 'config.php';
 
 try {
     $conn = getDBConnection();
     
-    $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
+    // Get user ID from query parameters
+    $userId = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
+    $unreadOnly = isset($_GET['unread_only']) && $_GET['unread_only'] === 'true';
     
-    if ($user_id === 0) {
+    if (empty($userId)) {
         throw new Exception('User ID is required');
     }
     
-    // Fetch notifications
-    $sql = "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 20";
+    // Build query
+    $sql = "SELECT * FROM notifications WHERE user_id = ? AND (is_deleted = 0 OR is_deleted IS NULL)";
+    if ($unreadOnly) {
+        $sql .= " AND is_read = FALSE";
+    }
+    $sql .= " ORDER BY created_at DESC LIMIT 50";
+    
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $user_id);
+    if (!$stmt) {
+        throw new Exception('Prepare failed: ' . $conn->error);
+    }
+    
+    $stmt->bind_param("i", $userId);
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -23,18 +41,20 @@ try {
         $notifications[] = $row;
     }
     
-    // Also fetch Unread Count
-    $countSql = "SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0";
+    // Get unread count
+    $countSql = "SELECT COUNT(*) as unread_count FROM notifications WHERE user_id = ? AND is_read = FALSE";
     $countStmt = $conn->prepare($countSql);
-    $countStmt->bind_param("i", $user_id);
+    $countStmt->bind_param("i", $userId);
     $countStmt->execute();
     $countResult = $countStmt->get_result();
-    $countRow = $countResult->fetch_assoc();
+    $countData = $countResult->fetch_assoc();
+    $unreadCount = $countData['unread_count'];
     
     echo json_encode([
         'success' => true,
         'notifications' => $notifications,
-        'unread_count' => $countRow['count']
+        'unread_count' => $unreadCount,
+        'total_count' => count($notifications)
     ]);
     
     $stmt->close();

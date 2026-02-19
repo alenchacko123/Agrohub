@@ -18,6 +18,10 @@
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
+    <!-- Profile Completion Check -->
+    <script src="js/profile-check.js"></script>
+    <link rel="stylesheet" href="css/profile-settings.css">
+
     <style>
         :root {
             --primary-blue: #0077b6;
@@ -1426,7 +1430,7 @@
                 </a>
             </div>
 
-            <div class="sidebar-user">
+            <div class="sidebar-user" onclick="openUserModal()" style="cursor: pointer;" title="View Profile Details">
                 <div class="user-avatar" id="user-avatar">U</div>
                 <div class="user-info">
                     <h4 id="user-name">User <span class="badge-verified">✓ Verified</span></h4>
@@ -1455,11 +1459,7 @@
                 <div class="nav-section">
                     <span class="nav-section-title">Rentals</span>
                 </div>
-                <a href="#" class="nav-item">
-                    <span class="material-icons-outlined">event_note</span>
-                    Booking Requests
-                    <span class="badge warning" id="bookingRequestsBadge">0</span>
-                </a>
+
                 <a href="#" class="nav-item">
                     <span class="material-icons-outlined">check_circle</span>
                     Active Rentals
@@ -1836,18 +1836,19 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Model / Variant</label>
-                            <input type="text" id="model" name="model" placeholder="e.g. 5050D PowerPro">
+                            <label>Model / Variant *</label>
+                            <input type="text" id="model" name="model" placeholder="e.g. 5050D PowerPro" required>
                         </div>
                         <div class="form-group">
-                            <label>Year of Manufacture</label>
-                            <input type="number" id="year" name="year" placeholder="e.g. 2023" min="1990" max="2030">
+                            <label>Year of Manufacture *</label>
+                            <input type="number" id="year" name="year" placeholder="e.g. 2023" min="1990" max="2030"
+                                required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Fuel Type</label>
-                            <select id="fuel" name="fuel">
+                            <label>Fuel Type *</label>
+                            <select id="fuel" name="fuel" required>
                                 <option value="">Select Fuel Type</option>
                                 <option value="Diesel">Diesel</option>
                                 <option value="Petrol">Petrol</option>
@@ -1856,19 +1857,13 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Capacity / Power</label>
-                            <input type="text" id="capacity" name="capacity" placeholder="e.g. 50 HP or 5 Tons">
+                            <label>Capacity / Power *</label>
+                            <input type="text" id="capacity" name="capacity" placeholder="e.g. 50 HP or 5 Tons"
+                                required>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Availability Status</label>
-                        <select id="availability" name="availability">
-                            <option value="available">Available Now</option>
-                            <option value="booked">Already Booked</option>
-                            <option value="maintenance">Under Maintenance</option>
-                        </select>
-                    </div>
+
                     <div class="form-group">
                         <label>Location *</label>
                         <input type="text" id="location" name="location" placeholder="e.g. Bangalore, Karnataka"
@@ -1904,9 +1899,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"
-                    onclick="closeModal('addEquipmentModal')">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="submitNewListing()">Publish Listing</button>
+                <button type="button" class="btn btn-secondary" onclick="cancelAddEquipment()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitNewListing(this)">Publish Listing</button>
             </div>
         </div>
     </div>
@@ -2034,20 +2028,269 @@
                 <p class="modal-subtitle">Detailed breakdown of your machine rental income</p>
             </div>
             <div class="modal-body">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                <!-- Summary Cards -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem;">
                     <div
                         style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--success);">
-                        <div style="color: var(--text-gray); font-size: 0.9rem;">Wallet Balance</div>
-                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-dark);">₹0</div>
+                        <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 0.5rem;">Wallet Balance
+                        </div>
+                        <div id="modalWalletBalance"
+                            style="font-size: 1.75rem; font-weight: 700; color: var(--text-dark);">₹0</div>
                     </div>
                     <div
                         style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--primary-blue);">
-                        <div style="color: var(--text-gray); font-size: 0.9rem;">Pending Payouts</div>
-                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-dark);">₹0</div>
+                        <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 0.5rem;">Pending Payouts
+                        </div>
+                        <div id="modalPendingPayouts"
+                            style="font-size: 1.75rem; font-weight: 700; color: var(--text-dark);">₹0</div>
+                    </div>
+                    <div
+                        style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--accent-gold);">
+                        <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 0.5rem;">Total Earnings
+                        </div>
+                        <div id="modalTotalEarnings"
+                            style="font-size: 1.75rem; font-weight: 700; color: var(--text-dark);">₹0</div>
+                    </div>
+                    <div
+                        style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--accent-orange);">
+                        <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 0.5rem;">This Month
+                        </div>
+                        <div id="modalMonthlyEarnings"
+                            style="font-size: 1.75rem; font-weight: 700; color: var(--text-dark);">₹0</div>
                     </div>
                 </div>
-                <button class="btn btn-primary" style="width: 100%;"
-                    onclick="alert('Withdrawal request sent!')">Withdraw to Bank</button>
+
+                <!-- Recent Transactions -->
+                <h3 style="font-size: 1.1rem; color: var(--text-dark); margin-bottom: 1rem;">Recent Transactions</h3>
+                <div
+                    style="overflow-x: auto; margin-bottom: 2rem; border: 1px solid #e2e8f0; border-radius: 12px; max-height: 300px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead style="background: #f1f5f9; position: sticky; top: 0;">
+                            <tr>
+                                <th
+                                    style="padding: 0.75rem 1rem; text-align: left; color: var(--text-gray); font-weight: 600;">
+                                    Date</th>
+                                <th
+                                    style="padding: 0.75rem 1rem; text-align: left; color: var(--text-gray); font-weight: 600;">
+                                    Details</th>
+                                <th
+                                    style="padding: 0.75rem 1rem; text-align: right; color: var(--text-gray); font-weight: 600;">
+                                    Amount</th>
+                                <th
+                                    style="padding: 0.75rem 1rem; text-align: center; color: var(--text-gray); font-weight: 600;">
+                                    Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalTransactionsList">
+                            <tr>
+                                <td colspan="4" style="padding: 1.5rem; text-align: center; color: var(--text-light);">
+                                    Loading transactions...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="openWithdrawalModal()">
+                    Withdraw to Bank
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawal Modal -->
+    <div class="modal" id="withdrawalModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="close-modal" onclick="closeModal('withdrawalModal')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">🏦 Withdraw Funds</h2>
+                <p class="modal-subtitle">Transfer earnings to your bank account via Razorpay Payouts</p>
+            </div>
+            <div class="modal-body">
+                <div
+                    style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; text-align: center;">
+                    <div style="font-size: 0.85rem; color: #64748b;">Available to Withdraw</div>
+                    <div id="wd-available-balance" style="font-size: 1.75rem; font-weight: 700; color: #1e3a8a;">₹0
+                    </div>
+                </div>
+
+                <form id="withdrawalForm" onsubmit="processWithdrawal(event)">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 500; margin-bottom: 0.5rem;">Amount to Withdraw (₹)
+                            *</label>
+                        <input type="number" id="wd-amount" required min="1" step="0.01" placeholder="Enter amount"
+                            style="width: 100%; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;"
+                            oninput="validateWithdrawalForm()">
+                        <div id="wd-amount-error"
+                            style="color: var(--error); font-size: 0.85rem; margin-top: 0.25rem; display: none; align-items: center; gap: 4px;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">error</span>
+                            <span>Amount cannot exceed available balance</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 500; margin-bottom: 0.5rem;">Account Number *</label>
+                        <input type="text" id="wd-account" required placeholder="Enter bank account number"
+                            style="width: 100%; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;"
+                            oninput="validateWithdrawalForm()">
+                        <div id="wd-account-error"
+                            style="color: var(--error); font-size: 0.85rem; margin-top: 0.25rem; display: none; align-items: center; gap: 4px;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">error</span>
+                            <span>Invalid Account Number (9-18 digits allowed)</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label style="display: block; font-weight: 500; margin-bottom: 0.5rem;">IFSC Code *</label>
+                            <input type="text" id="wd-ifsc" required placeholder="SBIN000XXXX" maxlength="11"
+                                style="text-transform: uppercase; width: 100%; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;"
+                                oninput="validateWithdrawalForm()">
+                            <div id="wd-ifsc-error"
+                                style="color: var(--error); font-size: 0.85rem; margin-top: 0.25rem; display: none; align-items: center; gap: 4px;">
+                                <span class="material-icons-outlined" style="font-size: 14px;">error</span>
+                                <span>Invalid IFSC Format (e.g. SBIN0001234)</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: block; font-weight: 500; margin-bottom: 0.5rem;">Beneficiary
+                                Name</label>
+                            <input type="text" id="wd-name" placeholder="Name on Account"
+                                style="width: 100%; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="wd-submit-btn" class="btn btn-primary"
+                        style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <span class="material-icons-outlined">account_balance</span>
+                        Process Withdrawal
+                    </button>
+                    <p style="text-align: center; font-size: 0.75rem; color: #94a3b8; margin-top: 1rem;">
+                        <span class="material-icons-outlined"
+                            style="font-size: 12px; vertical-align: middle;">lock</span>
+                        Secure transaction powered by Razorpay
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="paymentSuccessModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; border-radius: 20px; padding: 2rem;">
+            <div
+                style="width: 80px; height: 80px; background: rgba(34, 197, 94, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <span class="material-icons-outlined"
+                    style="font-size: 40px; color: var(--success); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">check_circle</span>
+            </div>
+            <h2 style="font-size: 1.5rem; color: var(--text-dark); margin-bottom: 0.5rem; font-weight: 700;">Withdrawal
+                Initiated</h2>
+            <p style="color: var(--text-gray); margin-bottom: 2rem; font-size: 0.95rem;">Your funds are being processed
+                via Razorpay.</p>
+
+            <div
+                style="background: #f8fafc; border-radius: 16px; padding: 1.25rem; margin-bottom: 2rem; text-align: left; border: 1px solid #f1f5f9;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span style="color: var(--text-gray); font-size: 0.9rem;">Amount</span>
+                    <span style="color: var(--text-dark); font-weight: 700; font-size: 1.1rem;"
+                        id="success-amount">₹0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span style="color: var(--text-gray); font-size: 0.9rem;">Transaction ID</span>
+                    <span
+                        style="color: var(--text-dark); font-weight: 500; font-family: monospace; font-size: 0.85rem; background: #fff; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0;"
+                        id="success-tx-id">...</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: var(--text-gray); font-size: 0.9rem;">Account</span>
+                    <span style="color: var(--text-dark); font-weight: 500; font-size: 0.9rem;"
+                        id="success-account">...</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; border-radius: 12px; padding: 1rem; font-weight: 600;"
+                onclick="closeModal('paymentSuccessModal')">Done</button>
+        </div>
+        <style>
+            @keyframes popIn {
+                0% {
+                    transform: scale(0);
+                    opacity: 0;
+                }
+
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+        </style>
+    </div>
+
+    <!-- Transaction Details Modal -->
+    <div class="modal" id="transactionDetailsModal">
+        <div class="modal-content"
+            style="max-width: 500px; border-radius: 24px; padding: 0; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <div
+                style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 1.5rem; text-align: center; border-bottom: 1px solid #e2e8f0; position: relative;">
+                <button class="close-modal" onclick="closeModal('transactionDetailsModal')"
+                    style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.8); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid #cbd5e1; cursor: pointer; transition: all 0.2s;">
+                    <span class="material-icons-outlined" style="font-size: 18px; color: #64748b;">close</span>
+                </button>
+                <div id="td-icon-container"
+                    style="width: 64px; height: 64px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <span id="td-icon" class="material-icons-outlined"
+                        style="font-size: 32px; color: #64748b;">receipt</span>
+                </div>
+                <h3 id="td-amount" style="font-size: 2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">
+                    ₹0.00
+                </h3>
+                <p id="td-status"
+                    style="display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; padding: 0.25rem 0.75rem; border-radius: 50px; background: #e2e8f0; color: #64748b; letter-spacing: 0.05em;">
+                    Pending
+                </p>
+                <div id="td-date" style="margin-top: 0.5rem; color: #64748b; font-size: 0.9rem;">
+                    Feb 12, 2026 • 10:30 AM
+                </div>
+            </div>
+
+            <div style="padding: 1.5rem 2rem;">
+                <div style="margin-bottom: 1.5rem;">
+                    <label
+                        style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; font-weight: 600; margin-bottom: 0.5rem;">Transaction
+                        Details</label>
+                    <div
+                        style="background: #fff; border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+                        <div
+                            style="padding: 1rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #64748b; font-size: 0.9rem;">Type</span>
+                            <span id="td-type" style="font-weight: 600; color: #0f172a;">Rental Income</span>
+                        </div>
+                        <div
+                            style="padding: 1rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #64748b; font-size: 0.9rem;">From/To</span>
+                            <span id="td-party" style="font-weight: 600; color: #0f172a; text-align: right;">Farmer
+                                Name</span>
+                        </div>
+                        <div id="td-equipment-row"
+                            style="padding: 1rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #64748b; font-size: 0.9rem;">Equipment</span>
+                            <span id="td-equipment"
+                                style="font-weight: 600; color: #0f172a; text-align: right;">Tractor</span>
+                        </div>
+                        <div style="padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #64748b; font-size: 0.9rem;">Reference ID</span>
+                            <span id="td-ref"
+                                style="font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #475569; font-size: 0.8rem;">TXN123456</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Action -->
+                <button class="btn btn-secondary" onclick="closeModal('transactionDetailsModal')"
+                    style="width: 100%; border-radius: 12px; padding: 0.875rem; font-weight: 600; justify-content: center;">
+                    Close Details
+                </button>
             </div>
         </div>
     </div>
@@ -2507,7 +2750,7 @@
                 // Clear user data from localStorage
                 localStorage.removeItem('agrohub_user');
                 // Redirect to login page
-                window.location.href = 'login-owner.html';
+                window.location.href = 'login.html';
             }
         }
 
@@ -3270,11 +3513,103 @@
             document.getElementById('upload-placeholder').style.display = 'block';
         }
 
-        function submitNewListing() {
+        function cancelAddEquipment() {
+            closeModal('addEquipmentModal');
+            document.getElementById('addEquipmentForm').reset();
+            // Reset image
+            document.getElementById('fileInput').value = '';
+            document.getElementById('image-preview').src = '';
+            document.getElementById('image-preview-container').style.display = 'none';
+            document.getElementById('upload-placeholder').style.display = 'block';
+        }
+
+        function submitNewListing(submitBtn) {
             const form = document.getElementById('addEquipmentForm');
 
-            if (!form.checkValidity()) {
-                form.reportValidity();
+            // Custom Validation
+            const name = document.getElementById('equipment_name').value.trim();
+            if (name.length < 3) {
+                showNotification('Please enter a valid equipment name (at least 3 characters)', 'error');
+                document.getElementById('equipment_name').focus();
+                return;
+            }
+
+            const category = document.getElementById('category').value;
+            if (!category) {
+                showNotification('Please select a category', 'error');
+                document.getElementById('category').focus();
+                return;
+            }
+
+            const price = parseFloat(document.getElementById('price_per_day').value);
+            if (isNaN(price) || price <= 0) {
+                showNotification('Please enter a valid positive price per day', 'error');
+                document.getElementById('price_per_day').focus();
+                return;
+            }
+
+            const condition = document.getElementById('condition').value;
+            if (!condition) {
+                showNotification('Please select the condition', 'error');
+                document.getElementById('condition').focus();
+                return;
+            }
+
+            // Technical Specifications Validation
+            const model = document.getElementById('model').value.trim();
+            if (model.length < 2) {
+                showNotification('Please enter the model / variant', 'error');
+                document.getElementById('model').focus();
+                return;
+            }
+
+            const yearInput = document.getElementById('year').value;
+            const year = parseInt(yearInput);
+            const currentYear = new Date().getFullYear();
+            if (!yearInput || isNaN(year) || year < 1900 || year > currentYear + 1) {
+                showNotification(`Please enter a valid year (1900-${currentYear + 1})`, 'error');
+                document.getElementById('year').focus();
+                return;
+            }
+
+            const fuel = document.getElementById('fuel').value;
+            if (!fuel) {
+                showNotification('Please select a fuel type', 'error');
+                document.getElementById('fuel').focus();
+                return;
+            }
+
+            const capacity = document.getElementById('capacity').value.trim();
+            if (capacity.length < 1) {
+                showNotification('Please enter the capacity / power (e.g. 50 HP)', 'error');
+                document.getElementById('capacity').focus();
+                return;
+            }
+
+            const location = document.getElementById('location').value.trim();
+            if (location.length < 3) {
+                showNotification('Please enter a valid location (at least 3 characters)', 'error');
+                document.getElementById('location').focus();
+                return;
+            }
+
+            // Image validation
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files || !fileInput.files[0]) {
+                showNotification('Please upload at least one image of the equipment', 'error');
+                return;
+            }
+
+            // Check file size (max 5MB)
+            if (fileInput.files[0].size > 5 * 1024 * 1024) {
+                showNotification('Image size should not exceed 5MB', 'error');
+                return;
+            }
+
+            const description = document.getElementById('description').value.trim();
+            if (description.length < 10) {
+                showNotification('Please provide a more detailed description (at least 10 characters)', 'error');
+                document.getElementById('description').focus();
                 return;
             }
 
@@ -3284,7 +3619,7 @@
             formData.append('category', document.getElementById('category').value);
             formData.append('price_per_day', document.getElementById('price_per_day').value);
             formData.append('condition', document.getElementById('condition').value);
-            formData.append('availability', document.getElementById('availability').value);
+            formData.append('availability', 'available'); // Default to available for new listing
             formData.append('description', document.getElementById('description').value);
 
             // Append specifications
@@ -3299,14 +3634,11 @@
             formData.append('owner_name', userData.name || userData.email || 'Equipment Owner');
             formData.append('owner_id', userData.id || 1);
 
-            // Add image if uploaded
-            const fileInput = document.getElementById('fileInput');
-            if (fileInput.files && fileInput.files[0]) {
-                formData.append('equipment_image', fileInput.files[0]);
-            }
+            // Add image (validated above)
+            formData.append('equipment_image', fileInput.files[0]);
 
             // Show loading state
-            const submitBtn = event.target;
+            // const submitBtn = event.target; // Removed as passed in argument
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<span class="material-icons-outlined" style="animation: spin 1s linear infinite;">sync</span> Publishing...';
             submitBtn.disabled = true;
@@ -3483,7 +3815,7 @@
     <!-- Notifications Panel -->
     <div id="notificationsPanel">
         <div class="notification-header">
-            <h3>🔔 Rental Requests</h3>
+            <h3>🔔 Notifications</h3>
             <button class="close-panel" onclick="toggleNotificationsPanel()">
                 <span class="material-icons-outlined">close</span>
             </button>
@@ -3500,32 +3832,203 @@
                 const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
                 if (!userData.id) return;
 
-                const response = await fetch(`php/get_earnings.php?owner_id=${userData.id}`);
-                const data = await response.json();
+                // Fetch all data sources in parallel for robustness
+                const [earningsRes, bookingsRes, equipmentRes] = await Promise.all([
+                    fetch(`php/get_earnings.php?owner_id=${userData.id}`),
+                    fetch(`php/get_bookings.php?owner_id=${userData.id}`),
+                    fetch(`php/get_equipment.php?owner_id=${userData.id}`)
+                ]);
 
-                if (data.success && data.earnings) {
-                    const stats = data.earnings;
+                const earningsData = await earningsRes.json();
+                const bookingsData = await bookingsRes.json();
+                const equipmentData = await equipmentRes.json();
 
-                    // Helper to animate or set text
-                    const setStat = (id, value, prefix = '') => {
-                        const el = document.getElementById(id);
-                        if (el) el.textContent = prefix + value;
-                    };
+                let totalEarnings = 0;
+                let totalBookings = 0;
+                let activeListings = 0;
+                let avgRating = 0;
+                let walletBalance = 0;
+                let pendingPayouts = 0;
 
-                    setStat('totalEarnings', stats.total_earnings.toLocaleString('en-IN'), '₹');
-                    setStat('totalBookings', stats.total_bookings);
-                    setStat('activeListings', stats.active_listings);
-                    setStat('avgRating', stats.average_rating.toFixed(1));
+                // 1. Calculate from Bookings (Source of Truth)
+                if (bookingsData.success && bookingsData.bookings) {
+                    totalBookings = bookingsData.bookings.length;
 
-                    // Update Earnings Widget
-                    const widgetEarnings = document.querySelector('.earnings-widget .earnings-amount');
-                    if (widgetEarnings) {
-                        widgetEarnings.textContent = '₹' + stats.total_earnings.toLocaleString('en-IN');
+                    // Sum real earnings from valid bookings
+                    totalEarnings = bookingsData.bookings.reduce((sum, b) => {
+                        // Only count earnings for approved/completed/paid bookings
+                        // Note: 'status' is the correct property now
+                        const s = b.status;
+                        if (['approved', 'completed', 'paid', 'active', 'confirmed'].includes(s)) {
+                            return sum + parseFloat(b.total_amount || 0);
+                        }
+                        return sum;
+                    }, 0);
+                }
+
+                // 2. Count Active Equipment
+                if (equipmentData.success && equipmentData.equipment) {
+                    activeListings = equipmentData.equipment.length;
+                }
+
+                // 3. Use Earnings API for Wallet/Payouts and API-calculated values if available
+                if (earningsData.success && earningsData.earnings) {
+                    walletBalance = earningsData.earnings.wallet_balance || 0;
+                    pendingPayouts = earningsData.earnings.pending_payouts || 0;
+                    avgRating = earningsData.earnings.average_rating || 0;
+
+                    // Use API earnings if it seems more complete (e.g. historical data not in bookings list)
+                    // But if API returns 0 and we calculated > 0, trust our calculation
+                    if (earningsData.earnings.total_earnings > totalEarnings) {
+                        totalEarnings = earningsData.earnings.total_earnings;
+                    }
+                }
+
+                // Helper to set text content safely
+                const setStat = (id, value, prefix = '') => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = prefix + value;
+                };
+
+                // Update Dashboard Cards
+                setStat('totalEarnings', totalEarnings.toLocaleString('en-IN'), '₹');
+                setStat('totalBookings', totalBookings);
+                setStat('activeListings', activeListings);
+                setStat('avgRating', avgRating.toFixed(1));
+
+                // Update Earnings Widget
+                const widgetEarnings = document.querySelector('.earnings-widget .earnings-amount');
+                if (widgetEarnings) {
+                    widgetEarnings.textContent = '₹' + totalEarnings.toLocaleString('en-IN');
+                }
+
+                // Update Financial Overview Modal
+                setStat('modalWalletBalance', walletBalance.toLocaleString('en-IN'), '₹');
+                setStat('modalPendingPayouts', pendingPayouts.toLocaleString('en-IN'), '₹');
+                setStat('modalTotalEarnings', totalEarnings.toLocaleString('en-IN'), '₹');
+                // Approximate monthly earnings if not available from API
+                const monthlyEarnings = earningsData.earnings ? earningsData.earnings.monthly_earnings : totalEarnings;
+                setStat('modalMonthlyEarnings', parseFloat(monthlyEarnings).toLocaleString('en-IN'), '₹');
+
+                // Update Transactions List safely
+                const transList = document.getElementById('modalTransactionsList');
+                if (transList) {
+                    let transactions = [];
+                    if (earningsData.success && earningsData.transactions) {
+                        transactions = earningsData.transactions;
+                    }
+
+                    // Allow global access for modal details
+                    window.dashboardTransactions = transactions;
+
+                    if (transactions.length > 0) {
+                        transList.innerHTML = transactions.map((t, index) => `
+                            <tr onclick="openTransactionDetails(${index})" style="border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                                <td style="padding: 0.75rem 1rem; color: var(--text-gray); border-bottom: 1px solid #f1f5f9;">${new Date(t.created_at).toLocaleDateString()}</td>
+                                <td style="padding: 0.75rem 1rem; border-bottom: 1px solid #f1f5f9;">
+                                    <div style="font-weight: 500; color: var(--text-dark); font-size: 0.9rem;">
+                                        ${t.type === 'withdrawal' ? '<span class="material-icons-outlined" style="font-size: 14px; vertical-align: middle; margin-right: 4px;">arrow_outward</span>' : ''}
+                                        ${t.equipment_name}
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--text-light);">${t.farmer_name || ''}</div>
+                                </td>
+                                <td style="padding: 0.75rem 1rem; text-align: right; font-weight: 600; color: ${t.type === 'withdrawal' ? 'var(--error)' : 'var(--success)'}; border-bottom: 1px solid #f1f5f9;">
+                                    ${t.type === 'withdrawal' ? '-' : '+'}₹${parseFloat(t.total_amount).toLocaleString('en-IN')}
+                                </td>
+                                 <td style="padding: 0.75rem 1rem; text-align: center; border-bottom: 1px solid #f1f5f9;">
+                                    <span style="font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 50px; 
+                                        background: ${['completed', 'approved', 'processed'].includes(t.status) ? 'rgba(34, 197, 94, 0.1)' : (t.status === 'failed' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)')}; 
+                                        color: ${['completed', 'approved', 'processed'].includes(t.status) ? '#22c55e' : (t.status === 'failed' ? '#ef4444' : '#f59e0b')}; 
+                                        font-weight: 600; text-transform: capitalize;">
+                                        ${t.status}
+                                    </span>
+                                </td>
+                            </tr>
+                        `).join('');
+                    } else {
+                        transList.innerHTML = `<tr><td colspan="4" style="padding: 2rem; text-align: center; color: var(--text-gray);">No recent transactions found</td></tr>`;
                     }
                 }
             } catch (error) {
                 console.error('Error loading dashboard stats:', error);
+
+                // Visible Error Fallback
+                const setStatParams = (id, text) => {
+                    const el = document.getElementById(id);
+                    if (el && el.textContent.trim() === '0' || el.textContent.trim() === '₹0') {
+                        el.innerHTML = `<span style="color:var(--error); font-size:0.8rem;">Error</span>`;
+                        el.title = "Connection failed";
+                    }
+                };
+                setStatParams('totalEarnings');
+                setStatParams('totalBookings');
+                setStatParams('activeListings');
             }
+        }
+
+        // Open Transaction Details Modal
+        function openTransactionDetails(index) {
+            const t = window.dashboardTransactions[index];
+            if (!t) return;
+
+            // 1. Set Amount & Color
+            const isWithdrawal = t.type === 'withdrawal';
+            const amountEl = document.getElementById('td-amount');
+            amountEl.textContent = (isWithdrawal ? '-' : '+') + '₹' + parseFloat(t.total_amount).toLocaleString('en-IN');
+            amountEl.style.color = isWithdrawal ? '#ef4444' : '#22c55e'; // Red or Green
+
+            // 2. Set Icon
+            const iconContainer = document.getElementById('td-icon-container');
+            const icon = document.getElementById('td-icon');
+            if (isWithdrawal) {
+                icon.textContent = 'account_balance';
+                icon.style.color = '#ef4444';
+                iconContainer.style.background = '#fef2f2';
+            } else {
+                icon.textContent = 'agriculture';
+                icon.style.color = '#22c55e';
+                iconContainer.style.background = '#f0fdf4';
+            }
+
+            // 3. Set Status
+            const statusEl = document.getElementById('td-status');
+            statusEl.textContent = t.status;
+            // Reset classes/styles based on status if needed, or keeping generic style
+            if (['completed', 'approved', 'processed'].includes(t.status)) {
+                statusEl.style.background = 'rgba(34, 197, 94, 0.1)';
+                statusEl.style.color = '#15803d';
+            } else if (t.status === 'failed') {
+                statusEl.style.background = 'rgba(239, 68, 68, 0.1)';
+                statusEl.style.color = '#b91c1c';
+            } else {
+                statusEl.style.background = 'rgba(245, 158, 11, 0.1)';
+                statusEl.style.color = '#b45309';
+            }
+
+            // 4. Set Date
+            const dateObj = new Date(t.created_at);
+            document.getElementById('td-date').textContent = dateObj.toLocaleDateString(undefined, {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) + ' • ' + dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+            // 5. Details Section
+            document.getElementById('td-type').textContent = isWithdrawal ? 'Bank Withdrawal' : 'Equipment Rental';
+            document.getElementById('td-party').textContent = t.farmer_name || 'N/A';
+
+            const eqRow = document.getElementById('td-equipment-row');
+            if (isWithdrawal) {
+                eqRow.style.display = 'none';
+            } else {
+                eqRow.style.display = 'flex';
+                document.getElementById('td-equipment').textContent = t.equipment_name;
+            }
+
+            document.getElementById('td-ref').textContent = (t.type === 'withdrawal' ? 'WD-' : 'RENT-') + t.id;
+
+            openModal('transactionDetailsModal');
         }
 
         // Toggle Notifications Panel
@@ -3538,7 +4041,28 @@
             }
         }
 
-        // Load Owner's Rental Notifications
+        // Mark notification as read
+        async function markAsRead(id, url) {
+            try {
+                await fetch('php/mark_notification_read.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                });
+
+                // Navigate if URL exists
+                if (url && url !== 'null') {
+                    window.location.href = url;
+                } else {
+                    // Just reload list
+                    loadOwnerNotifications();
+                }
+            } catch (e) {
+                console.error('Error marking read:', e);
+            }
+        }
+
+        // Load Owner's Notifications (Requests + Alerts)
         async function loadOwnerNotifications() {
             const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
             const notificationList = document.getElementById('notificationList');
@@ -3556,16 +4080,23 @@
             try {
                 notificationList.innerHTML = '<p style="padding: 1rem; text-align: center; color: var(--text-gray);">Loading...</p>';
 
-                const response = await fetch(`php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=pending`);
-                const data = await response.json();
+                // Parallel Fetch
+                const [requestsRes, notifRes] = await Promise.all([
+                    fetch(`php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=pending`),
+                    fetch(`php/get_notifications.php?user_id=${userData.id}`)
+                ]);
 
-                if (data.success && data.requests && data.requests.length > 0) {
-                    // Update badge count
-                    const badge = document.getElementById('notificationCount');
-                    badge.textContent = data.count;
-                    badge.style.display = 'flex';
+                const requestsData = await requestsRes.json();
+                const notifData = await notifRes.json();
 
-                    notificationList.innerHTML = data.requests.map(request => `
+                let contentHTML = '';
+                let totalCount = 0;
+
+                // 1. Rental Requests
+                if (requestsData.success && requestsData.requests && requestsData.requests.length > 0) {
+                    totalCount += requestsData.requests.length;
+                    contentHTML += `<h4 style="margin: 0.5rem 0; color: #666; font-size: 0.85rem; text-transform: uppercase; font-weight: 700;">Rental Requests</h4>`;
+                    contentHTML += requestsData.requests.map(request => `
                         <div class="notification-item pending">
                             <div class="notification-title">
                                 🚜 New Rental Request
@@ -3576,33 +4107,94 @@
                                 <div><strong>Duration:</strong> ${request.start_date} to ${request.end_date} (${request.num_days} days)</div>
                                 <div><strong>Total:</strong> ₹${parseFloat(request.total_amount).toLocaleString()}</div>
                                 <div><strong>Location:</strong> ${request.delivery_address}</div>
-                                ${request.need_operator ? '<div>✓ Operator Requested</div>' : ''}
-                                ${request.need_insurance ? '<div>✓ Insurance Requested</div>' : ''}
                             </div>
                             <div class="notification-time">Requested: ${new Date(request.created_at).toLocaleDateString()} at ${new Date(request.created_at).toLocaleTimeString()}</div>
                             <div class="notification-actions">
-                                <button class="btn-accept" onclick="updateRentalStatus(${request.id}, 'accepted', ${request.equipment_id})">
-                                    ✓ Accept
-                                </button>
-                                <button class="btn-decline" onclick="updateRentalStatus(${request.id}, 'declined', ${request.equipment_id})">
-                                    ✗ Decline
-                                </button>
+                                <button class="btn-accept" onclick="updateRentalStatus(${request.id}, 'approved', ${request.equipment_id})">Accept</button>
+                                <button class="btn-decline" onclick="updateRentalStatus(${request.id}, 'rejected', ${request.equipment_id})">Decline</button>
                             </div>
                         </div>
                     `).join('');
-                } else {
-                    // No pending requests
-                    const badge = document.getElementById('notificationCount');
-                    badge.style.display = 'none';
+                }
 
-                    notificationList.innerHTML = `
+                // 2. Monitoring Alerts / Signatures
+                if (notifData.success && notifData.notifications && notifData.notifications.length > 0) {
+                    const unreadCount = notifData.notifications.filter(n => n.is_read == 0).length;
+                    totalCount += unreadCount;
+
+                    if (contentHTML) contentHTML += `<hr style="margin: 1rem 0; border: 0; border-top: 1px solid #eee;">`;
+                    contentHTML += `<h4 style="margin: 0.5rem 0; color: #666; font-size: 0.85rem; text-transform: uppercase; font-weight: 700;">Alerts & Updates</h4>`;
+
+                    contentHTML += notifData.notifications.map(notif => {
+                        const isRead = notif.is_read == 1;
+
+                        // Contextual icon & color based on notification_type
+                        let icon = 'notifications';
+                        let color = '#3b82f6';
+                        const nType = notif.notification_type || '';
+                        if (nType === 'agreement_pending_owner_signature') {
+                            icon = 'history_edu';
+                            color = '#f59e0b';
+                        } else if (nType === 'agreement_signed') {
+                            icon = 'verified';
+                            color = '#10b981';
+                        } else if (nType === 'action_required') {
+                            icon = 'assignment_late';
+                            color = '#f59e0b';
+                        }
+
+                        // Agreement link: if related_agreement_id exists, link to agreements page
+                        const agreementLink = notif.related_agreement_id
+                            ? `agreements.html?id=${notif.related_agreement_id}`
+                            : (notif.action_url || null);
+
+                        return `
+                        <div class="notification-item ${isRead ? '' : 'pending'}"
+                             style="${isRead ? 'opacity: 0.85; background: #f9fafb;' : 'background: #fffbeb;'} border-left: 4px solid ${isRead ? '#cbd5e1' : color}; position: relative; cursor: pointer; transition: all 0.2s;"
+                             onclick="handleOwnerNotifClick(${notif.id}, '${agreementLink || ''}', ${userData.id})">
+                            <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                                <div style="color: ${color}; margin-top: 2px; flex-shrink: 0;">
+                                    <span class="material-icons-outlined">${icon}</span>
+                                </div>
+                                <div style="flex: 1; min-width: 0;">
+                                    <div class="notification-title" style="font-weight: ${isRead ? '500' : '700'}; font-size: 0.9rem; line-height: 1.4;">${notif.message}</div>
+                                    <div class="notification-time" style="margin-top: 0.25rem;">${new Date(notif.created_at).toLocaleDateString()} ${new Date(notif.created_at).toLocaleTimeString()}</div>
+                                    ${agreementLink ? `<div style="margin-top: 0.4rem; font-size: 0.8rem; color: var(--primary-blue); font-weight: 600;">Tap to view agreement <span class="material-icons-outlined" style="font-size: 0.8rem; vertical-align: middle;">arrow_forward</span></div>` : ''}
+                                </div>
+                                ${!isRead ? `<div style="width: 8px; height: 8px; background: ${color}; border-radius: 50%; margin-top: 6px; flex-shrink: 0;"></div>` : ''}
+                            </div>
+                            <button onclick="event.stopPropagation(); deleteOwnerNotification(${notif.id}, ${userData.id})"
+                                    title="Dismiss notification"
+                                    style="position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; cursor: pointer; color: #94a3b8; padding: 2px; border-radius: 4px; line-height: 1; transition: color 0.2s;"
+                                    onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#94a3b8'">
+                                <span class="material-icons-outlined" style="font-size: 1rem;">close</span>
+                            </button>
+                        </div>
+                    `}).join('');
+                }
+
+                // 3. Empty State
+                if (!contentHTML) {
+                    contentHTML = `
                         <div class="empty-notifications">
                             <span class="material-icons-outlined">notifications_none</span>
-                            <p>No pending requests</p>
-                            <p style="font-size: 0.85rem; margin-top: 0.5rem;">New rental requests will appear here</p>
+                            <p>No new notifications</p>
+                            <p style="font-size: 0.85rem; margin-top: 0.5rem;">New requests and alerts will appear here</p>
                         </div>
                     `;
                 }
+
+                notificationList.innerHTML = contentHTML;
+
+                // Update Badge
+                const badge = document.getElementById('notificationCount');
+                if (totalCount > 0) {
+                    badge.textContent = totalCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+
             } catch (error) {
                 console.error('Error loading notifications:', error);
                 notificationList.innerHTML = `
@@ -3613,6 +4205,45 @@
                 `;
             }
         }
+
+        // Handle click on an owner notification: mark as read then navigate
+        async function handleOwnerNotifClick(notifId, url, userId) {
+            try {
+                await fetch('php/mark_notification_read.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: notifId, user_id: userId })
+                });
+            } catch (e) {
+                console.error('Error marking notification read:', e);
+            }
+
+            if (url && url !== 'null' && url !== '') {
+                window.location.href = url;
+            } else {
+                loadOwnerNotifications();
+            }
+        }
+
+        // Delete (dismiss) an owner notification
+        async function deleteOwnerNotification(notifId, userId) {
+            try {
+                const res = await fetch('php/delete_notification.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: notifId, type: 'notification' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    loadOwnerNotifications(); // Refresh panel
+                } else {
+                    console.error('Failed to delete notification:', data.message);
+                }
+            } catch (e) {
+                console.error('Error deleting notification:', e);
+            }
+        }
+
 
         // Update Rental Request Status
         async function updateRentalStatus(requestId, status, equipmentId) {
@@ -3644,7 +4275,7 @@
             }
         }
 
-        // Load notifications logic
+        // Load notifications logic (Background polling)
         async function updateNotificationBadge() {
             const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
             if (!userData.id) return;
@@ -3653,15 +4284,17 @@
                 // Fetch rental requests count
                 const requestsRes = await fetch(`php/get_rental_requests.php?user_type=owner&user_id=${userData.id}&status=pending`);
                 const requestsData = await requestsRes.json();
-                const requestsCount = (requestsData.success) ? requestsData.count : 0;
+                const requestsCount = (requestsData.success) ? (requestsData.count || requestsData.requests.length) : 0;
 
-                // Fetch generic notifications count
+                // Fetch generic notifications unread count
                 const notifRes = await fetch(`php/get_notifications.php?user_id=${userData.id}`);
                 const notifData = await notifRes.json();
-                const notifCount = (notifData.success) ? notifData.unread_count : 0;
+                const notifCount = (notifData.success) ? notifData.notifications.filter(n => n.is_read == 0).length : 0;
 
                 const totalCount = requestsCount + notifCount;
                 const badge = document.getElementById('notificationCount');
+
+                // console.log("Updating badge:", totalCount); // Debug
 
                 if (totalCount > 0) {
                     badge.textContent = totalCount;
@@ -3674,8 +4307,32 @@
             }
         }
 
+        // Update Sidebar User Info on Load
+        function updateSidebarUserInfo() {
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            if (userData.name) {
+                const nameEl = document.getElementById('user-name');
+                if (nameEl) nameEl.innerHTML = `${userData.name} <span class="badge-verified">✓ Verified</span>`;
+
+                // Also update welcome message
+                const welcomeEl = document.getElementById('welcome-message');
+                if (welcomeEl) welcomeEl.textContent = `Welcome back, ${userData.name.split(' ')[0]}! 👋`;
+            }
+            if (userData.picture) {
+                const avatarEl = document.getElementById('user-avatar');
+                if (avatarEl) {
+                    if (userData.picture.startsWith('data:') || userData.picture.startsWith('http')) {
+                        avatarEl.innerHTML = `<img src="${userData.picture}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+                    } else {
+                        avatarEl.textContent = (userData.name || 'U').charAt(0).toUpperCase();
+                    }
+                }
+            }
+        }
+
         // Load notifications on page load
         window.addEventListener('DOMContentLoaded', () => {
+            updateSidebarUserInfo();
             loadDashboardStats();
             updateNotificationBadge();
             setInterval(updateNotificationBadge, 30000); // Check every 30 seconds
@@ -4006,10 +4663,19 @@
             if (!grid) return;
 
             grid.innerHTML = bookings.map(booking => {
-                const statusColor = booking.booking_status === 'pending' ? 'var(--warning)' :
-                    booking.booking_status === 'approved' ? 'var(--success)' : 'var(--error)';
-                const statusBg = booking.booking_status === 'pending' ? 'rgba(245, 158, 11, 0.1)' :
-                    booking.booking_status === 'approved' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+                // Determine Status Category
+                const isSuccess = ['approved', 'active', 'paid', 'rented', 'completed', 'confirmed'].includes(booking.status);
+                const isPending = ['pending', 'initiated', 'pending_payment'].includes(booking.status);
+                const isCancelled = ['cancelled', 'rejected', 'failed'].includes(booking.status);
+
+                const statusColor = isSuccess ? 'var(--success)' : (isPending ? 'var(--warning)' : 'var(--error)');
+                const statusBg = isSuccess ? 'rgba(34, 197, 94, 0.1)' : (isPending ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)');
+
+                // Friendly Status Text
+                let statusText = booking.status;
+                if (isPending) statusText = 'Awaiting Payment';
+                if (isSuccess) statusText = 'Active';
+                if (isCancelled) statusText = 'Cancelled';
 
                 return `
                     <div class="booking-card" style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-left: 4px solid ${statusColor};">
@@ -4027,7 +4693,7 @@
                                         <p style="font-size: 0.9rem; color: var(--text-gray);">${booking.equipment_name || 'Equipment'}</p>
                                     </div>
                                     <span style="background: ${statusBg}; color: ${statusColor}; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; text-transform: capitalize;">
-                                        ${booking.booking_status}
+                                        ${statusText}
                                     </span>
                                 </div>
 
@@ -4055,22 +4721,14 @@
                                     </div>
                                 </div>
 
-                                ${booking.booking_status === 'pending' ? `
-                                    <div style="display: flex; gap: 1rem;">
-                                        <button onclick="updateBookingStatus(${booking.id}, 'approved', ${booking.equipment_id})"
-                                                style="flex: 1; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--success), #16a34a); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                                            <span class="material-icons-outlined">check_circle</span>
-                                            Approve
-                                        </button>
-                                        <button onclick="updateBookingStatus(${booking.id}, 'rejected', ${booking.equipment_id})"
-                                                style="flex: 1; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--error), #dc2626); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                                            <span class="material-icons-outlined">cancel</span>
-                                            Reject
-                                        </button>
+                                ${isPending ? `
+                                    <div style="padding: 0.75rem; background: rgba(245, 158, 11, 0.1); border-radius: 12px; text-align: center; color: #d97706; font-weight: 600; border: 1px dashed rgba(245, 158, 11, 0.5);">
+                                        <span class="material-icons-outlined" style="font-size: 1.1rem; vertical-align: text-bottom; margin-right: 0.5rem;">pending_actions</span>
+                                        Awaiting Payment from Farmer - Auto-Booking in Progress
                                     </div>
                                 ` : `
                                     <div style="padding: 0.75rem; background: ${statusBg}; border-radius: 12px; text-align: center; color: ${statusColor}; font-weight: 600;">
-                                        ${booking.booking_status === 'approved' ? '✓ Request Approved' : '✗ Request Rejected'}
+                                        ${isSuccess ? '✓ Booking Active' : '✗ Request Cancelled'}
                                     </div>
                                 `}
                             </div>
@@ -4085,7 +4743,7 @@
             if (status === 'all') {
                 renderBookings(allBookingsData);
             } else {
-                const filtered = allBookingsData.filter(b => b.booking_status === status);
+                const filtered = allBookingsData.filter(b => b.status === status);
                 if (filtered.length > 0) {
                     renderBookings(filtered);
                 } else {
@@ -4205,6 +4863,568 @@
                 // Add more conditions here for other views as needed
             });
         });
+    </script>
+    <!-- Profile Modals & Scripts -->
+    <style>
+        /* Profile Override for Owner Dashboard */
+        .profile-view-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)) !important;
+        }
+
+        .avatar-edit-wrapper .avatar-upload-icon {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)) !important;
+        }
+
+        .profile-view-avatar {
+            color: var(--primary-blue) !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .avatar-edit-wrapper img,
+        #profile-display-img {
+            border-color: var(--primary-blue) !important;
+            box-shadow: 0 8px 20px rgba(0, 119, 182, 0.2) !important;
+        }
+
+        .btn-edit-profile-nav {
+            border-color: var(--primary-blue) !important;
+            color: var(--primary-blue) !important;
+        }
+
+        .btn-edit-profile-nav:hover {
+            background: var(--primary-blue) !important;
+            color: white !important;
+        }
+
+        .btn-update-profile {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)) !important;
+            box-shadow: 0 8px 20px rgba(0, 119, 182, 0.25) !important;
+        }
+
+        .btn-update-profile:hover {
+            box-shadow: 0 12px 30px rgba(0, 119, 182, 0.35) !important;
+        }
+
+        .profile-premium-form input:focus,
+        .profile-premium-form select:focus {
+            border-color: var(--primary-blue) !important;
+            box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.1) !important;
+        }
+
+        .toggle-pass:hover {
+            color: var(--primary-blue) !important;
+        }
+    </style>
+
+    <!-- User Details Modal (Read-Only) -->
+    <div id="userDetailsModal" class="modal-overlay">
+        <div class="modal-container profile-view-modal">
+            <button class="modal-close-btn" onclick="closeUserModal()">
+                <span class="material-icons-outlined">close</span>
+            </button>
+
+            <div class="profile-view-header">
+                <div class="profile-view-avatar" id="view-modal-avatar">U</div>
+                <div class="profile-view-title">
+                    <h2 id="view-modal-name">User Name</h2>
+                    <span class="profile-view-badge">Owner</span>
+                </div>
+            </div>
+
+            <div class="profile-view-body">
+                <div class="profile-detail-item" id="view-business-container" style="display: none;">
+                    <div class="detail-icon">
+                        <span class="material-icons-outlined">store</span>
+                    </div>
+                    <div class="detail-content">
+                        <label>Business Name</label>
+                        <p id="view-modal-business">Not provided</p>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <div class="detail-icon">
+                        <span class="material-icons-outlined">email</span>
+                    </div>
+                    <div class="detail-content">
+                        <label>Email Address</label>
+                        <p id="view-modal-email">email@example.com</p>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <div class="detail-icon">
+                        <span class="material-icons-outlined">phone</span>
+                    </div>
+                    <div class="detail-content">
+                        <label>Phone Number</label>
+                        <p id="view-modal-phone">Not provided</p>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <div class="detail-icon">
+                        <span class="material-icons-outlined">location_on</span>
+                    </div>
+                    <div class="detail-content">
+                        <label>Location</label>
+                        <p id="view-modal-location">Not provided</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-view-footer">
+                <button class="btn-edit-profile-nav" onclick="closeUserModal(); openModal('profileModal')">
+                    <span class="material-icons-outlined">edit</span>
+                    Edit Profile Details
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Settings Modal (Editable) -->
+    <div id="profileModal" class="modal-overlay modal">
+        <div class="modal-container profile-card-premium"
+            style="max-width: 500px; width: 95%; max-height: 90vh; overflow-y: auto;">
+            <button class="modal-close-btn"
+                onclick="document.getElementById('profileModal').classList.remove('active')">
+                <span class="material-icons-outlined">close</span>
+            </button>
+
+            <h2 style="margin-top: 0; margin-bottom: 2rem; text-align: center;">Edit Profile</h2>
+
+            <div class="profile-avatar-section">
+                <div class="avatar-edit-wrapper">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400"
+                        id="profile-display-img">
+                    <label for="avatar-input" class="avatar-upload-icon">
+                        <span class="material-icons-outlined">photo_camera</span>
+                    </label>
+                    <input type="file" id="avatar-input" hidden accept="image/*" onchange="previewAvatar(event)">
+                </div>
+            </div>
+
+            <form class="profile-premium-form" id="profileForm" onsubmit="return false;">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="profile-name-input" placeholder="Your Name">
+                </div>
+
+                <div class="form-group">
+                    <label>Business Name</label>
+                    <input type="text" id="profile-business-input" placeholder="e.g. Sharma Equipment Rentals">
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="profile-email-input" placeholder="Your Email">
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="profile-phone-input" placeholder="+91 98765 43210"
+                        pattern="[0-9+\-\s()]{10,20}">
+                </div>
+
+                <div class="form-group">
+                    <label>Business Location / District</label>
+                    <input type="text" id="profile-location-input" placeholder="Your Business Location">
+                </div>
+
+                <div class="form-group">
+                    <label>Number of Equipment to List</label>
+                    <select id="profile-equipment-input">
+                        <option value="">Select range</option>
+                        <option value="1-5">1-5 Equipment</option>
+                        <option value="5-10">5-10 Equipment</option>
+                        <option value="10-20">10-20 Equipment</option>
+                        <option value="20+">20+ Equipment</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Change Password (optional)</label>
+                    <div class="pass-input-container">
+                        <input type="password" id="profile-pass-input" placeholder="••••••••">
+                        <span class="material-icons-outlined toggle-pass"
+                            onclick="toggleProfilePassword(this); event.stopPropagation();">visibility</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-update-profile" onclick="handleProfileUpdate()">
+                    <span class="material-icons-outlined">save</span>
+                    UPDATE PROFILE
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Profile Logic for Owner Dashboard
+
+        function openUserModal() {
+            const modal = document.getElementById('userDetailsModal');
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+
+            if (userData) {
+                // Populate Read-Only Data
+                const name = userData.name || 'User';
+                document.getElementById('view-modal-name').textContent = name;
+                document.getElementById('view-modal-email').textContent = userData.email || 'Not provided';
+                document.getElementById('view-modal-phone').textContent = userData.phone || 'Not provided';
+                document.getElementById('view-modal-location').textContent = userData.location || 'Not provided';
+
+                // Business Name
+                const businessEl = document.getElementById('view-business-container');
+                if (userData.business_name) {
+                    document.getElementById('view-modal-business').textContent = userData.business_name;
+                    businessEl.style.display = 'flex';
+                } else {
+                    businessEl.style.display = 'none';
+                }
+
+                // Avatar
+                const avatarEl = document.getElementById('view-modal-avatar');
+                if (userData.picture && (userData.picture.startsWith('data:') || userData.picture.startsWith('http'))) {
+                    avatarEl.innerHTML = `<img src="${userData.picture}" alt="User">`;
+                } else {
+                    avatarEl.textContent = name.charAt(0).toUpperCase();
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeUserModal() {
+            document.getElementById('userDetailsModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal when clicking strictly on overlay (not child)
+        document.getElementById('userDetailsModal').addEventListener('click', function (e) {
+            if (e.target === this) closeUserModal();
+        });
+
+        // Toggle Password Visibility
+        function toggleProfilePassword(icon) {
+            const input = document.getElementById('profile-pass-input');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        // Preview Avatar
+        function previewAvatar(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('profile-display-img').src = reader.result;
+            }
+            if (event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Load data into Edit Form when opening Profile Modal
+        // Hijack openModal to check if it's profileModal
+        const originalOpenModal = window.openModal;
+        window.openModal = function (modalId) {
+            if (modalId === 'profileModal' || modalId === 'settingsModal') {
+                modalId = 'profileModal'; // Force use of our new profile modal for settings too
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                if (userData.id) {
+                    document.getElementById('profile-name-input').value = userData.name || '';
+                    document.getElementById('profile-email-input').value = userData.email || '';
+                    document.getElementById('profile-phone-input').value = userData.phone || '';
+                    document.getElementById('profile-location-input').value = userData.location || '';
+                    document.getElementById('profile-business-input').value = userData.business_name || '';
+                    if (document.getElementById('profile-equipment-input')) {
+                        document.getElementById('profile-equipment-input').value = userData.equipment_count || '';
+                    }
+
+                    const displayImg = document.getElementById('profile-display-img');
+                    if (userData.picture && (userData.picture.startsWith('data:') || userData.picture.startsWith('http'))) {
+                        displayImg.src = userData.picture;
+                    }
+                }
+                document.getElementById(modalId).classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else if (typeof originalOpenModal === 'function') {
+                originalOpenModal(modalId);
+            } else {
+                // Fallback if originalOpenModal not defined
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+        };
+
+        // Handle Profile Update (Reuse logic logic from farmer but adapted)
+        async function handleProfileUpdate() {
+            const btn = document.querySelector('.btn-update-profile');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-icons-outlined">sync</span> UPDATING...';
+            btn.disabled = true;
+
+            const newName = document.getElementById('profile-name-input').value;
+            const newEmail = document.getElementById('profile-email-input').value;
+            const newPhone = document.getElementById('profile-phone-input').value;
+            const newLocation = document.getElementById('profile-location-input').value;
+            const newBusiness = document.getElementById('profile-business-input').value;
+            const newEquipment = document.getElementById('profile-equipment-input').value;
+            const newPassword = document.getElementById('profile-pass-input').value;
+            const profileImg = document.getElementById('profile-display-img').src;
+
+            const token = localStorage.getItem('agrohub_token');
+
+            try {
+                const payload = {
+                    name: newName,
+                    email: newEmail,
+                    phone: newPhone,
+                    location: newLocation,
+                    business_name: newBusiness,
+                    equipment_count: newEquipment,
+                    password: newPassword,
+                    picture: profileImg.startsWith('data:image') ? profileImg : null
+                };
+
+                const response = await fetch('php/update_profile.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    if (result.user) {
+                        localStorage.setItem('agrohub_user', JSON.stringify(result.user));
+                    } else {
+                        // Fallback manual update
+                        const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                        userData.name = newName;
+                        userData.email = newEmail;
+                        userData.phone = newPhone;
+                        userData.location = newLocation;
+                        userData.business_name = newBusiness;
+                        userData.equipment_count = newEquipment;
+                        if (payload.picture) userData.picture = payload.picture;
+                        localStorage.setItem('agrohub_user', JSON.stringify(userData));
+                    }
+
+                    // Update UI Stats
+
+                    updateSidebarUserInfo();
+
+                    btn.innerHTML = '<span class="material-icons-outlined">done</span> SAVED';
+
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        document.getElementById('profileModal').classList.remove('active');
+                        document.body.style.overflow = '';
+                        document.getElementById('profile-pass-input').value = ''; // Clear password
+
+                        // If updating from read-only modal, try to reopen it updated
+                        // But usually we just close.
+                    }, 1500);
+
+                } else {
+                    alert('Update failed: ' + result.message);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Update error:', error);
+                alert('Connection failed');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+    <script>
+        // Withdrawal Modal Logic
+        let currentAvailableBalance = 0;
+
+        function openWithdrawalModal() {
+            // Get current balance from the earnings modal or fetch mostly recent
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            if (!userData.id) return;
+
+            // Use the value already loaded in the earnings modal for quick display, 
+            // but fetching fresh is better to avoid overdrafts.
+            // We'll trust the visual value for now but backend checks.
+            const balText = document.getElementById('modalWalletBalance').textContent.replace(/[^\d.]/g, '');
+            currentAvailableBalance = parseFloat(balText) || 0;
+
+            document.getElementById('wd-available-balance').textContent = '₹' + currentAvailableBalance.toLocaleString('en-IN');
+            const amountInput = document.getElementById('wd-amount');
+            amountInput.max = currentAvailableBalance;
+            amountInput.value = ''; // Clean input
+
+            // Pre-fill user details if available
+            if (userData.name) {
+                const nameInput = document.getElementById('wd-name');
+                if (nameInput) nameInput.value = userData.name;
+            }
+
+            // Pre-fill bank details if they were saved in local storage (optional optimization)
+            // Or better, fetch from profile api if we had one.
+            // For now, let user enter.
+
+            // Reset validation state
+            // Reset validation state
+            const errorMsg = document.getElementById('wd-amount-error');
+            if (errorMsg) errorMsg.style.display = 'none';
+            if (amountInput) amountInput.style.borderColor = '#e2e8f0';
+            const btn = document.getElementById('wd-submit-btn');
+            if (btn) {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+            }
+
+            openModal('withdrawalModal');
+        }
+
+        function validateWithdrawalForm() {
+            const amountInput = document.getElementById('wd-amount');
+            const accountInput = document.getElementById('wd-account');
+            const ifscInput = document.getElementById('wd-ifsc');
+
+            const amountError = document.getElementById('wd-amount-error');
+            const accountError = document.getElementById('wd-account-error');
+            const ifscError = document.getElementById('wd-ifsc-error');
+
+            const btn = document.getElementById('wd-submit-btn');
+
+            let isValid = true;
+
+            // Validate Amount
+            const amount = parseFloat(amountInput.value);
+            if (amount > currentAvailableBalance) {
+                amountInput.style.borderColor = 'var(--error)';
+                amountError.style.display = 'flex';
+                isValid = false;
+            } else {
+                amountInput.style.borderColor = '#e2e8f0';
+                amountError.style.display = 'none';
+                if (!amount || amount <= 0) isValid = false; // Empty or zero amount is invalid for submission but no error msg needed yet
+            }
+
+            // Validate Account Number (9-18 digits)
+            const accountVal = accountInput.value.trim();
+            const accountRegex = /^\d{9,18}$/;
+            if (accountVal.length > 0 && !accountRegex.test(accountVal)) {
+                accountInput.style.borderColor = 'var(--error)';
+                accountError.style.display = 'flex';
+                isValid = false;
+            } else {
+                accountInput.style.borderColor = '#e2e8f0';
+                accountError.style.display = 'none';
+                if (accountVal.length === 0) isValid = false;
+            }
+
+            // Validate IFSC (4 alpha, 0, 6 alphanumeric)
+            const ifscVal = ifscInput.value.trim().toUpperCase();
+            ifscInput.value = ifscVal; // Auto-uppercase
+            const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+
+            if (ifscVal.length > 0 && !ifscRegex.test(ifscVal)) {
+                ifscInput.style.borderColor = 'var(--error)';
+                ifscError.style.display = 'flex';
+                isValid = false;
+            } else {
+                ifscInput.style.borderColor = '#e2e8f0';
+                ifscError.style.display = 'none';
+                if (ifscVal.length === 0) isValid = false;
+            }
+
+            // Update Start Button State
+            if (isValid) {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+            } else {
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+                btn.style.cursor = 'not-allowed';
+            }
+        }
+
+        async function processWithdrawal(e) {
+            e.preventDefault();
+
+            const amount = parseFloat(document.getElementById('wd-amount').value);
+            const account = document.getElementById('wd-account').value;
+            const ifsc = document.getElementById('wd-ifsc').value;
+            const name = document.getElementById('wd-name').value;
+            const btn = document.getElementById('wd-submit-btn');
+
+            if (amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            if (amount > currentAvailableBalance) {
+                alert('Amount exceeds available wallet balance.');
+                return;
+            }
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-icons-outlined" style="animation: spin 1s linear infinite;">sync</span> Processing...';
+            btn.disabled = true;
+
+            try {
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+
+                const response = await fetch('php/process_withdrawal.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        owner_id: userData.id,
+                        amount: amount,
+                        account_number: account,
+                        ifsc: ifsc,
+                        account_name: name
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Show custom success modal
+                    closeModal('withdrawalModal'); // Close input modal first
+
+                    document.getElementById('success-amount').textContent = '₹' + amount.toLocaleString('en-IN');
+                    document.getElementById('success-tx-id').textContent = result.payout_id;
+                    const accountVal = document.getElementById('wd-account').value;
+                    document.getElementById('success-account').textContent = 'XXXX' + accountVal.slice(-4);
+
+                    openModal('paymentSuccessModal');
+
+                    // Refresh stats
+                    loadDashboardStats();
+                } else {
+                    alert('Withdrawal Failed: ' + (result.message || 'Unknown error'));
+                }
+
+            } catch (error) {
+                console.error('Withdrawal error:', error);
+                alert('An error occurred during processing. Please try again.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 

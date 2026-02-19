@@ -394,6 +394,64 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="+91 98765 43210"
+                        pattern="[0-9+\-\s()]{10,20}">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" class="form-input">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location (City, District)</label>
+                    <input type="text" id="location" class="form-input" placeholder="Enter your current location">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="workerType">Primary Role</label>
+                        <select id="workerType" class="form-input">
+                            <option value="">Select Role</option>
+                            <option value="Harvester">Harvester</option>
+                            <option value="Planter">Planter</option>
+                            <option value="Driver">Driver</option>
+                            <option value="General Labor">General Labor</option>
+                            <option value="Specialist">Specialist</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experienceYears">Experience (Years)</label>
+                        <input type="number" id="experienceYears" class="form-input" placeholder="2" min="0" max="50">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dailyWage">Expected Daily Wage (₹)</label>
+                    <input type="number" id="dailyWage" class="form-input" placeholder="1000" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Bio (Optional)</label>
+                    <textarea id="bio" class="form-input" rows="3"
+                        placeholder="Briefly describe your skills..."></textarea>
+                </div>
+
+                <div class="form-group">
                     <label for="password">Change Password (leave blank to keep current)</label>
                     <div class="input-wrapper">
                         <input type="password" id="password" class="form-input" placeholder="••••••••">
@@ -441,6 +499,7 @@
             if (user) {
                 const name = user.name || user.fullName || user.displayName || 'Worker';
                 const email = user.email || '';
+                const phone = user.phone || '';
 
                 // Update Sidebar
                 document.getElementById('userName').textContent = name;
@@ -449,6 +508,16 @@
                 // Populate form
                 document.getElementById('fullName').value = name;
                 document.getElementById('email').value = email;
+                document.getElementById('phone').value = phone;
+
+                // Populate new fields
+                if (user.gender) document.getElementById('gender').value = user.gender;
+                if (user.date_of_birth) document.getElementById('dob').value = user.date_of_birth;
+                if (user.location) document.getElementById('location').value = user.location;
+                if (user.worker_type) document.getElementById('workerType').value = user.worker_type;
+                if (user.experience_years) document.getElementById('experienceYears').value = user.experience_years;
+                if (user.daily_wage) document.getElementById('dailyWage').value = user.daily_wage;
+                if (user.bio) document.getElementById('bio').value = user.bio;
 
                 // Set profile avatar
                 const firstLetter = name.charAt(0).toUpperCase();
@@ -474,22 +543,73 @@
         }
 
         // Handle form submission
-        document.getElementById('profileForm').addEventListener('submit', function (e) {
+        document.getElementById('profileForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const applicantData = JSON.parse(localStorage.getItem('applicantData'));
+            const updateBtn = this.querySelector('.update-btn');
+            const originalText = updateBtn.innerHTML;
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<span class="material-icons-outlined">sync</span> Updating...';
 
-            // Update data
-            applicantData.fullName = document.getElementById('fullName').value;
-            applicantData.email = document.getElementById('email').value;
+            // Gather data
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
 
-            // Save to localStorage
-            localStorage.setItem('applicantData', JSON.stringify(applicantData));
+            const token = localStorage.getItem('agrohub_token');
 
-            alert('✅ Profile updated successfully!\n\nYour changes have been saved.');
+            if (!token) {
+                alert('Session expired. Please login again.');
+                window.location.href = 'login.html';
+                return;
+            }
 
-            // Reload page to reflect changes
-            window.location.reload();
+            try {
+                const response = await fetch('php/update_profile.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        name: fullName,
+                        email: email,
+                        phone: phone,
+                        password: password || undefined,
+                        // New fields
+                        gender: document.getElementById('gender').value,
+                        date_of_birth: document.getElementById('dob').value,
+                        location: document.getElementById('location').value,
+                        worker_type: document.getElementById('workerType').value,
+                        experience_years: document.getElementById('experienceYears').value,
+                        daily_wage: document.getElementById('dailyWage').value,
+                        bio: document.getElementById('bio').value
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ Profile updated successfully!');
+
+                    // Update localStorage with new user data
+                    const currentUser = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                    const updatedUser = { ...currentUser, ...result.data.user };
+                    localStorage.setItem('agrohub_user', JSON.stringify(updatedUser));
+
+                    // Reload to reflect changes
+                    window.location.reload();
+                } else {
+                    alert('❌ Failed to update profile: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Connection error. Please try again.');
+            } finally {
+                updateBtn.disabled = false;
+                updateBtn.innerHTML = originalText;
+            }
         });
 
         function logout() {

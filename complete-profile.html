@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Profile - AgroHub</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --primary-green-dark: #1b4332;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --surface-white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 3rem;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #2d6a4f, #10b981);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .header-icon .material-icons-outlined {
+            font-size: 3rem;
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .required {
+            color: var(--danger);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #2d6a4f, #10b981);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(45, 106, 79, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .info-box .material-icons-outlined {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <span class="material-icons-outlined">person_add</span>
+            </div>
+            <h1>Complete Your Profile</h1>
+            <p class="subtitle">We need a few more details to get you started with AgroHub</p>
+        </div>
+
+        <div id="alertBox" style="display: none;"></div>
+
+        <div class="info-box">
+            <p>
+                <span class="material-icons-outlined">info</span>
+                Your phone number helps us verify your identity and enables better communication for rentals and job
+                opportunities.
+            </p>
+        </div>
+
+        <form id="completeProfileForm">
+            <div class="form-group">
+                <label for="name">
+                    Full Name <span class="required">*</span>
+                </label>
+                <input type="text" id="name" name="name" required readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="email">
+                    Email <span class="required">*</span>
+                </label>
+                <input type="email" id="email" name="email" required readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">
+                    Phone Number <span class="required">*</span>
+                </label>
+                <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required
+                    pattern="[0-9+\-\s()]{10,20}">
+            </div>
+
+            <div class="form-group" id="roleFieldGroup">
+                <label for="role">
+                    Your Role <span class="required">*</span>
+                </label>
+                <select id="role" name="role" required>
+                    <option value="">Select your role</option>
+                    <option value="farmer">Farmer - Rent equipment and hire workers</option>
+                    <option value="owner">Equipment Owner - List and rent out equipment</option>
+                    <option value="worker">Worker - Find job opportunities</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="material-icons-outlined">check_circle</span>
+                Complete Profile
+            </button>
+        </form>
+    </div>
+
+    <script>
+        let userData = null;
+
+        // Load user data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const userDataStr = localStorage.getItem('agrohub_user');
+            if (!userDataStr) {
+                // No user logged in, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+
+            userData = JSON.parse(userDataStr);
+
+            // Check if profile is already completed
+            if (userData.profile_completed === true || userData.profile_completed === 1) {
+                // Already completed, redirect to dashboard
+                redirectToDashboard(userData.user_type || userData.role);
+                return;
+            }
+
+            // Pre-fill form with existing data
+            document.getElementById('name').value = userData.name || '';
+            document.getElementById('email').value = userData.email || '';
+            document.getElementById('phone').value = userData.phone || '';
+
+            // DEBUG: Log user data to see what's in localStorage
+            console.log('User Data:', userData);
+            console.log('user_type:', userData.user_type);
+            console.log('role:', userData.role);
+            console.log('userType:', userData.userType);
+
+            // Check if user already has a role - check all possible field names
+            const existingRole = userData.user_type || userData.role || userData.userType;
+            console.log('Detected role:', existingRole);
+
+            if (existingRole && existingRole !== '' && existingRole !== 'null') {
+                // User already has a role - hide the field and pre-select it
+                console.log('HIDING role field - user already has role:', existingRole);
+                document.getElementById('role').value = existingRole;
+                document.getElementById('roleFieldGroup').style.display = 'none';
+                // Make it not required since it's hidden
+                document.getElementById('role').removeAttribute('required');
+            } else {
+                // User doesn't have a role - show the dropdown
+                console.log('SHOWING role field - no role detected');
+                document.getElementById('roleFieldGroup').style.display = 'block';
+                document.getElementById('role').setAttribute('required', 'required');
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('completeProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const phone = document.getElementById('phone').value.trim();
+            // Use the role from the form, or fallback to existing user role if field is hidden
+            let role = document.getElementById('role').value;
+            if (!role || role === '') {
+                role = userData.user_type || userData.role;
+            }
+
+            if (!phone) {
+                showAlert('Please enter your phone number.', 'error');
+                return;
+            }
+
+            if (!role) {
+                showAlert('Role information is missing. Please refresh and try again.', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons-outlined">sync</span> Completing...';
+
+            try {
+                const response = await fetch('php/complete_profile.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: userData.id,
+                        phone: phone,
+                        role: role
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update localStorage with new data
+                    userData.phone = phone;
+                    userData.user_type = role;
+                    userData.role = role;
+                    userData.profile_completed = true;
+                    localStorage.setItem('agrohub_user', JSON.stringify(userData));
+
+                    showAlert('Profile completed successfully! Redirecting...', 'success');
+
+                    setTimeout(() => {
+                        redirectToDashboard(role);
+                    }, 1500);
+                } else {
+                    showAlert(data.error || 'Failed to complete profile. Please try again.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="material-icons-outlined">check_circle</span> Complete Profile';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Connection error. Please check your internet and try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="material-icons-outlined">check_circle</span> Complete Profile';
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type}`;
+            alertBox.innerHTML = `
+                <span class="material-icons-outlined">${type === 'error' ? 'error' : 'check_circle'}</span>
+                <span>${message}</span>
+            `;
+            alertBox.style.display = 'flex';
+        }
+
+        function redirectToDashboard(role) {
+            const dashboards = {
+                'farmer': 'farmer-dashboard.html',
+                'owner': 'owner-dashboard.html',
+                'worker': 'available-jobs.html'
+            };
+
+            window.location.href = dashboards[role] || 'farmer-dashboard.html';
+        }
+    </script>
+</body>
+
+</html>

@@ -97,7 +97,9 @@ function handleSignup($data) {
                 'id' => $userId,
                 'name' => $name,
                 'email' => $email,
-                'userType' => $userType
+                'userType' => $userType,
+                'phone' => null,
+                'profile_completed' => false
             ],
             'token' => $session['token']
         ]);
@@ -109,18 +111,30 @@ function handleSignup($data) {
 /**
  * Handle Traditional Login
  */
+/**
+ * Handle Traditional Login
+ */
 function handleLogin($data) {
     $email = isset($data['email']) ? sanitize($data['email']) : '';
     $password = isset($data['password']) ? $data['password'] : '';
-    $userType = isset($data['userType']) ? sanitize($data['userType']) : 'farmer';
+    // Allow userType to be optional/null. If null, we search by email only.
+    $userType = isset($data['userType']) ? sanitize($data['userType']) : null;
 
     if (empty($email) || empty($password)) {
         jsonResponse(false, 'Email and password are required');
     }
 
     $conn = getDBConnection();
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND user_type = ?");
-    $stmt->bind_param("ss", $email, $userType);
+    
+    // If userType provided (legacy), use it. If not (common login), search by email.
+    if ($userType) {
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND user_type = ?");
+        $stmt->bind_param("ss", $email, $userType);
+    } else {
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+    }
+    
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -134,7 +148,13 @@ function handleLogin($data) {
                     'name' => $user['name'],
                     'email' => $user['email'],
                     'userType' => $user['user_type'],
-                    'picture' => $user['profile_picture']
+                    'picture' => $user['profile_picture'],
+                    'phone' => $user['phone'],
+                    'location' => isset($user['location']) ? $user['location'] : null,
+                    'farm_size' => isset($user['farm_size']) ? $user['farm_size'] : null,
+                    'business_name' => isset($user['business_name']) ? $user['business_name'] : null,
+                    'equipment_count' => isset($user['equipment_count']) ? $user['equipment_count'] : null,
+                    'profile_completed' => $user['profile_completed'] ? true : false
                 ],
                 'token' => $session['token']
             ]);
@@ -233,7 +253,7 @@ function handleGoogleAuth($data) {
         jsonResponse(false, 'No Google credential or access token provided');
     }
 
-    $userType = isset($data['userType']) ? sanitize($data['userType']) : 'farmer';
+    $userType = isset($data['userType']) ? sanitize($data['userType']) : null;
 
     if (empty($email)) {
         logDebug("Google Auth: Email empty in retrieved data");
@@ -265,32 +285,40 @@ function handleGoogleAuth($data) {
             $update->execute();
         }
     } else {
-        // Create new user
-        logDebug("Google Auth: Creating new user");
-        // Generate a random secure password
-        try {
-            $randomBytes = random_bytes(16);
-        } catch (Exception $e) {
-            $randomBytes = openssl_random_pseudo_bytes(16);
+        // User does not exist
+        if ($userType) {
+            // Create new user if userType is specified
+            logDebug("Google Auth: Creating new user with type $userType");
+            // Generate a random secure password
+            try {
+                $randomBytes = random_bytes(16);
+            } catch (Exception $e) {
+                $randomBytes = openssl_random_pseudo_bytes(16);
+            }
+            $placeholderPass = password_hash(bin2hex($randomBytes), PASSWORD_BCRYPT);
+            
+            $stmt = $conn->prepare("INSERT INTO users (name, email, password, user_type, profile_picture, is_verified) VALUES (?, ?, ?, ?, ?, TRUE)");
+            $stmt->bind_param("sssss", $name, $email, $placeholderPass, $userType, $picture);
+            
+            if (!$stmt->execute()) {
+                logDebug("Google Auth: Database Error - " . $stmt->error);
+                throw new Exception("Database error creating user: " . $stmt->error);
+            }
+            
+            $userId = $stmt->insert_id;
+            $user = [
+                'id' => $userId,
+                'name' => $name,
+                'email' => $email,
+                'user_type' => $userType,
+                'profile_picture' => $picture,
+                'phone' => null,
+                'profile_completed' => false
+            ];
+        } else {
+            // No userType specified (Common Login Page) AND User doesn't exist.
+            jsonResponse(false, 'Account not found. Please sign up using the Sign Up page first.');
         }
-        $placeholderPass = password_hash(bin2hex($randomBytes), PASSWORD_BCRYPT);
-        
-        $stmt = $conn->prepare("INSERT INTO users (name, email, password, user_type, profile_picture, is_verified) VALUES (?, ?, ?, ?, ?, TRUE)");
-        $stmt->bind_param("sssss", $name, $email, $placeholderPass, $userType, $picture);
-        
-        if (!$stmt->execute()) {
-            logDebug("Google Auth: Database Error - " . $stmt->error);
-            throw new Exception("Database error creating user: " . $stmt->error);
-        }
-        
-        $userId = $stmt->insert_id;
-        $user = [
-            'id' => $userId,
-            'name' => $name,
-            'email' => $email,
-            'user_type' => $userType,
-            'profile_picture' => $picture
-        ];
     }
 
     $session = createSession($user['id']);
@@ -306,7 +334,13 @@ function handleGoogleAuth($data) {
             'name' => $user['name'],
             'email' => $user['email'],
             'userType' => $user['user_type'],
-            'picture' => $picture
+            'picture' => $picture,
+            'phone' => isset($user['phone']) ? $user['phone'] : null,
+            'location' => isset($user['location']) ? $user['location'] : null,
+            'farm_size' => isset($user['farm_size']) ? $user['farm_size'] : null,
+            'business_name' => isset($user['business_name']) ? $user['business_name'] : null,
+            'equipment_count' => isset($user['equipment_count']) ? $user['equipment_count'] : null,
+            'profile_completed' => isset($user['profile_completed']) ? ($user['profile_completed'] ? true : false) : false
         ],
         'token' => $session['token']
     ]);

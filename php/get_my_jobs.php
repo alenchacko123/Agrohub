@@ -43,6 +43,14 @@ try {
             $row['responsibilities'] = json_decode($row['responsibilities'], true);
         }
         
+        // Backward compatibility
+        if (isset($row['payment_amount'])) {
+            $row['wage_per_day'] = $row['payment_amount'];
+        } else {
+             // If column not found (should not happen with SELECT *), handle gracefully
+             $row['wage_per_day'] = isset($row['wage_per_day']) ? $row['wage_per_day'] : 0;
+        }
+        
         // Calculate days posted
         $created = new DateTime($row['created_at']);
         $now = new DateTime();

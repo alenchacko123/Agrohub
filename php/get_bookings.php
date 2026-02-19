@@ -14,12 +14,18 @@ try {
         throw new Exception('Owner ID or Farmer ID is required');
     }
 
-    // Build the SQL query
+
+    // Auto-update expired bookings
+    $updateSql = "UPDATE bookings SET status = 'completed' WHERE end_date < CURDATE() AND status IN ('active', 'confirmed', 'paid')";
+    $conn->query($updateSql);
+
+    // Build the SQL query - now includes signature data and more status fields
     $sql = "SELECT 
                 b.id,
                 b.equipment_id,
                 b.farmer_id,
-                b.farmer_name,
+                u.name as farmer_name,
+                u_owner.name as owner_name,
                 b.start_date,
                 b.end_date,
                 b.total_amount,
@@ -30,10 +36,90 @@ try {
                 b.created_at,
                 e.equipment_name,
                 e.equipment_condition,
-                DATEDIFF(b.end_date, b.start_date) as duration
-            FROM bookings b
+                DATEDIFF(b.end_date, b.start_date) as duration,
+                rr_link.need_operator";
+    
+    // Add conditional columns (only if they exist)
+    $checkTransactionId = $conn->query("SHOW COLUMNS FROM bookings LIKE 'transaction_id'");
+    if ($checkTransactionId && $checkTransactionId->num_rows > 0) {
+        $sql .= ", b.transaction_id";
+    }
+    
+    $checkRentalStatus = $conn->query("SHOW COLUMNS FROM bookings LIKE 'rental_status'");
+    if ($checkRentalStatus && $checkRentalStatus->num_rows > 0) {
+        $sql .= ", b.rental_status";
+    }
+    
+    $checkAgreementStatus = $conn->query("SHOW COLUMNS FROM bookings LIKE 'agreement_status'");
+    if ($checkAgreementStatus && $checkAgreementStatus->num_rows > 0) {
+        $sql .= ", b.agreement_status";
+    }
+    
+    // Check if bookings has request_id column to link with agreements
+    $checkRequestId = $conn->query("SHOW COLUMNS FROM bookings LIKE 'request_id'");
+    $hasRequestId = ($checkRequestId && $checkRequestId->num_rows > 0);
+
+    if ($hasRequestId) {
+        $sql .= ", b.request_id";
+    }
+
+    // Check if agreements table exists
+    $checkAgreements = $conn->query("SHOW TABLES LIKE 'agreements'");
+    $hasAgreements = ($checkAgreements && $checkAgreements->num_rows > 0);
+    
+    // Only select agreement columns if we can link them
+    if ($hasAgreements) {
+        $sql .= ", a.signature_data, a.signature_type, a.signed_at,
+                   a.owner_signature_data, a.owner_signature_type, a.owner_signed_at,
+                   a.status as agreement_full_status";
+    }
+    
+    // Check if feedback table exists
+    $checkFeedback = $conn->query("SHOW TABLES LIKE 'rental_feedback'");
+    $hasFeedbackTable = ($checkFeedback && $checkFeedback->num_rows > 0);
+
+    if ($hasFeedbackTable) {
+        $sql .= ", rf.id as feedback_id, rf.rating as feedback_rating, rf.comment as feedback_comment, 
+                   CASE WHEN rf.id IS NOT NULL THEN 1 ELSE 0 END as has_feedback";
+    }
+
+    $sql .= " FROM bookings b
             INNER JOIN equipment e ON b.equipment_id = e.id
-            WHERE ";
+            LEFT JOIN users u ON b.farmer_id = u.id
+            LEFT JOIN users u_owner ON e.owner_id = u_owner.id";
+    
+    // Join Feedback table
+    if ($hasFeedbackTable) {
+        $sql .= " LEFT JOIN rental_feedback rf ON b.id = rf.booking_id";
+    }
+    
+    // Smart Joining for Agreements
+    // We try to link via request_id first, then fallback to matching fields
+    // Smart Joining for Agreements and Rental Requests (for operator info)
+    // We try to link via request_id first, then fallback to matching fields
+    $sql .= " LEFT JOIN rental_requests rr_link ON ";
+    
+    if ($hasRequestId) {
+        // If request_id column exists, use it OR fallback to matching fields if null
+        $sql .= "(rr_link.id = b.request_id OR (b.request_id IS NULL AND rr_link.equipment_id = b.equipment_id AND rr_link.farmer_id = b.farmer_id AND rr_link.start_date = b.start_date))";
+    } else {
+        // Fallback purely to matching fields if column doesn't exist
+        $sql .= "(rr_link.equipment_id = b.equipment_id AND rr_link.farmer_id = b.farmer_id AND rr_link.start_date = b.start_date)";
+    }
+    
+    // Add columns from rental requests if needed (e.g. need_operator)
+    // We can't easily add to SELECT clause after constructing it, so we rely on the fact that we're joining here.
+    // Wait, I need to add `rr_link.need_operator` to the SELECT clause.
+    // Let me rewrite the SELECT part slightly or just assume I can add it?
+    // The SELECT clause is already built. I need to restart or inject it?
+    // Actually, I can just modify the query logic flow since I am editing the file.
+    
+    if ($hasAgreements) {
+        // Then join agreements on the found request
+        $sql .= " LEFT JOIN agreements a ON a.rental_request_id = rr_link.id";
+    }
+    
+    $sql .= " WHERE ";
     
     // Add owner_id or farmer_id filter
     if ($owner_id > 0) {
@@ -46,7 +132,11 @@ try {
     if (!empty($status_filter)) {
         $sql .= " AND b.status = ?";
     }
+
     
+    // Validate uniqueness
+    $sql .= " GROUP BY b.id";
+
     $sql .= " ORDER BY 
                 CASE 
                     WHEN b.status = 'pending' THEN 1

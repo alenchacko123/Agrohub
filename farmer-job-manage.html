@@ -388,24 +388,59 @@
             loadJobDetailsAndApplications(jobId);
         }
 
+
         async function loadJobDetailsAndApplications(jobId) {
             try {
-                // Fetch job details and applications
-                const [jobResponse, applicationsResponse] = await Promise.all([
-                    fetch(`php/get_job_details.php?job_id=${jobId}`),
-                    fetch(`php/get_applications.php?job_id=${jobId}`)
-                ]);
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                const token = localStorage.getItem('agrohub_token'); // Assuming you store token here
 
-                const jobData = await jobResponse.json();
-                const applicationsData = await applicationsResponse.json();
+                if (!userData.id) {
+                    window.location.href = 'login-farmer.html';
+                    return;
+                }
 
-                console.log('Job data:', jobData);
-                console.log('Applications data:', applicationsData);
+                // Fetch job details and applications from the CORRECT endpoint
+                // We use get_job_applications.php which returns both job info and applications list
+                const response = await fetch(`php/get_job_applications.php?job_id=${jobId}&token=${token}`);
+                const data = await response.json();
 
-                if (jobData.success && jobData.job) {
-                    displayJobAndApplications(jobData.job, applicationsData.applications || []);
+                console.log('API Response:', data);
+
+                if (data.success) {
+                    // Check ownership (API also checks, but good for UI feedback)
+                    if (String(data.job.farmer_id) !== String(userData.id)) {
+                        document.getElementById('jobContent').innerHTML = `
+                            <div class="empty-state">
+                                <div class="icon">
+                                    <span class="material-icons-outlined" style="font-size: inherit; color: var(--error);">lock</span>
+                                </div>
+                                <h3>Access Denied</h3>
+                                <p>You do not have permission to manage this job.</p>
+                                <a href="farmer-dashboard.html" class="btn btn-accept" style="margin-top: 1rem; display: inline-flex;">Back to Dashboard</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    // Map statuses for UI compatibility
+                    // API returns: 'Applied', 'Hired', 'Rejected'
+                    // UI expects: 'pending', 'accepted', 'declined'
+                    const mappedApplications = data.applications.map(app => ({
+                        ...app,
+                        id: app.application_id, // Map application_id for UI logic
+                        status: app.status === 'Applied' ? 'pending' :
+                            (app.status === 'Hired' ? 'accepted' :
+                                (app.status === 'Rejected' ? 'declined' : app.status.toLowerCase())),
+                        applicant_name: app.name, // Map user fields
+                        applicant_email: app.email,
+                        applicant_phone: app.phone,
+                        experience: app.specific_experience || app.general_experience,
+                        created_at: app.applied_at // Map date
+                    }));
+
+                    displayJobAndApplications(data.job, mappedApplications);
                 } else {
-                    throw new Error(jobData.message || 'Failed to load job details');
+                    throw new Error(data.message || 'Failed to load job details');
                 }
             } catch (error) {
                 console.error('Error loading job:', error);
@@ -427,15 +462,35 @@
             const acceptedApps = applications.filter(a => a.status === 'accepted');
             const declinedApps = applications.filter(a => a.status === 'declined');
 
+            // Logic for Close Job Button and Status Badge
+            const closeButton = job.status === 'Open' ? `
+                <button onclick="closeJob(${job.id})" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4);">
+                    <span class="material-icons-outlined">lock</span> Close Job
+                </button>
+            ` : `
+                <div style="background: rgba(255,255,255,0.2); color: white; padding: 0.5rem 1rem; border-radius: 8px;">
+                    ${job.status}
+                </div>
+            `;
+
+            const paymentDisplay = job.payment_type === 'Fixed Amount' ? 'job' : 'day';
+
             document.getElementById('jobContent').innerHTML = `
                 <!-- Job Header -->
                 <div class="job-header">
-                    <h1>${job.job_title}</h1>
-                    <div class="job-meta">
-                        <span><span class="material-icons-outlined" style="font-size: 1.2rem; vertical-align: middle;">location_on</span> ${job.location}</span>
-                        <span><span class="material-icons-outlined" style="font-size: 1.2rem; vertical-align: middle;">payments</span> ₹${job.wage_per_day}/day</span>
-                        <span><span class="material-icons-outlined" style="font-size: 1.2rem; vertical-align: middle;">groups</span> ${job.workers_needed} workers needed</span>
+                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h1>${job.job_title}</h1>
+                            <div class="job-meta">
+                                <span><span class="material-icons-outlined" style="font-size: 1.2rem; vertical-align: middle;">location_on</span> ${job.location}</span>
+                                <span><span class="material-icons-outlined" style="font-size: 1.2rem; vertical-align: middle;">payments</span> ₹${job.wage_per_day}/${paymentDisplay}</span>
+                                <span><span class="material-icons-outlined" style="font-size: 1.2rem; vertical-align: middle;">groups</span> ${job.workers_needed} workers needed</span>
+                                <span><span class="material-icons-outlined" style="font-size: 1.2rem; vertical-align: middle;">info</span> Status: <strong>${job.status}</strong></span>
+                            </div>
+                        </div>
+                        ${closeButton}
                     </div>
+
                     <div class="job-stats-row">
                         <div class="stat-box">
                             <div class="stat-value">${applications.length}</div>
@@ -584,8 +639,8 @@
                             <div class="detail-value">${job.location}</div>
                         </div>
                         <div class="detail-item">
-                            <div class="detail-label">Wage per Day</div>
-                            <div class="detail-value">₹${job.wage_per_day}</div>
+                            <div class="detail-label">Payment</div>
+                            <div class="detail-value">₹${job.wage_per_day} (${job.payment_type})</div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Workers Needed</div>
@@ -610,60 +665,282 @@
             event.target.closest('.tab').classList.add('active');
         }
 
-        async function acceptApplication(applicationId) {
-            if (!confirm('Accept this application?')) return;
 
-            try {
-                const response = await fetch('php/update_application.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        application_id: applicationId,
-                        status: 'accepted'
-                    })
-                });
 
-                const result = await response.json();
-                if (result.success) {
-                    alert('Application accepted!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + result.message);
+        // Global Modal Logic
+        let currentConfirmAction = null;
+
+        function showConfirmationModal(title, message, confirmText, isDanger, onConfirm) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+
+            const btn = document.getElementById('confirmActionBtn');
+            btn.textContent = confirmText;
+            btn.className = isDanger ? 'btn btn-danger' : 'btn btn-primary';
+
+            currentConfirmAction = onConfirm;
+            const modal = document.getElementById('confirmationModal');
+
+            // Unbind previous listener to prevent stacking
+            let newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.addEventListener('click', async () => {
+                if (currentConfirmAction) {
+                    // Show loading on button properly
+                    const originalText = newBtn.innerHTML;
+                    newBtn.innerHTML = '<span class="material-icons-outlined" style="animation: spin 1s infinite linear; font-size: 1.2rem; margin-right: 0.5rem;">refresh</span> Processing...';
+                    newBtn.disabled = true;
+
+                    await currentConfirmAction();
+
+                    closeConfirmationModal();
+                    // Reset button state just in case modal is reused without reload (though these actions reload)
+                    newBtn.innerHTML = originalText;
+                    newBtn.disabled = false;
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to accept application');
-            }
+            });
+
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closeConfirmationModal() {
+            const modal = document.getElementById('confirmationModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                currentConfirmAction = null;
+            }, 300);
+        }
+
+        async function acceptApplication(applicationId) {
+            showConfirmationModal(
+                'Accept Application',
+                'Accept this application? This will mark the job as In Progress and hire the worker.',
+                'Accept Worker',
+                false,
+                async () => {
+                    const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                    const token = localStorage.getItem('agrohub_token');
+
+                    try {
+                        const response = await fetch('php/hire_worker.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ application_id: applicationId })
+                        });
+
+                        const result = await response.json();
+                        if (result.success) {
+                            // alert('Worker successfully hired!'); // Optional: Use a toast instead if desired
+                            location.reload();
+                        } else {
+                            alert('Error: ' + result.message);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to accept application');
+                    }
+                }
+            );
         }
 
         async function declineApplication(applicationId) {
-            if (!confirm('Decline this application?')) return;
+            showConfirmationModal(
+                'Decline Application',
+                'Are you sure you want to decline this application?',
+                'Decline',
+                true,
+                async () => {
+                    const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                    const token = localStorage.getItem('agrohub_token');
 
-            try {
-                const response = await fetch('php/update_application.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        application_id: applicationId,
-                        status: 'declined'
-                    })
-                });
+                    try {
+                        const response = await fetch('php/update_application.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                application_id: applicationId,
+                                status: 'Rejected'
+                            })
+                        });
 
-                const result = await response.json();
-                if (result.success) {
-                    alert('Application declined');
-                    location.reload();
-                } else {
-                    alert('Error: ' + result.message);
+                        const result = await response.json();
+                        if (result.success) {
+                            location.reload();
+                        } else {
+                            alert('Error: ' + result.message);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to decline application');
+                    }
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to decline application');
-            }
+            );
         }
+
+        async function closeJob(jobId) {
+            showConfirmationModal(
+                'Close Job',
+                'Are you sure you want to close this job? No more applications will be received.',
+                'Close Job',
+                true,
+                async () => {
+                    const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                    const token = localStorage.getItem('agrohub_token');
+
+                    try {
+                        const response = await fetch('php/update_job_status.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                job_id: jobId,
+                                status: 'Closed'
+                            })
+                        });
+
+                        const result = await response.json();
+                        if (result.success) {
+                            location.reload();
+                        } else {
+                            alert('Error: ' + result.message);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to close job');
+                    }
+                }
+            );
+        }
+
     </script>
 
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Confirm Action</h3>
+                <button class="close-modal" onclick="closeConfirmationModal()">
+                    <span class="material-icons-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage" style="color: var(--text-gray); margin-bottom: 2rem;">Are you sure?</p>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeConfirmationModal()">Cancel</button>
+                    <button class="btn btn-primary" id="confirmActionBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 450px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-gray);
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--error);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: var(--text-gray);
+        }
+
+        .btn-outline:hover {
+            background: #f8fafc;
+            color: var(--text-dark);
+        }
+
+        .btn-primary {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-green);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
         @keyframes spin {
             from {
                 transform: rotate(0deg);

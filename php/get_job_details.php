@@ -12,7 +12,12 @@ try {
     
     $job_id = (int)$_GET['job_id'];
     
-    $sql = "SELECT * FROM job_postings WHERE id = ?";
+    // Join with users table to get farmer details
+    $sql = "SELECT j.*, u.name as farmer_name, u.email as farmer_email, u.phone as farmer_phone, u.location as farmer_location 
+            FROM job_postings j 
+            JOIN users u ON j.farmer_id = u.id 
+            WHERE j.id = ?";
+            
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $job_id);
     $stmt->execute();
@@ -28,12 +33,24 @@ try {
     // Parse JSON fields
     $job['requirements'] = json_decode($job['requirements'], true);
     $job['responsibilities'] = json_decode($job['responsibilities'], true);
+
+    // Backward compatibility
+    $job['wage_per_day'] = $job['payment_amount'];
     
     // Convert boolean fields
     $job['accommodation_provided'] = (bool)$job['accommodation_provided'];
     $job['food_provided'] = (bool)$job['food_provided'];
     $job['transportation_provided'] = (bool)$job['transportation_provided'];
     $job['tools_provided'] = (bool)$job['tools_provided'];
+    
+    // Mask contact info by default for public view
+    // The client will fetch unmasked info if hired via get_worker_applications.php or similar
+    // We intentionally do NOT return the real phone/email here to protect privacy
+    $job['original_farmer_phone'] = $job['farmer_phone']; // Keep for debugging if needed, or remove for prod
+    $job['original_farmer_email'] = $job['farmer_email'];
+    
+    $job['farmer_phone'] = null; // Hide by default
+    $job['farmer_email'] = null; // Hide by default
     
     // Calculate days posted
     $created = new DateTime($job['created_at']);
@@ -48,8 +65,7 @@ try {
         $job['posted_ago'] = "Posted {$diff->days} days ago";
     }
     
-    
-    // Get application count (optional - table might not exist yet)
+    // Get application count
     $job['application_count'] = 0;
     try {
         $app_sql = "SELECT COUNT(*) as count FROM job_applications WHERE job_id = ?";
@@ -63,7 +79,6 @@ try {
             $app_stmt->close();
         }
     } catch (Exception $e) {
-        // Table doesn't exist yet, set count to 0
         $job['application_count'] = 0;
     }
     

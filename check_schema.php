@@ -1,12 +1,8 @@
 <?php
-require_once 'php/config.php';
-
+require_once 'c:/xampp/htdocs/Agrohub/php/config.php';
 $conn = getDBConnection();
-$result = $conn->query("SHOW COLUMNS FROM equipment");
-
-$columns = [];
-while ($row = $result->fetch_assoc()) {
-    $columns[] = $row;
+$res = $conn->query("SHOW COLUMNS FROM agreements");
+while($row = $res->fetch_assoc()) {
+    print_r($row);
 }
-echo json_encode($columns, JSON_PRETTY_PRINT);
 ?>

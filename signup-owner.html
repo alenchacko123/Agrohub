@@ -690,6 +690,38 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Validation Styles */
+        .error-msg {
+            color: var(--error);
+            font-size: 0.75rem;
+            margin-top: 0.35rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            font-weight: 500;
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+            background: rgba(239, 68, 68, 0.03);
+        }
+
+        .form-input.success {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.03);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -883,7 +915,7 @@
             </form>
 
             <p class="login-link">
-                Already have an owner account? <a href="login-owner.html">Sign in here</a>
+                Already have an owner account? <a href="login.html">Sign in here</a>
             </p>
         </div>
     </div>
@@ -900,10 +932,129 @@
                 type === 'password' ? 'visibility' : 'visibility_off';
         });
 
-        // Password strength checker
+        // Validation Configuration
+        const validationRules = {
+            firstName: {
+                test: value => value.length >= 2 && /^[a-zA-Z\s]+$/.test(value),
+                message: 'Name must be at least 2 characters and contain only letters'
+            },
+            lastName: {
+                test: value => value.length === 0 || (value.length >= 1 && /^[a-zA-Z\s]+$/.test(value)),
+                message: 'Name must contain only letters'
+            },
+            businessName: {
+                test: value => value.length >= 3,
+                message: 'Business name must be at least 3 characters'
+            },
+            email: {
+                test: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+                message: 'Please enter a valid email address'
+            },
+            phone: {
+                test: value => /^[6-9]\d{9}$/.test(value.replace(/\D/g, '').slice(-10)),
+                message: 'Please enter a valid 10-digit mobile number'
+            },
+            location: {
+                test: value => value.length >= 3 && /^[a-zA-Z\s]+$/.test(value),
+                message: 'Location must contain only letters (min. 3 characters)'
+            },
+            equipmentCount: {
+                test: value => value !== '',
+                message: 'Please select the number of equipment'
+            },
+            password: {
+                test: value => {
+                    return value.length >= 8 &&
+                        /[a-z]/.test(value) &&
+                        /[A-Z]/.test(value) &&
+                        /\d/.test(value);
+                },
+                message: 'Password must be 8+ chars with uppercase, lowercase & number'
+            },
+            confirmPassword: {
+                test: (value, form) => value === form.querySelector('#password').value && value !== '',
+                message: 'Passwords do not match'
+            },
+            terms: {
+                test: (value, form) => form.querySelector('#terms').checked,
+                message: 'You must agree to the Terms and Conditions'
+            }
+        };
+
+        // UI Helpers for Validation
+        function showError(input, message) {
+            const wrapper = input.closest('.input-wrapper') || input.parentElement;
+            let errorDiv = wrapper.parentElement.querySelector('.error-msg');
+
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'error-msg';
+                wrapper.parentElement.appendChild(errorDiv);
+            }
+
+            input.classList.add('error');
+            input.classList.remove('success');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function showSuccess(input) {
+            const wrapper = input.closest('.input-wrapper') || input.parentElement;
+            const errorDiv = wrapper.parentElement.querySelector('.error-msg');
+
+            input.classList.remove('error');
+            input.classList.add('success');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        function validateField(input) {
+            const fieldId = input.id;
+            const rule = validationRules[fieldId];
+            if (!rule) return true;
+
+            const form = input.closest('form');
+            const isValid = rule.test(input.value, form);
+
+            if (!isValid) {
+                showError(input, rule.message);
+            } else {
+                showSuccess(input);
+            }
+            return isValid;
+        }
+
+        // Attach listeners to all inputs
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', () => validateField(input));
+            input.addEventListener('blur', () => validateField(input));
+        });
+
+        // Special case for checkbox
+        const termsCheckbox = document.getElementById('terms');
+        termsCheckbox.addEventListener('change', () => {
+            const wrapper = termsCheckbox.parentElement;
+            let errorDiv = wrapper.querySelector('.error-msg');
+            if (!termsCheckbox.checked) {
+                if (!errorDiv) {
+                    errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-msg';
+                    wrapper.appendChild(errorDiv);
+                }
+                errorDiv.textContent = validationRules.terms.message;
+                errorDiv.style.display = 'block';
+            } else {
+                if (errorDiv) errorDiv.style.display = 'none';
+            }
+        });
+
+        // Password strength checker (Enhanced)
         const strengthBar = document.getElementById('strength-bar');
 
         passwordInput.addEventListener('input', function () {
+            validateField(this); // also run main validation
+
             const password = this.value;
             let strength = 0;
 
@@ -918,25 +1069,104 @@
         });
 
         // Form submission
-        document.getElementById('signup-form').addEventListener('submit', function (e) {
+        document.getElementById('signup-form').addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            // Validate all fields
+            let isFormValid = true;
+            const inputs = this.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                if (!validateField(input)) isFormValid = false;
+            });
 
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
+            // Checkbox validation
+            if (!termsCheckbox.checked) {
+                const wrapper = termsCheckbox.parentElement;
+                let errorDiv = wrapper.querySelector('.error-msg');
+                if (!errorDiv) {
+                    errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-msg';
+                    wrapper.appendChild(errorDiv);
+                }
+                errorDiv.textContent = validationRules.terms.message;
+                errorDiv.style.display = 'block';
+                isFormValid = false;
+            }
+
+            if (!isFormValid) {
+                // Shake first invalid
+                const firstInvalid = this.querySelector('.form-input.error') || termsCheckbox;
+                if (firstInvalid) firstInvalid.focus();
+                showNotification('Please fix the errors in the form.', 'error');
                 return;
             }
 
-            // Add your signup logic here
-            console.log('Owner signup attempted');
-            // Redirect to dashboard after successful signup
-            window.location.href = 'owner-dashboard.html';
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const businessName = document.getElementById('businessName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const location = document.getElementById('location').value;
+            const equipmentCount = document.getElementById('equipmentCount').value;
+            const password = document.getElementById('password').value;
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons-outlined">sync</span> Registering...';
+
+            try {
+                // Prepare Data
+                const payload = {
+                    name: `${firstName} ${lastName}`,
+                    email: email,
+                    password: password,
+                    userType: 'owner',
+                    businessName: businessName,
+                    phone: phone,
+                    location: location,
+                    equipmentCount: equipmentCount
+                };
+
+                const response = await fetch('php/auth.php?action=signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server Error: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Registration successful!', 'success');
+                    localStorage.setItem('agrohub_user', JSON.stringify(result.data.user));
+                    localStorage.setItem('agrohub_token', result.data.token);
+
+                    setTimeout(() => {
+                        window.location.href = 'owner-dashboard.html';
+                    }, 1500);
+                } else {
+                    showNotification(result.message || 'Registration failed', 'error');
+                    if (result.message && result.message.toLowerCase().includes('email')) {
+                        showError(document.getElementById('email'), result.message);
+                    }
+                }
+            } catch (error) {
+                console.error('Signup Error:', error);
+                showNotification('Connection error. Please check your PHP server.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
         });
 
         // Google Sign-Up Configuration
         const GOOGLE_CLIENT_ID = '1099298645708-av54k0kbvnib0o4lqdtr1hb920hi126k.apps.googleusercontent.com';
+        let tokenClient;
 
         // Show notification function
         function showNotification(message, type) {
@@ -968,54 +1198,67 @@
             }, 3000);
         }
 
-        // Google Sign Up
-        document.getElementById('google-signup').addEventListener('click', function () {
-            if (typeof google !== 'undefined' && google.accounts) {
-                google.accounts.id.initialize({
-                    client_id: GOOGLE_CLIENT_ID,
-                    callback: (response) => {
-                        if (response.credential) {
-                            const payload = JSON.parse(atob(response.credential.split('.')[1]));
-                            localStorage.setItem('agrohub_user', JSON.stringify({
-                                name: payload.name, email: payload.email,
-                                picture: payload.picture, userType: 'owner', loginMethod: 'google'
-                            }));
-                            showNotification('Account created! Welcome, ' + payload.name + '!', 'success');
-                            setTimeout(() => { window.location.href = 'owner-dashboard.html'; }, 1500);
-                        }
+        // Initialize Google Sign-In
+        function initializeGoogleSignIn() {
+            if (typeof google === 'undefined' || !google.accounts) return;
+
+            // Use OAuth2 Token Client for custom button
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: GOOGLE_CLIENT_ID,
+                scope: 'email profile',
+                callback: handleGoogleSignUpResponse
+            });
+        }
+
+        // Handle Google Sign-Up Response (Access Token)
+        async function handleGoogleSignUpResponse(tokenResponse) {
+            if (tokenResponse && tokenResponse.access_token) {
+                try {
+                    const res = await fetch('php/auth.php?action=google-auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            accessToken: tokenResponse.access_token,
+                            userType: 'owner'
+                        })
+                    });
+
+                    const result = await res.json();
+
+                    if (result.success) {
+                        showNotification('Account created! Welcome, ' + result.data.user.name + '!', 'success');
+                        localStorage.setItem('agrohub_user', JSON.stringify(result.data.user));
+                        localStorage.setItem('agrohub_token', result.data.token);
+
+                        setTimeout(() => {
+                            window.location.href = 'owner-dashboard.html';
+                        }, 1500);
+                    } else {
+                        showNotification(result.message, 'error');
                     }
-                });
-                google.accounts.id.prompt((notification) => {
-                    if (notification.isNotDisplayed()) {
-                        const client = google.accounts.oauth2.initTokenClient({
-                            client_id: GOOGLE_CLIENT_ID,
-                            scope: 'email profile',
-                            callback: (tokenResponse) => {
-                                if (tokenResponse.access_token) {
-                                    fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                                        headers: { 'Authorization': 'Bearer ' + tokenResponse.access_token }
-                                    })
-                                        .then(response => response.json())
-                                        .then(userInfo => {
-                                            localStorage.setItem('agrohub_user', JSON.stringify({
-                                                name: userInfo.name, email: userInfo.email,
-                                                picture: userInfo.picture, userType: 'owner', loginMethod: 'google'
-                                            }));
-                                            showNotification('Account created! Welcome, ' + userInfo.name + '!', 'success');
-                                            setTimeout(() => { window.location.href = 'owner-dashboard.html'; }, 1500);
-                                        })
-                                        .catch(() => showNotification('Sign-up failed. Please try again.', 'error'));
-                                }
-                            },
-                            error_callback: () => showNotification('Sign-up was cancelled or failed.', 'error')
-                        });
-                        client.requestAccessToken();
-                    }
-                });
-            } else {
-                showNotification('Google Sign-Up is loading. Please try again.', 'error');
+                } catch (error) {
+                    showNotification('Google authentication failed.', 'error');
+                }
             }
+        }
+
+        // Google Sign-Up Button Click Handler
+        document.getElementById('google-signup').addEventListener('click', function () {
+            if (typeof google === 'undefined' || !google.accounts) {
+                showNotification('Google services are loading... please wait', 'error');
+                return;
+            }
+
+            if (!tokenClient) {
+                initializeGoogleSignIn();
+            }
+
+            // Request access token (triggers popup)
+            tokenClient.requestAccessToken();
         });
+
+        // Initialize on load just in case
+        window.addEventListener('load', initializeGoogleSignIn);
     </script>
 </body>
 

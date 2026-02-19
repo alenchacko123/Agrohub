@@ -82,4 +82,3 @@ function jsonResponse($success, $message, $data = []) {
 // Automatically create database connection when config.php is included
 // This ensures $conn is always available
 $conn = getDBConnection();
-?>

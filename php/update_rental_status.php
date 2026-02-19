@@ -22,7 +22,7 @@ try {
     $status = sanitize($input['status']);
     
     // Validate status
-    $validStatuses = ['accepted', 'declined', 'completed', 'cancelled'];
+    $validStatuses = ['accepted', 'declined', 'completed', 'cancelled', 'rejected'];
     if (!in_array($status, $validStatuses)) {
         throw new Exception('Invalid status');
     }
@@ -58,7 +58,19 @@ try {
                 $updateEquip->execute();
                 $updateEquip->close();
             }
+        } elseif ($status === 'declined' || $status === 'rejected') {
+            // Revert equipment availability to available
+            $equipmentId = $requestData['equipment_id'];
+            if ($equipmentId > 0) {
+                $updateEquip = $conn->prepare("UPDATE equipment SET availability_status = 'available' WHERE id = ?");
+                $updateEquip->bind_param("i", $equipmentId);
+                $updateEquip->execute();
+                $updateEquip->close();
+            }
+        }
 
+        // If accepted, also create the booking record
+        if ($status === 'accepted') {
             // 2. Create a booking record
             // We set status to 'approved' for bookings to match get_bookings.php expectation
             $bookingStatus = 'approved'; 

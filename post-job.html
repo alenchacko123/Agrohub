@@ -423,29 +423,16 @@
                             <label>Job Category <span class="required">*</span></label>
                             <select id="jobCategory" required>
                                 <option value="">Select category</option>
-                                <option value="harvesting">Harvesting</option>
-                                <option value="planting">Planting/Sowing</option>
-                                <option value="machine_operation">Machine Operation</option>
-                                <option value="irrigation">Irrigation</option>
-                                <option value="crop_maintenance">Crop Maintenance</option>
-                                <option value="pest_control">Pest Control</option>
-                                <option value="general_labor">General Farm Labor</option>
-                                <option value="specialist">Specialist Work</option>
+                                <option value="Harvesting">Harvesting</option>
+                                <option value="Ploughing">Ploughing</option>
+                                <option value="Spraying">Spraying</option>
+                                <option value="Irrigation">Irrigation</option>
+                                <option value="General Labour">General Labour</option>
+                                <option value="Others">Others</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label>Job Type <span class="required">*</span></label>
-                            <select id="jobType" required>
-                                <option value="">Select type</option>
-                                <option value="seasonal">Seasonal</option>
-                                <option value="temporary">Temporary</option>
-                                <option value="contract">Contract-based</option>
-                                <option value="daily_wage">Daily Wage</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group full-width">
                             <label>Job Description <span class="required">*</span></label>
                             <textarea id="jobDescription"
                                 placeholder="Describe the work in detail, including tasks, expectations, and working conditions..."
@@ -467,8 +454,17 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Wage per Day (₹) <span class="required">*</span></label>
-                            <input type="number" id="wagePerDay" min="100" step="50" placeholder="e.g., 800" required>
+                            <label>Payment Type <span class="required">*</span></label>
+                            <select id="paymentType" required>
+                                <option value="Daily Wage">Daily Wage</option>
+                                <option value="Fixed Amount">Fixed Amount</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Payment Amount (₹) <span class="required">*</span></label>
+                            <input type="number" id="paymentAmount" min="100" step="50" placeholder="e.g., 800"
+                                required>
                         </div>
 
                         <div class="form-group">
@@ -492,32 +488,14 @@
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Location <span class="required">*</span></label>
-                            <input type="text" id="location" placeholder="e.g., Mysore, Karnataka" required>
+                            <label>Location (Village, District, State) <span class="required">*</span></label>
+                            <input type="text" id="location"
+                                placeholder="e.g., Mysore Village, Mysore District, Karnataka" required>
                         </div>
                     </div>
                 </div>
 
-                <!-- Requirements List -->
-                <div class="form-section">
-                    <h3 class="section-title">
-                        <span class="material-icons-outlined">checklist</span>
-                        Requirements
-                    </h3>
-                    <div class="form-group full-width">
-                        <label>List the skills and requirements for this job</label>
-                        <div class="dynamic-list" id="requirementsList">
-                            <div class="list-item">
-                                <input type="text"
-                                    placeholder="e.g., Experience with traditional rice harvesting methods">
-                            </div>
-                        </div>
-                        <button type="button" class="add-item-btn" onclick="addRequirement()">
-                            <span class="material-icons-outlined">add</span>
-                            Add Requirement
-                        </button>
-                    </div>
-                </div>
+
 
                 <!-- Responsibilities List -->
                 <div class="form-section">
@@ -602,23 +580,28 @@
         document.getElementById('startDate').min = new Date().toISOString().split('T')[0];
         document.getElementById('endDate').min = new Date().toISOString().split('T')[0];
 
-        // Dynamic Requirements
-        function addRequirement() {
-            const list = document.getElementById('requirementsList');
-            const item = document.createElement('div');
-            item.className = 'list-item';
-            item.innerHTML = `
-                <input type="text" placeholder="Enter a requirement">
-                <button type="button" onclick="this.parentElement.remove()">
-                    <span class="material-icons-outlined">delete</span>
-                </button>
-            `;
-            list.appendChild(item);
-        }
+
 
         // Dynamic Responsibilities
         function addResponsibility() {
             const list = document.getElementById('responsibilitiesList');
+            const inputs = list.querySelectorAll('input[type="text"]');
+
+            // Validation: Check if the last input is empty
+            if (inputs.length > 0) {
+                const lastInput = inputs[inputs.length - 1];
+                if (!lastInput.value.trim()) {
+                    lastInput.focus();
+                    lastInput.style.borderColor = 'var(--error)';
+                    showMessage('Please fill the current responsibility before adding a new one.', 'error');
+                    // Reset border color after 3 seconds
+                    setTimeout(() => {
+                        lastInput.style.borderColor = '#e5e7eb';
+                    }, 3000);
+                    return;
+                }
+            }
+
             const item = document.createElement('div');
             item.className = 'list-item';
             item.innerHTML = `
@@ -628,11 +611,21 @@
                 </button>
             `;
             list.appendChild(item);
+
+            // Focus the new input
+            item.querySelector('input').focus();
         }
 
         // Update end date minimum when start date changes
         document.getElementById('startDate').addEventListener('change', function () {
             document.getElementById('endDate').min = this.value;
+        });
+
+        // Remove error border on input
+        document.addEventListener('input', function (e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                e.target.style.borderColor = '#e5e7eb';
+            }
         });
 
         // Form Submission
@@ -664,13 +657,135 @@
                 return;
             }
 
-            // Collect requirements
-            const requirements = [];
-            document.querySelectorAll('#requirementsList input').forEach(input => {
-                if (input.value.trim()) {
-                    requirements.push(input.value.trim());
+            // --- Custom Validations ---
+
+            // 1. Job Title Validation
+            const jobTitle = document.getElementById('jobTitle').value.trim();
+            if (jobTitle.length < 5) {
+                showMessage('Job Title must be at least 5 characters long.', 'error');
+                document.getElementById('jobTitle').focus();
+                document.getElementById('jobTitle').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 2. Job Category Validation
+            const jobCategory = document.getElementById('jobCategory').value;
+            if (!jobCategory) {
+                showMessage('Please select a Job Category.', 'error');
+                document.getElementById('jobCategory').focus();
+                document.getElementById('jobCategory').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 3. Payment Type Validation
+            const paymentType = document.getElementById('paymentType').value;
+            if (!paymentType) {
+                showMessage('Please select a Payment Type.', 'error');
+                document.getElementById('paymentType').focus();
+                document.getElementById('paymentType').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 4. Job Description Validation
+            const description = document.getElementById('jobDescription').value.trim();
+            if (description.length < 20) {
+                showMessage('Please provide a more detailed job description (at least 20 characters).', 'error');
+                document.getElementById('jobDescription').focus();
+                document.getElementById('jobDescription').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 5. Workers Needed Validation
+            const workersNeeded = parseInt(document.getElementById('workersNeeded').value);
+            if (isNaN(workersNeeded) || workersNeeded < 1) {
+                showMessage('Please specify at least 1 worker needed.', 'error');
+                document.getElementById('workersNeeded').focus();
+                document.getElementById('workersNeeded').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 6. Payment Amount Validation
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            if (isNaN(amount) || amount < 100) {
+                showMessage('Payment amount must be at least ₹100.', 'error');
+                document.getElementById('paymentAmount').focus();
+                document.getElementById('paymentAmount').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 7. Work Hours Validation
+            const hours = parseInt(document.getElementById('workHours').value);
+            if (isNaN(hours) || hours < 1 || hours > 12) {
+                showMessage('Work hours must be between 1 and 12 hours.', 'error');
+                document.getElementById('workHours').focus();
+                document.getElementById('workHours').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 8. Duration Validation
+            const duration = parseInt(document.getElementById('durationDays').value);
+            if (isNaN(duration) || duration < 1) {
+                showMessage('Duration must be at least 1 day.', 'error');
+                document.getElementById('durationDays').focus();
+                document.getElementById('durationDays').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 9. Date Validation
+            const startDateVal = document.getElementById('startDate').value;
+            const endDateVal = document.getElementById('endDate').value;
+
+            if (!startDateVal) {
+                showMessage('Please select a Start Date.', 'error');
+                document.getElementById('startDate').focus();
+                document.getElementById('startDate').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            if (startDateVal < today) {
+                showMessage('Start Date cannot be in the past.', 'error');
+                document.getElementById('startDate').focus();
+                document.getElementById('startDate').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            if (endDateVal && new Date(endDateVal) < new Date(startDateVal)) {
+                showMessage('End date cannot be earlier than start date.', 'error');
+                document.getElementById('endDate').focus();
+                document.getElementById('endDate').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 10. Location Validation
+            const location = document.getElementById('location').value.trim();
+            if (location.length < 3) {
+                showMessage('Please provide a valid location (at least 3 characters).', 'error');
+                document.getElementById('location').focus();
+                document.getElementById('location').style.borderColor = 'var(--error)';
+                return;
+            }
+
+            // 11. Responsibilities Validation
+
+
+            const respInputs = document.querySelectorAll('#responsibilitiesList input');
+            let hasResponsibilities = false;
+            for (let input of respInputs) {
+                if (input.value.trim() !== '') {
+                    hasResponsibilities = true;
                 }
-            });
+            }
+            if (!hasResponsibilities) {
+                showMessage('Please add at least one responsibility.', 'error');
+                if (respInputs.length > 0) respInputs[0].focus();
+                return;
+            }
+
+
+            // --- End Validations ---
+
+
 
             // Collect responsibilities
             const responsibilities = [];
@@ -690,35 +805,36 @@
             console.log('User object:', user);
             console.log('Extracted farmer_id:', farmerId);
 
-            // Prepare job data
-            const jobData = {
-                farmer_id: farmerId,
-                farmer_name: farmerName,
+            // Prepare form data
+            const formData = {
+                farmer_id: user.id,
+                farmer_name: user.name,
                 farmer_email: user.email,
-                farmer_phone: farmerPhone,
-                farmer_location: farmerLocation || document.getElementById('location').value,
+                farmer_phone: user.phone || '', // Assuming phone exists in user obj
+                farmer_location: user.location || '',
 
-                job_title: document.getElementById('jobTitle').value,
-                job_category: document.getElementById('jobCategory').value,
-                job_type: document.getElementById('jobType').value,
-                job_description: document.getElementById('jobDescription').value,
+                job_title: jobTitle,
+                job_category: jobCategory,
+                job_description: description,
 
-                workers_needed: parseInt(document.getElementById('workersNeeded').value),
-                wage_per_day: parseFloat(document.getElementById('wagePerDay').value),
-                work_hours_per_day: parseInt(document.getElementById('workHours').value),
-                duration_days: parseInt(document.getElementById('durationDays').value),
-                start_date: document.getElementById('startDate').value,
-                end_date: document.getElementById('endDate').value || null,
-                location: document.getElementById('location').value,
+                workers_needed: workersNeeded,
+                payment_type: paymentType,
+                payment_amount: amount,
+                work_hours_per_day: hours,
+                duration_days: duration,
 
-                requirements: requirements,
-                responsibilities: responsibilities,
+                start_date: startDateVal,
+                end_date: endDateVal,
+                location: document.getElementById('location').value, // Fixed missing variable
+
+
+                responsibilities: Array.from(document.querySelectorAll('#responsibilitiesList input')).map(i => i.value).filter(v => v.trim()),
 
                 accommodation_provided: document.getElementById('accommodation').checked,
                 food_provided: document.getElementById('food').checked,
                 transportation_provided: document.getElementById('transportation').checked,
                 tools_provided: document.getElementById('tools').checked,
-                other_benefits: document.getElementById('otherBenefits').value || null
+                other_benefits: document.getElementById('otherBenefits').value
             };
 
             // Disable submit button
@@ -728,14 +844,14 @@
             try {
                 // DEBUG: Log the data being sent
                 console.log('=== JOB POSTING DEBUG ===');
-                console.log('Sending job data:', jobData);
+                console.log('Sending job data:', formData);
 
                 const response = await fetch('php/post_job.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(jobData)
+                    body: JSON.stringify(formData)
                 });
 
                 console.log('Response status:', response.status);

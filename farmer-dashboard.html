@@ -18,7 +18,12 @@
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
+    <!-- Profile Completion Check -->
+    <script src="js/profile-check.js"></script>
+
     <link rel="stylesheet" href="css/farmer-dashboard.css">
+    <link rel="stylesheet" href="css/dashboard-3d-visuals.css">
+    <link rel="stylesheet" href="css/profile-settings.css">
 </head>
 
 <body>
@@ -39,7 +44,7 @@
                 </a>
             </div>
 
-            <div class="sidebar-user">
+            <div class="sidebar-user" onclick="openUserModal()" style="cursor: pointer;" title="View Profile Details">
                 <div class="user-avatar" id="user-avatar">U</div>
                 <div class="user-info">
                     <h4 id="user-name">User</h4>
@@ -185,7 +190,11 @@
                             <!-- Group 1: Machinery Hub -->
                             <div class="service-hub">
                                 <div class="service-hub-image-container">
-                                    <img src="images/machinery-center-updated.png" class="service-hub-image">
+                                    <div class="animative-visual machinery-visual">
+                                        <span class="material-icons-outlined main-icon">agriculture</span>
+                                        <span class="material-icons-outlined bg-icon gear-1">settings</span>
+                                        <span class="material-icons-outlined bg-icon gear-2">settings</span>
+                                    </div>
                                 </div>
                                 <div style="padding: 1.25rem;">
                                     <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Machinery
@@ -205,8 +214,11 @@
                             <!-- Farm Labor Hub -->
                             <div class="service-hub">
                                 <div class="service-hub-image-container">
-                                    <img src="images/farm-labor-hub.png" class="service-hub-image"
-                                        alt="Farm workers team">
+                                    <div class="animative-visual labor-visual">
+                                        <span class="material-icons-outlined main-icon">engineering</span>
+                                        <span class="material-icons-outlined bg-icon leaf-1">eco</span>
+                                        <span class="material-icons-outlined bg-icon leaf-2">grass</span>
+                                    </div>
                                 </div>
                                 <div style="padding: 1.5rem;">
                                     <h3
@@ -234,7 +246,11 @@
                             <!-- Group 3: Learn & Protect -->
                             <div class="service-hub">
                                 <div class="service-hub-image-container">
-                                    <img src="images/dashboard-learn-updated.png" class="service-hub-image">
+                                    <div class="animative-visual learn-visual">
+                                        <span class="material-icons-outlined main-icon">school</span>
+                                        <span class="material-icons-outlined bg-icon shield">verified_user</span>
+                                        <span class="material-icons-outlined bg-icon bulb">lightbulb</span>
+                                    </div>
                                 </div>
                                 <div style="padding: 1.25rem;">
                                     <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Learn &
@@ -372,8 +388,9 @@
                     <div class="card-header">
                         <h2>📚 Skill Learning Center</h2>
                     </div>
-                    <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-                        <div class="service-hub">
+                    <div class="services-grid"
+                        style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem;">
+                        <div class="service-hub" style="max-width: 400px; width: 100%;">
                             <div class="service-hub-image-container">
                                 <img src="images/tutorial-library.png" class="service-hub-image">
                             </div>
@@ -443,6 +460,32 @@
                         </div>
 
                         <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="profile-phone-input" value="" placeholder="+91 98765 43210"
+                                pattern="[0-9+\-\s()]{10,20}">
+                        </div>
+
+                        <div class="form-premium-row">
+                            <div class="form-group">
+                                <label>Farm Location / District</label>
+                                <input type="text" id="profile-location-input" value=""
+                                    placeholder="Enter your district">
+                            </div>
+                            <div class="form-group">
+                                <label>Farm Size (in acres)</label>
+                                <select id="profile-farmsize-input">
+                                    <option value="">Select farm size</option>
+                                    <option value="0-5">0-5 acres</option>
+                                    <option value="5-10">5-10 acres</option>
+                                    <option value="10-25">10-25 acres</option>
+                                    <option value="25-50">25-50 acres</option>
+                                    <option value="50-100">50-100 acres</option>
+                                    <option value="100+">100+ acres</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label>Change Password (leave blank to keep current)</label>
                             <div class="pass-input-container">
                                 <input type="password" id="profile-pass-input" value="" placeholder="••••••••">
@@ -488,6 +531,57 @@
                     reader.readAsDataURL(event.target.files[0]);
                 }
 
+                function loadFarmerProfileData() {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                        if (userData.id) {
+                            if (document.getElementById('profile-name-input')) document.getElementById('profile-name-input').value = userData.name || '';
+                            if (document.getElementById('profile-email-input')) document.getElementById('profile-email-input').value = userData.email || '';
+                            if (document.getElementById('profile-phone-input')) document.getElementById('profile-phone-input').value = userData.phone || '';
+                            if (document.getElementById('profile-location-input')) document.getElementById('profile-location-input').value = userData.location || '';
+                            if (document.getElementById('profile-farmsize-input')) document.getElementById('profile-farmsize-input').value = userData.farm_size || '';
+
+                            // Update sidebar and welcome message
+                            if (typeof updateUserUI === 'function') {
+                                updateUserUI(userData);
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Error loading profile data:', e);
+                    }
+                }
+
+                // Load data on page load
+                window.addEventListener('DOMContentLoaded', loadFarmerProfileData);
+                // Also call when switching to profile view
+
+                function updateUserUI(user) {
+                    if (user.name) {
+                        const userNameEl = document.getElementById('user-name');
+                        if (userNameEl) userNameEl.textContent = user.name;
+
+                        // Also update welcome message if exists
+                        const welcomeEl = document.getElementById('welcome-message');
+                        if (welcomeEl) welcomeEl.textContent = `Welcome back, ${user.name.split(' ')[0]}! 👋`;
+                    }
+
+                    if (user.picture) {
+                        const avatarEl = document.getElementById('user-avatar');
+                        if (avatarEl) {
+                            if (user.picture.startsWith('data:') || user.picture.startsWith('http')) {
+                                avatarEl.innerHTML = `<img src="${user.picture}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+                            } else {
+                                avatarEl.textContent = user.name.charAt(0).toUpperCase(); // Fallback
+                            }
+                        }
+
+                        const displayImg = document.getElementById('profile-display-img');
+                        if (displayImg && (user.picture.startsWith('data:') || user.picture.startsWith('http'))) {
+                            displayImg.src = user.picture;
+                        }
+                    }
+                }
+
                 async function handleProfileUpdate() {
                     const btn = document.querySelector('.btn-update-profile');
                     const originalText = btn.innerHTML;
@@ -496,6 +590,9 @@
 
                     const newName = document.getElementById('profile-name-input').value;
                     const newEmail = document.getElementById('profile-email-input').value;
+                    const newPhone = document.getElementById('profile-phone-input').value;
+                    const newLocation = document.getElementById('profile-location-input').value;
+                    const newFarmSize = document.getElementById('profile-farmsize-input').value;
                     const newPassword = document.getElementById('profile-pass-input').value;
                     const profileImg = document.getElementById('profile-display-img').src;
 
@@ -505,6 +602,9 @@
                         const payload = {
                             name: newName,
                             email: newEmail,
+                            phone: newPhone,
+                            location: newLocation,
+                            farm_size: newFarmSize,
                             password: newPassword,
                             picture: profileImg.startsWith('data:image') ? profileImg : null
                         };
@@ -522,22 +622,30 @@
 
                         if (result.success) {
                             // Update local storage for immediate persistence on refresh
-                            const userDataStr = localStorage.getItem('agrohub_user');
-                            if (userDataStr) {
-                                try {
+                            // Use the returned user object from server to be sure
+                            if (result.user) {
+                                localStorage.setItem('agrohub_user', JSON.stringify(result.user));
+                            } else {
+                                // Fallback update manually if server didn't return user object
+                                const userDataStr = localStorage.getItem('agrohub_user');
+                                if (userDataStr) {
                                     const userData = JSON.parse(userDataStr);
                                     userData.name = newName;
                                     userData.email = newEmail;
-                                    if (payload.picture) {
-                                        userData.picture = payload.picture;
-                                    }
+                                    userData.phone = newPhone;
+                                    userData.location = newLocation;
+                                    userData.farm_size = newFarmSize;
+                                    if (payload.picture) userData.picture = payload.picture;
                                     localStorage.setItem('agrohub_user', JSON.stringify(userData));
-
-                                    // Update sidebar and other UI elements
-                                    updateUserUI(userData);
-                                } catch (e) {
-                                    console.error('Error updating local storage:', e);
                                 }
+                            }
+
+                            // Update sidebar and other UI elements
+                            // This should ideally be called with the updated user object from result.user
+                            // For now, we'll rely on the manual update or the result.user if available
+                            const updatedUserData = JSON.parse(localStorage.getItem('agrohub_user'));
+                            if (updatedUserData) {
+                                updateUserUI(updatedUserData);
                             }
 
                             btn.innerHTML = '<span class="material-icons-outlined">done</span> UPDATED SUCCESSFULLY';
@@ -546,24 +654,34 @@
 
                             // Clear password field
                             document.getElementById('profile-pass-input').value = '';
+
+                            // Reset button after delay
+                            setTimeout(() => {
+                                btn.innerHTML = originalText;
+                                btn.style.background = '';
+                                btn.style.color = '';
+                                btn.disabled = false;
+                            }, 3000);
+
                         } else {
                             btn.innerHTML = '<span class="material-icons-outlined">error</span> ' + (result.message || 'Update failed');
                             btn.style.background = '#ef4444';
                             btn.style.color = '#fff';
+                            btn.disabled = false;
                         }
                     } catch (error) {
                         console.error('Update error:', error);
                         btn.innerHTML = '<span class="material-icons-outlined">error</span> CONNECTION FAILED';
                         btn.style.background = '#ef4444';
                         btn.style.color = '#fff';
-                    }
 
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.style.background = '';
-                        btn.style.color = '';
-                        btn.disabled = false;
-                    }, 3000);
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.style.background = '';
+                            btn.style.color = '';
+                            btn.disabled = false;
+                        }, 3000);
+                    }
                 }
             </script>
         </main>
@@ -767,7 +885,9 @@
                 {
                     title: 'Machinery Center',
                     desc: 'Rent or buy tractors, tillers, and harvesters easier.',
-                    img: 'images/machinery-center-updated.png',
+                    visualClass: 'machinery-visual',
+                    mainIcon: 'agriculture',
+                    bgIcons: '<span class="material-icons-outlined bg-icon gear-1">settings</span><span class="material-icons-outlined bg-icon gear-2">settings</span>',
                     actions: [
                         { label: 'Rent Now', link: 'rent-equipment.html', type: 'primary' },
                         { label: 'Buy Used', link: 'buy-equipment.html', type: 'secondary' }
@@ -776,7 +896,9 @@
                 {
                     title: 'Farm Labor Hub',
                     desc: 'Hire skilled workers and machine operators today.',
-                    img: 'images/dashboard-labor.png',
+                    visualClass: 'labor-visual',
+                    mainIcon: 'engineering',
+                    bgIcons: '<span class="material-icons-outlined bg-icon leaf-1">eco</span><span class="material-icons-outlined bg-icon leaf-2">grass</span>',
                     actions: [
                         { label: 'Find Labor', link: 'hire-workers.html', type: 'primary' },
                         { label: 'Operators', link: 'hire-workers.html', type: 'secondary' }
@@ -785,7 +907,9 @@
                 {
                     title: 'Learn & Protect',
                     desc: 'Video tutorials and easy rental agreements.',
-                    img: 'images/dashboard-learn-updated.png',
+                    visualClass: 'learn-visual',
+                    mainIcon: 'school',
+                    bgIcons: '<span class="material-icons-outlined bg-icon shield">verified_user</span><span class="material-icons-outlined bg-icon bulb">lightbulb</span>',
                     actions: [
                         { label: 'Watch Tips', link: 'tutorials.html', type: 'primary' },
                         { label: 'Agreements', link: 'agreements.html', type: 'secondary' }
@@ -796,7 +920,10 @@
             servicesGrid.innerHTML = hubs.map(hub => `
                 <div class="service-hub">
                     <div class="service-hub-image-container" style="height: 280px; overflow: hidden; position: relative; border-radius: 20px 20px 0 0;">
-                        <img src="${hub.img}" class="service-hub-image" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="animative-visual ${hub.visualClass}">
+                            <span class="material-icons-outlined main-icon">${hub.mainIcon}</span>
+                            ${hub.bgIcons}
+                        </div>
                     </div>
                     <div style="padding: 1.5rem;">
                         <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">${hub.title}</h3>
@@ -818,8 +945,9 @@
             if (confirm('Are you sure you want to sign out?')) {
                 // Clear user data from localStorage
                 localStorage.removeItem('agrohub_user');
+                localStorage.removeItem('agrohub_token');
                 // Redirect to login page
-                window.location.href = 'login-farmer.html';
+                window.location.href = 'login.html';
             }
         }
 
@@ -1031,77 +1159,91 @@
             try {
                 notificationList.innerHTML = '<p style="padding: 1.5rem; text-align: center; color: var(--text-secondary);">Loading...</p>';
 
-                const response = await fetch(`php/get_rental_requests.php?user_type=farmer&user_id=${userData.id}`);
-                const data = await response.json();
+                // Fetch both rental requests AND agreement notifications
+                const [rentalResponse, notifResponse] = await Promise.all([
+                    fetch(`php/get_rental_requests.php?user_type=farmer&user_id=${userData.id}`),
+                    fetch(`php/get_notifications.php?user_id=${userData.id}`)
+                ]);
 
-                if (data.success && data.requests && data.requests.length > 0) {
-                    // Update badge count for approved/rejected statuses
-                    const newUpdates = data.requests.filter(r => r.booking_status === 'approved' || r.booking_status === 'rejected').length;
-                    const badge = document.getElementById('farmerNotificationCount');
-                    if (newUpdates > 0) {
-                        badge.textContent = newUpdates;
-                        badge.style.display = 'flex';
-                    } else {
-                        badge.style.display = 'none';
-                    }
+                const rentalData = await rentalResponse.json();
+                const notifData = await notifResponse.json();
 
+                console.log('Rental requests:', rentalData);
+                console.log('Agreement notifications:', notifData);
 
-                    notificationList.innerHTML = data.requests.map(request => {
-                        const statusIcon = request.booking_status === 'approved' ? '✓' :
-                            request.booking_status === 'rejected' ? '✗' : '⏳';
-                        const statusText = request.booking_status ? request.booking_status.charAt(0).toUpperCase() + request.booking_status.slice(1) : 'Pending';
-                        const statusClass = request.booking_status || 'pending';
+                let allNotifications = [];
+                let newUpdateCount = 0;
 
-                        return `
-                            <div class="farmer-notification-item ${statusClass}">
-                                <div class="farmer-notification-status ${statusClass}">
-                                    ${statusIcon} ${statusText}
-                                </div>
-                                <div class="farmer-notification-title">
-                                    ${request.equipment_name || 'Equipment'}
-                                </div>
-                                <div class="farmer-notification-details">
-                                    <div><strong>Duration:</strong> ${request.start_date} to ${request.end_date}</div>
-                                    <div><strong>Total Cost:</strong> ₹${parseFloat(request.total_amount || 0).toLocaleString()}</div>
-                                </div>
-                                <div class="farmer-notification-time">
-                                    <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
-                                    Requested: ${request.created_at ? new Date(request.created_at).toLocaleDateString() : 'Recently'}
-                                </div>
-                                ${request.booking_status === 'approved' ? `
-                                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(16,185,129,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--success);">
-                                        <strong>✓ Request Approved!</strong><br>
-                                        Great news! The owner has accepted your rental request. You will be contacted shortly with further details.
-                                    </div>
-                                ` : ''}
-                                ${request.booking_status === 'rejected' ? `
-                                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(239,68,68,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--danger);">
-                                        <strong>✗ Request Rejected</strong><br>
-                                        Unfortunately, this rental request was not approved by the owner.
-                                    </div>
-                                ` : ''}
-                                ${request.booking_status === 'pending' ? `
-                                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(245,158,11,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--warning);">
-                                        <strong>⏳ Awaiting Response</strong><br>
-                                        The owner is reviewing your request. You'll be notified once they respond.
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `;
-                    }).join('');
+                // Process rental requests
+                if (rentalData.success && rentalData.requests && rentalData.requests.length > 0) {
+                    console.log('Raw rental requests data:', rentalData.requests);
+
+                    // Show all requests, including completed ones, sorted by date
+                    const activeRequests = rentalData.requests;
+
+                    // Count new updates from rental requests
+                    newUpdateCount += activeRequests.filter(r => {
+                        const s = (r.status || 'pending').toLowerCase();
+                        return s === 'accepted' || s === 'approved' || s === 'rejected' || s === 'declined';
+                    }).length;
+
+                    // Add rental requests to notifications array
+                    activeRequests.forEach(request => {
+                        allNotifications.push({
+                            type: 'rental_request',
+                            data: request,
+                            timestamp: new Date(request.created_at || Date.now())
+                        });
+                    });
+                }
+
+                // Process agreement signature notifications
+                if (notifData.success && notifData.notifications && notifData.notifications.length > 0) {
+                    // Add unread agreement notifications to count
+                    newUpdateCount += notifData.unread_count || 0;
+
+                    // Add notifications to array
+                    notifData.notifications.forEach(notif => {
+                        allNotifications.push({
+                            type: 'agreement_notification',
+                            data: notif,
+                            timestamp: new Date(notif.created_at || Date.now())
+                        });
+                    });
+                }
+
+                // Update badge
+                const badge = document.getElementById('farmerNotificationCount');
+                if (newUpdateCount > 0) {
+                    badge.textContent = newUpdateCount;
+                    badge.style.display = 'flex';
                 } else {
-                    // No requests
-                    const badge = document.getElementById('farmerNotificationCount');
                     badge.style.display = 'none';
+                }
 
+                // Sort all notifications by timestamp (newest first)
+                allNotifications.sort((a, b) => b.timestamp - a.timestamp);
+
+                // Display combined notifications
+                if (allNotifications.length === 0) {
                     notificationList.innerHTML = `
                         <div class="farmer-empty-notifications">
-                            <span class="material-icons-outlined">receipt_long</span>
-                            <p>No rental requests yet</p>
-                            <p>Your rental requests and their status will appear here</p>
+                            <span class="material-icons-outlined">check_circle</span>
+                            <p>All caught up!</p>
+                            <p>Your active agreements can be found in the <a href="agreements.html" style="color: var(--primary-green); text-decoration: underline;">Agreements</a> section</p>
                         </div>
                     `;
+                    return;
                 }
+
+                notificationList.innerHTML = allNotifications.map(notification => {
+                    if (notification.type === 'rental_request') {
+                        return renderRentalRequestNotification(notification.data);
+                    } else {
+                        return renderAgreementNotification(notification.data, userData.id);
+                    }
+                }).join('');
+
             } catch (error) {
                 console.error('Error loading farmer notifications:', error);
                 notificationList.innerHTML = `
@@ -1112,6 +1254,224 @@
                     </div>
                 `;
             }
+        }
+
+        // Render rental request notification
+        function renderRentalRequestNotification(request) {
+            // Use request.status directly as booking_status is not in rental_requests table
+            const rawStatus = request.status || 'pending';
+            const status = rawStatus.toLowerCase();
+            const agreementStatus = (request.agreement_status || '').toLowerCase();
+
+            let statusIcon = '⏳';
+            let statusText = 'Pending';
+            let statusClass = 'pending';
+
+            // Determine display status based on agreement status first (most final)
+            if (agreementStatus === 'fully_signed' || agreementStatus === 'completed') {
+                statusIcon = '✓';
+                statusText = 'Agreed'; // Or 'Completed'
+                statusClass = 'approved';
+            } else if (status === 'accepted' || status === 'approved') {
+                statusIcon = '✓';
+                statusText = 'Approved';
+                statusClass = 'approved';
+            } else if (status === 'paid') {
+                statusIcon = '✓';
+                statusText = 'Paid';
+                statusClass = 'approved';
+            } else if (status === 'rejected' || status === 'declined') {
+                statusIcon = '✗';
+                statusText = 'Rejected';
+                statusClass = 'rejected';
+            } else if (status === 'completed') {
+                statusIcon = '✓';
+                statusText = 'Completed';
+                statusClass = 'approved';
+            }
+
+            return `
+                <div class="farmer-notification-item ${statusClass}" style="position: relative;">
+                    <button class="delete-notif-btn" 
+                            onclick="deleteNotification(event, ${request.id}, 'rental_request')"
+                            title="Remove notification"
+                            style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; border-radius: 4px; transition: all 0.2s;">
+                        <span class="material-icons-outlined" style="font-size: 18px;">close</span>
+                    </button>
+
+                    <div class="farmer-notification-status ${statusClass}">
+                        ${statusIcon} ${statusText}
+                    </div>
+                    <div class="farmer-notification-title" style="padding-right: 20px;">
+                        ${request.equipment_name || 'Equipment'}
+                    </div>
+                    <div class="farmer-notification-details">
+                        <div><strong>Duration:</strong> ${request.start_date} to ${request.end_date}</div>
+                        <div><strong>Total Cost:</strong> ₹${parseFloat(request.total_amount || 0).toLocaleString()}</div>
+                    </div>
+                    <div class="farmer-notification-time">
+                        <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                        Requested: ${request.created_at ? new Date(request.created_at).toLocaleDateString() : 'Recently'}
+                    </div>
+                    
+                    ${(agreementStatus === 'fully_signed' || agreementStatus === 'completed') ? `
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(16,185,129,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--success);">
+                            <strong>✓ Agreement Signed</strong><br>
+                            Both parties have signed. You can view the rental agreement in your <a href="agreements.html" style="color: var(--primary-green); text-decoration: underline;">Documents</a>.
+                        </div>
+                    ` : ''}
+
+                    ${(!['fully_signed', 'completed'].includes(agreementStatus) && (status === 'accepted' || status === 'approved')) ? `
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(16,185,129,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--success);">
+                            <strong>✓ Request Approved!</strong><br>
+                            Great news! The owner has accepted your rental request. Check your <a href="agreements.html" style="color: var(--primary-green); text-decoration: underline;">Agreements</a> to proceed with payment.
+                        </div>
+                    ` : ''}
+
+                    ${(status === 'paid' && !['fully_signed', 'completed'].includes(agreementStatus)) ? `
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(16,185,129,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--success);">
+                            <strong>✓ Payment Successful</strong><br>
+                            You have successfully paid. Waiting for the owner to sign the agreement.
+                        </div>
+                    ` : ''}
+
+                    ${(status === 'rejected' || status === 'declined') ? `
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(239,68,68,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--danger);">
+                            <strong>✗ Request Rejected</strong><br>
+                            Unfortunately, this rental request was not approved by the owner.
+                        </div>
+                    ` : ''}
+
+                    ${(status === 'pending') ? `
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(245,158,11,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--warning);">
+                            <strong>⏳ Awaiting Response</strong><br>
+                            The owner is reviewing your request. You'll be notified once they respond.
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Render agreement signature notification
+        function renderAgreementNotification(notif, userId) {
+            const isRead = notif.is_read == 1 || notif.is_read === true;
+            const timeAgo = getNotificationTimeAgo(new Date(notif.created_at));
+
+            return `
+                <div class="farmer-notification-item completed" 
+                     onclick="handleAgreementNotificationClick(${notif.id}, '${notif.related_agreement_id || ''}', ${userId})"
+                     style="cursor: pointer; transition: all 0.2s; background: ${isRead ? '#f8fafc' : '#ecfdf5'}; border-left: 4px solid ${isRead ? '#cbd5e1' : '#10b981'}; position: relative;"
+                     onmouseover="this.style.transform='translateX(-4px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'"
+                     onmouseout="this.style.transform='translateX(0)'; this.style.boxShadow='none'">
+                    
+                    <button class="delete-notif-btn" 
+                            onclick="deleteNotification(event, ${notif.id}, 'notification')"
+                            title="Remove notification"
+                            style="position: absolute; top: 10px; right: 10px; z-index: 10; background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; border-radius: 4px; transition: all 0.2s;">
+                        <span class="material-icons-outlined" style="font-size: 18px;">close</span>
+                    </button>
+
+                    <div class="farmer-notification-status completed">
+                        ✓ Completed
+                    </div>
+                    <div class="farmer-notification-title" style="padding-right: 25px;">
+                        Agreement Signed - ${notif.related_agreement_id || 'Your Rental'}
+                    </div>
+                    <div style="margin-top: 0.75rem; padding: 1rem; background: rgba(16,185,129,0.1); border-radius: 12px; font-size: 0.85rem; color: var(--success);">
+                        <strong>✓ ${notif.message}</strong><br>
+                        Click to view the fully signed agreement document.
+                    </div>
+                    <div class="farmer-notification-time">
+                        <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                        ${timeAgo}
+                    </div>
+                    ${!isRead ? '<div style="position: absolute; top: 18px; right: 40px; width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></div>' : ''}
+                </div>
+            `;
+        }
+
+        // Handle agreement notification click
+        async function handleAgreementNotificationClick(notificationId, agreementId, userId) {
+            // Mark as read
+            try {
+                await fetch('php/mark_notification_read.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        notification_id: notificationId,
+                        user_id: userId
+                    })
+                });
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+
+            // Navigate to agreements page with the specific agreement
+            if (agreementId) {
+                window.location.href = `agreements.html?highlight=${agreementId}`;
+            } else {
+                window.location.href = 'agreements.html';
+            }
+        }
+
+        // Delete Notification
+        async function deleteNotification(event, id, type) {
+            if (event) event.stopPropagation();
+
+            if (!confirm('Are you sure you want to remove this notification?')) return;
+
+            // Optimistically remove from UI
+            const btn = event.target.closest('button');
+            const item = btn.closest('.farmer-notification-item');
+            if (item) {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(20px)';
+                setTimeout(() => item.remove(), 3000);
+            }
+
+            try {
+                const response = await fetch('php/delete_notification.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id, type: type })
+                });
+
+                const result = await response.json();
+                if (!result.success) {
+                    console.error('Failed to delete notification:', result.message);
+                    // Revert UI if needed, but usually fine to just log
+                } else {
+                    // Check if list is empty
+                    const list = document.getElementById('farmerNotificationList');
+                    if (list && list.children.length <= 1) { // 1 because we just removed one (or about to)
+                        loadFarmerNotifications(); // Reload to show empty state or fetch more
+                    }
+                }
+            } catch (error) {
+                console.error('Error deleting notification:', error);
+            }
+        }
+
+        // Time ago helper function
+        function getNotificationTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + ' years ago';
+
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + ' months ago';
+
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + ' days ago';
+
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + ' hours ago';
+
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + ' minutes ago';
+
+            return 'Just now';
         }
 
         // Show Toast Notification for Rental Updates
@@ -1224,6 +1584,116 @@
                         }
                     })
                     .catch(err => console.error('Error loading initial farmer notifications:', err));
+            }
+        });
+    </script>
+    <!-- User Details Modal (Read-Only) -->
+    <div id="userDetailsModal" class="modal-overlay">
+        <div class="modal-container profile-view-modal">
+            <button class="modal-close-btn" onclick="closeUserModal()">
+                <span class="material-icons-outlined">close</span>
+            </button>
+
+            <div class="profile-view-header">
+                <div class="profile-view-avatar" id="view-modal-avatar">A</div>
+                <div class="profile-view-title">
+                    <h2 id="view-modal-name">User Name</h2>
+                    <span class="profile-view-badge">Active Farmer</span>
+                </div>
+            </div>
+
+            <div class="profile-view-body">
+                <div class="profile-detail-item">
+                    <div class="detail-icon">
+                        <span class="material-icons-outlined">email</span>
+                    </div>
+                    <div class="detail-content">
+                        <label>Email Address</label>
+                        <p id="view-modal-email">email@example.com</p>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <div class="detail-icon">
+                        <span class="material-icons-outlined">phone</span>
+                    </div>
+                    <div class="detail-content">
+                        <label>Phone Number</label>
+                        <p id="view-modal-phone">Not provided</p>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <div class="detail-icon">
+                        <span class="material-icons-outlined">location_on</span>
+                    </div>
+                    <div class="detail-content">
+                        <label>Farm Location</label>
+                        <p id="view-modal-location">Not provided</p>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <div class="detail-icon">
+                        <span class="material-icons-outlined">landscape</span>
+                    </div>
+                    <div class="detail-content">
+                        <label>Farm Size</label>
+                        <p id="view-modal-farmsize">Not provided</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-view-footer">
+                <button class="btn-edit-profile-nav"
+                    onclick="closeUserModal(); switchView('profile', document.querySelector('.nav-item[onclick*=\'profile\']'))">
+                    <span class="material-icons-outlined">edit</span>
+                    Edit Profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openUserModal() {
+            const modal = document.getElementById('userDetailsModal');
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+
+            if (userData) {
+                // Populate data
+                const name = userData.name || 'User';
+                document.getElementById('view-modal-name').textContent = name;
+                document.getElementById('view-modal-email').textContent = userData.email || 'Not provided';
+                document.getElementById('view-modal-phone').textContent = userData.phone || 'Not provided';
+                document.getElementById('view-modal-location').textContent = userData.location || 'Not provided';
+
+                // Farm Size formatting
+                const farmSize = userData.farm_size;
+                document.getElementById('view-modal-farmsize').textContent = farmSize ? (farmSize + (farmSize.includes('acres') ? '' : ' acres')) : 'Not provided';
+
+                // Avatar handling
+                const avatarEl = document.getElementById('view-modal-avatar');
+                if (userData.picture && (userData.picture.startsWith('data:') || userData.picture.startsWith('http'))) {
+                    avatarEl.innerHTML = `<img src="${userData.picture}" alt="User">`;
+                } else {
+                    avatarEl.textContent = name.charAt(0).toUpperCase();
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeUserModal() {
+            const modal = document.getElementById('userDetailsModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('userDetailsModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeUserModal();
             }
         });
     </script>

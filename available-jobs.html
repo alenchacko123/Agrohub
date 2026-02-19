@@ -741,7 +741,7 @@
 
         async function loadJobs() {
             try {
-                const response = await fetch('php/get_jobs.php?status=active');
+                const response = await fetch('php/get_jobs.php?status=Open');
                 const result = await response.json();
 
                 if (result.success) {
@@ -775,7 +775,7 @@
 
             // Filter by category
             if (currentCategory !== 'all') {
-                filtered = filtered.filter(job => job.job_category === currentCategory);
+                filtered = filtered.filter(job => job.job_category.toLowerCase() === currentCategory.toLowerCase());
             }
 
             // Filter by location

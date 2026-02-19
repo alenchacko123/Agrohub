@@ -64,8 +64,53 @@ try {
     
     $transactions = [];
     while ($row = $transactions_result->fetch_assoc()) {
+        $row['type'] = 'rental';
+        // Ensure amount is positive for income
+        $row['total_amount'] = floatval($row['total_amount']);
         $transactions[] = $row;
     }
+
+    // Get recent withdrawals
+    $wd_list_sql = "SELECT 
+                        id,
+                        amount,
+                        status,
+                        created_at,
+                        bank_account_number
+                    FROM withdrawals 
+                    WHERE owner_id = ? 
+                    ORDER BY created_at DESC 
+                    LIMIT 10";
+    
+    $wd_stmt = $conn->prepare($wd_list_sql);
+    $wd_stmt->bind_param("i", $owner_id);
+    $wd_stmt->execute();
+    $wd_res = $wd_stmt->get_result();
+    
+    while ($wd = $wd_res->fetch_assoc()) {
+        $transactions[] = [
+            'id' => $wd['id'],
+            'type' => 'withdrawal', // Mark as withdrawal
+            'equipment_id' => 0,
+            'equipment_name' => 'Withdrawal to Bank',
+            'farmer_name' => 'Acct: XXXX' . substr($wd['bank_account_number'], -4),
+            'start_date' => $wd['created_at'],
+            'end_date' => $wd['created_at'],
+            'total_amount' => floatval($wd['amount']),
+            'status' => $wd['status'],
+            'created_at' => $wd['created_at'],
+            'duration' => 0
+        ];
+    }
+    $wd_stmt->close();
+    
+    // Sort combined transactions by date (newest first)
+    usort($transactions, function($a, $b) {
+        return strtotime($b['created_at']) - strtotime($a['created_at']);
+    });
+    
+    // Limit to top 20
+    $transactions = array_slice($transactions, 0, 20);
     
     // Calculate monthly earnings (last 30 days)
     $monthly_sql = "SELECT 
@@ -94,13 +139,31 @@ try {
     $active_listings = $listings_data['count'];
     $stmt4->close();
 
+    // Check for withdrawals
+    $withdrawn_sql = "SELECT COALESCE(SUM(amount), 0) as total_withdrawn FROM withdrawals WHERE owner_id = ? AND status != 'failed'";
+    $stmt5 = $conn->prepare($withdrawn_sql);
+    $stmt5->bind_param("i", $owner_id);
+    $stmt5->execute();
+    $withdrawn_result = $stmt5->get_result();
+    $withdrawn_data = $withdrawn_result->fetch_assoc();
+    $total_withdrawn = floatval($withdrawn_data['total_withdrawn']);
+    $stmt5->close();
+
+    // Adjusted Wallet Balance
+    $gross_wallet_balance = floatval($earnings_data['wallet_balance']);
+    $net_wallet_balance = $gross_wallet_balance - $total_withdrawn;
+    if ($net_wallet_balance < 0) $net_wallet_balance = 0; // Should not happen ideally
+
+
     echo json_encode([
         'success' => true,
         'earnings' => [
             'active_listings' => intval($active_listings),
             'average_rating' => 0.0,
             'total_earnings' => floatval($earnings_data['total_earnings']),
-            'wallet_balance' => floatval($earnings_data['wallet_balance']),
+            'wallet_balance' => $net_wallet_balance,
+            'withdrawn_amount' => $total_withdrawn,
+            'gross_earnings' => $gross_wallet_balance,
             'pending_payouts' => floatval($earnings_data['pending_payouts']),
             'total_bookings' => intval($earnings_data['total_bookings']),
             'active_rentals' => intval($earnings_data['active_rentals']),

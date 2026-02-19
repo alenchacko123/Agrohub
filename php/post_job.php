@@ -19,8 +19,8 @@ if (!$data) {
 
 try {
     // Validate required fields - allow empty strings but not null/undefined
-    $required = ['farmer_id', 'farmer_name', 'farmer_email', 'job_title', 'job_type', 
-                 'job_category', 'job_description', 'workers_needed', 'wage_per_day', 
+    $required = ['farmer_id', 'farmer_name', 'farmer_email', 'job_title', 
+                 'job_category', 'job_description', 'workers_needed', 'payment_amount', 'payment_type',
                  'duration_days', 'start_date', 'location'];
     
     foreach ($required as $field) {
@@ -44,12 +44,12 @@ try {
     $sql = "INSERT INTO job_postings (
         farmer_id, farmer_name, farmer_email, farmer_phone, farmer_location,
         job_title, job_type, job_category, job_description,
-        workers_needed, wage_per_day, duration_days, start_date, end_date,
+        workers_needed, payment_amount, payment_type, duration_days, start_date, end_date,
         location, work_hours_per_day,
         requirements, responsibilities,
         accommodation_provided, food_provided, transportation_provided, 
         tools_provided, other_benefits, status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
     
@@ -65,36 +65,38 @@ try {
     $end_date = isset($data['end_date']) && $data['end_date'] ? $data['end_date'] : NULL;
     $work_hours = isset($data['work_hours_per_day']) ? intval($data['work_hours_per_day']) : 8;
     $other_benefits = isset($data['other_benefits']) && $data['other_benefits'] ? $data['other_benefits'] : NULL;
-    $status = 'active';
+    $status = 'Open';
+    $job_type = 'Agricultural'; // Default since removed from form
     
-    // Bind parameters - CORRECTED: 24 parameters total
+    // Bind parameters - 25 parameters total
     // i = integer, s = string, d = double/decimal
     $stmt->bind_param(
-        "issssssssiidisssissiiiss",  // 24 characters for 24 parameters
-        $data['farmer_id'],           // 1:  i - farmer_id (integer)
-        $data['farmer_name'],         // 2:  s - farmer_name
-        $data['farmer_email'],        // 3:  s - farmer_email
-        $farmer_phone,                // 4:  s - farmer_phone
-        $farmer_location,             // 5:  s - farmer_location
-        $data['job_title'],           // 6:  s - job_title
-        $data['job_type'],            // 7:  s - job_type
-        $data['job_category'],        // 8:  s - job_category
-        $data['job_description'],     // 9:  s - job_description
-        $data['workers_needed'],      // 10: i - workers_needed (integer)
-        $data['wage_per_day'],        // 11: i - wage_per_day (should be decimal but using integer for now)
-        $data['duration_days'],       // 12: d - duration_days (double/decimal)
-        $data['start_date'],          // 13: i - start_date
-        $end_date,                    // 14: s - end_date
-        $data['location'],            // 15: s - location
-        $work_hours,                  // 16: s - work_hours_per_day
-        $requirements,                // 17: i - requirements (JSON string)
-        $responsibilities,            // 18: s - responsibilities (JSON string)
-        $accommodation,               // 19: s - accommodation_provided
-        $food,                        // 20: i - food_provided
-        $transportation,              // 21: i - transportation_provided
-        $tools,                       // 22: i - tools_provided
-        $other_benefits,              // 23: s - other_benefits
-        $status                       // 24: s - status
+        "issssssssidsisssissiiisss",  
+        $data['farmer_id'],           // 1:  i
+        $data['farmer_name'],         // 2:  s
+        $data['farmer_email'],        // 3:  s
+        $farmer_phone,                // 4:  s 
+        $farmer_location,             // 5:  s
+        $data['job_title'],           // 6:  s
+        $job_type,                    // 7:  s (Defaulted)
+        $data['job_category'],        // 8:  s
+        $data['job_description'],     // 9:  s
+        $data['workers_needed'],      // 10: i
+        $data['payment_amount'],      // 11: d (decimal)
+        $data['payment_type'],        // 12: s - CORRECTION: was d
+        $data['duration_days'],       // 13: i
+        $data['start_date'],          // 14: s (date string)
+        $end_date,                    // 15: s
+        $data['location'],            // 16: s
+        $work_hours,                  // 17: i
+        $requirements,                // 18: s
+        $responsibilities,            // 19: s
+        $accommodation,               // 20: i
+        $food,                        // 21: i
+        $transportation,              // 22: i
+        $tools,                       // 23: i
+        $other_benefits,              // 24: s
+        $status                       // 25: s
     );
     
     if ($stmt->execute()) {

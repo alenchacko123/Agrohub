@@ -111,6 +111,7 @@ try {
         price_per_day,
         equipment_condition,
         availability_status,
+        approval_status,
         description,
         location,
         image_url,
@@ -119,7 +120,7 @@ try {
         fuel_type,
         capacity,
         created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt = $conn->prepare($sql);
 
@@ -131,9 +132,10 @@ try {
     $year = $data['year'] ?? null;
     $fuel = $data['fuel'] ?? null;
     $capacity = $data['capacity'] ?? null;
+    $approval_status = 'approved';
 
     $stmt->bind_param(
-        "isssdsssssssss",
+        "isssdssssssssss",
         $owner_id,
         $owner_name,
         $data['equipment_name'],
@@ -141,6 +143,7 @@ try {
         $data['price_per_day'],
         $data['condition'],
         $data['availability'],
+        $approval_status,
         $data['description'],
         $data['location'],
         $image_url,

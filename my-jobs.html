@@ -450,11 +450,6 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             loadUserInfo();
-            if (currentWorkerId) {
-                loadMyJobs(currentWorkerId);
-            } else {
-                showLoginError();
-            }
         });
 
         function showTab(tabName) {
@@ -531,16 +526,18 @@
                 currentWorkerId = user.id || user.user_id || user.userId || user.worker_id || null;
 
                 console.log(`Loaded user from ${loadedFrom}:`, user);
-                console.log('User object:', JSON.stringify(user));
                 console.log('Resolved Worker ID:', currentWorkerId);
 
-                // Additional debug info
-                if (!currentWorkerId || currentWorkerId === 0) {
+                // Now that we have the ID, load jobs
+                if (currentWorkerId) {
+                    loadMyJobs(currentWorkerId);
+                } else {
                     console.warn('⚠️ User ID is missing or zero!');
-                    console.warn('Available user properties:', Object.keys(user));
+                    showLoginError();
                 }
             } else {
                 console.error('❌ No user data found in localStorage');
+                showLoginError();
             }
         }
 
@@ -606,9 +603,10 @@
         }
 
         function processJobs(jobs) {
-            const activeJobs = jobs.filter(job => job.application_status === 'accepted' || job.application_status === 'in_progress');
-            const completedJobs = jobs.filter(job => job.application_status === 'completed');
-            const requestedJobs = jobs.filter(job => job.application_status === 'pending');
+            // Map statuses
+            const activeJobs = jobs.filter(job => job.application_status === 'Hired' || job.application_status === 'In Progress');
+            const completedJobs = jobs.filter(job => job.application_status === 'Completed');
+            const requestedJobs = jobs.filter(job => job.application_status === 'Applied' || job.application_status === 'pending');
 
             updateTabCounts(activeJobs.length, completedJobs.length, requestedJobs.length);
 
@@ -652,12 +650,29 @@
 
             if (type === 'active') {
                 badgeClass = 'badge-accepted';
-                badgeText = 'Accepted';
+                badgeText = 'Hired & Active';
+
+                // Show contact info if available
+                const contactHtml = job.farmer_phone ? `
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem; color: #1a1a2e;">Farmer Contact Details:</div>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <a href="tel:${job.farmer_phone}" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                <span class="material-icons-outlined">call</span> ${job.farmer_phone}
+                            </a>
+                            ${job.farmer_email ? `
+                            <a href="mailto:${job.farmer_email}" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                <span class="material-icons-outlined">email</span> Email
+                            </a>` : ''}
+                        </div>
+                    </div>
+                ` : '';
+
                 actions = `
-                    <button class="btn btn-secondary" onclick="contactFarmer(${job.farmer_id})">
-                        <span class="material-icons-outlined">chat</span>
-                        Contact Farmer
-                    </button>
+                    ${contactHtml}
+                    <div style="margin-top: 1rem; color: #059669; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="material-icons-outlined">check_circle</span> You have been hired!
+                    </div>
                 `;
             } else if (type === 'completed') {
                 badgeClass = 'badge-completed';
@@ -665,16 +680,16 @@
                 actions = `
                     <button class="btn btn-secondary" disabled>
                         <span class="material-icons-outlined">check</span>
-                        Completed
+                        Job Completed
                     </button>
                 `;
             } else if (type === 'requested') {
                 badgeClass = 'badge-requested';
-                badgeText = 'Pending Approval';
+                badgeText = 'Application Sent';
                 actions = `
-                    <button class="btn btn-secondary" disabled style="opacity: 0.7; cursor: default;">
+                    <button class="btn btn-secondary" disabled style="opacity: 0.7; cursor: default; background: #f3f4f6; border-color: #d1d5db; color: #6b7280;">
                         <span class="material-icons-outlined">hourglass_empty</span>
-                        Waiting for Farmer
+                        Waiting for Farmer Review
                     </button>
                 `;
             }
@@ -706,9 +721,9 @@
                         </div>
                     </div>
                     <p class="job-description">
-                        Applied on: ${job.applied_date_formatted}
+                        Applied on: ${job.applied_date_formatted || 'Recently'}
                     </p>
-                    <div class="job-actions">
+                    <div class="job-actions" style="display: block;">
                         ${actions}
                     </div>
                 </div>
@@ -722,8 +737,8 @@
             renderJobsList([], 'requested-jobs-grid', 'requested');
         }
 
-        function contactFarmer(farmerId) {
-            alert('📱 Feature coming soon: Chat with farmer ID ' + farmerId);
+        function contactFarmer(phone) {
+            window.location.href = `tel:${phone}`;
         }
 
         function logout() {

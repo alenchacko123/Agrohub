@@ -1,7 +1,7 @@
 <?php
 /**
  * Get Rental Requests
- * Fetches rental requests for owners and farmers
+ * Fetches rental requests for owners and farmers with user names
  */
 
 header('Content-Type: application/json');
@@ -21,36 +21,52 @@ try {
         throw new Exception('User type and ID are required');
     }
     
+    // Check if agreements table exists
+    $checkAgreements = $conn->query("SHOW TABLES LIKE 'agreements'");
+    $hasAgreements = ($checkAgreements && $checkAgreements->num_rows > 0);
+
     // Build query based on user type
+    $sql = "SELECT rr.*, 
+                   f.name as farmer_name, 
+                   o.name as owner_name";
+    
+    if ($hasAgreements) {
+        $sql .= ", a.signature_data, a.signature_type, a.signed_at,
+                   a.owner_signature_data, a.owner_signature_type, a.owner_signed_at,
+                   a.status as agreement_full_status";
+    }
+
+    $sql .= " FROM rental_requests rr
+            LEFT JOIN users f ON rr.farmer_id = f.id
+            LEFT JOIN users o ON rr.owner_id = o.id";
+    
+    if ($hasAgreements) {
+        $sql .= " LEFT JOIN agreements a ON a.rental_request_id = rr.id";
+    }
+
+    $sql .= " WHERE ";
+
     if ($userType === 'owner') {
-        $sql = "SELECT * FROM rental_requests WHERE owner_id = ?";
+        $sql .= "rr.owner_id = ?";
         if ($status) {
-            $sql .= " AND status = ?";
+            $sql .= " AND rr.status = ?";
         }
-        $sql .= " ORDER BY created_at DESC";
-        
-        $stmt = $conn->prepare($sql);
-        if ($status) {
-            $stmt->bind_param("is", $userId, $status);
-        } else {
-            $stmt->bind_param("i", $userId);
-        }
-        
     } elseif ($userType === 'farmer') {
-        $sql = "SELECT * FROM rental_requests WHERE farmer_id = ?";
+        $sql .= "rr.farmer_id = ? AND (rr.is_dismissed = 0 OR rr.is_dismissed IS NULL)";
         if ($status) {
-            $sql .= " AND status = ?";
-        }
-        $sql .= " ORDER BY created_at DESC";
-        
-        $stmt = $conn->prepare($sql);
-        if ($status) {
-            $stmt->bind_param("is", $userId, $status);
-        } else {
-            $stmt->bind_param("i", $userId);
+            $sql .= " AND rr.status = ?";
         }
     } else {
         throw new Exception('Invalid user type');
+    }
+    
+    $sql .= " ORDER BY rr.created_at DESC";
+    
+    $stmt = $conn->prepare($sql);
+    if ($status) {
+        $stmt->bind_param("is", $userId, $status);
+    } else {
+        $stmt->bind_param("i", $userId);
     }
     
     $stmt->execute();
@@ -58,6 +74,11 @@ try {
     
     $requests = [];
     while ($row = $result->fetch_assoc()) {
+        // Ensure numeric types
+        $row['total_amount'] = floatval($row['total_amount']);
+        $row['id'] = intval($row['id']);
+        $row['farmer_id'] = intval($row['farmer_id']);
+        $row['owner_id'] = intval($row['owner_id']);
         $requests[] = $row;
     }
     
