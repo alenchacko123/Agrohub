@@ -25,7 +25,11 @@ try {
                 b.equipment_id,
                 b.farmer_id,
                 u.name as farmer_name,
+                u.address as farmer_address,
+                u.location as farmer_location,
                 u_owner.name as owner_name,
+                u_owner.address as owner_address,
+                u_owner.location as owner_location,
                 b.start_date,
                 b.end_date,
                 b.total_amount,
@@ -37,7 +41,14 @@ try {
                 e.equipment_name,
                 e.equipment_condition,
                 DATEDIFF(b.end_date, b.start_date) as duration,
-                rr_link.need_operator";
+                rr_link.need_operator,
+                b.insurance_plan_id,
+                b.insurance_fee,
+                b.insurance_status,
+                b.insurance_start_date,
+                b.insurance_end_date,
+                ip.plan_name as insurance_plan_name,
+                ip.coverage_amount as insurance_coverage_amount";
     
     // Add conditional columns (only if they exist)
     $checkTransactionId = $conn->query("SHOW COLUMNS FROM bookings LIKE 'transaction_id'");
@@ -86,7 +97,8 @@ try {
     $sql .= " FROM bookings b
             INNER JOIN equipment e ON b.equipment_id = e.id
             LEFT JOIN users u ON b.farmer_id = u.id
-            LEFT JOIN users u_owner ON e.owner_id = u_owner.id";
+            LEFT JOIN users u_owner ON e.owner_id = u_owner.id
+            LEFT JOIN insurance_plans ip ON b.insurance_plan_id = ip.id";
     
     // Join Feedback table
     if ($hasFeedbackTable) {

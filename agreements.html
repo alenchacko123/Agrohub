@@ -1298,6 +1298,10 @@
                         } else if (referrer.includes('farmer-dashboard.html')) {
                             sessionStorage.setItem('dashboardType', 'farmer');
                         }
+
+                        // Initialize Data
+                        loadAgreementsFromDatabase();
+                        loadInsurancePlans();
                     });
 
                     // Agreement data - will be loaded from database
@@ -1400,7 +1404,9 @@
                                         amount: parseFloat(booking.total_amount) || 0,
                                         owner: booking.owner_name || 'Equipment Owner',
                                         ownerName: booking.owner_name || 'Equipment Owner',
+                                        ownerAddress: (booking.owner_address && booking.owner_address.length > 2) ? booking.owner_address : (booking.owner_location || ''),
                                         farmerName: booking.farmer_name || 'Farmer',
+                                        farmerAddress: (booking.farmer_address && booking.farmer_address.length > 2) ? booking.farmer_address : (booking.farmer_location || ''),
                                         deposit: Math.round((parseFloat(booking.total_amount) || 0) * 0.2),
                                         paymentStatus: (booking.payment_status === 'completed' || booking.payment_status === 'paid') ? 'paid' : 'pending',
                                         paidAmount: booking.paid_amount ? parseFloat(booking.paid_amount) : (parseFloat(booking.total_amount) || 0),
@@ -1416,7 +1422,12 @@
                                         hasFeedback: booking.has_feedback == 1,
                                         feedbackRating: booking.feedback_rating,
                                         feedbackComment: booking.feedback_comment,
-                                        driverProvided: booking.need_operator == 1
+                                        driverProvided: booking.need_operator == 1,
+                                        insurancePlanId: booking.insurance_plan_id,
+                                        insuranceFee: parseFloat(booking.insurance_fee) || 0,
+                                        insuranceStatus: booking.insurance_status || 'Inactive',
+                                        insurancePlanName: booking.insurance_plan_name,
+                                        insuranceCoverage: booking.insurance_coverage_amount
                                     };
                                 });
                                 allAgreements = [...allAgreements, ...confirmed];
@@ -1462,7 +1473,9 @@
                                             amount: request.total_amount ? parseFloat(request.total_amount) : 0,
                                             owner: userType === 'farmer' ? (request.owner_name || 'Equipment Owner') : (request.farmer_name || 'Farmer'),
                                             ownerName: request.owner_name || 'Equipment Owner',
+                                            ownerAddress: (request.owner_address && request.owner_address.length > 2) ? request.owner_address : (request.owner_location || ''),
                                             farmerName: request.farmer_name || 'Farmer',
+                                            farmerAddress: (request.farmer_address && request.farmer_address.length > 2) ? request.farmer_address : (request.farmer_location || ''),
                                             deposit: Math.round((request.total_amount ? parseFloat(request.total_amount) : 0) * 0.2),
                                             paymentStatus: (request.status === 'paid' || request.status === 'completed' || request.payment_status === 'paid' || request.payment_status === 'completed') ? 'paid' : 'pending',
                                             paidAmount: 0,
@@ -1473,7 +1486,11 @@
                                             signedAt: request.signed_at || null,
                                             ownerSignature: request.owner_signature_data || null,
                                             ownerSignatureType: request.owner_signature_type || 'text',
-                                            ownerSignedAt: request.owner_signed_at || null
+                                            ownerSignedAt: request.owner_signed_at || null,
+                                            insurancePlanId: request.insurance_plan_id,
+                                            insuranceFee: parseFloat(request.insurance_fee) || 0,
+                                            insurancePlanName: request.insurance_plan_name,
+                                            insuranceCoverage: request.insurance_coverage_amount
                                         };
                                     });
                                 // Merge requests
@@ -1546,57 +1563,21 @@
                         return [...existing, ...requests];
                     }
 
-                    // Sample insurance plans
-                    const insurancePlans = [
-                        {
-                            id: 1,
-                            name: 'Basic Protection',
-                            type: 'Basic Coverage',
-                            price: 499,
-                            period: 'month',
-                            features: [
-                                'Theft Protection',
-                                'Accidental Damage Cover',
-                                '24/7 Customer Support',
-                                'Up to ₹50,000 coverage',
-                                'Instant claim processing'
-                            ],
-                            popular: false
-                        },
-                        {
-                            id: 2,
-                            name: 'Premium Shield',
-                            type: 'Comprehensive Coverage',
-                            price: 999,
-                            period: 'month',
-                            features: [
-                                'All Basic features',
-                                'Fire & Natural Disasters',
-                                'Third-party Liability',
-                                'Up to ₹2,00,000 coverage',
-                                'Zero deductible',
-                                'Free annual maintenance'
-                            ],
-                            popular: true
-                        },
-                        {
-                            id: 3,
-                            name: 'Enterprise Plus',
-                            type: 'Premium Coverage',
-                            price: 1999,
-                            period: 'month',
-                            features: [
-                                'All Premium features',
-                                'Equipment Breakdown',
-                                'Business Interruption',
-                                'Unlimited coverage',
-                                'Legal assistance',
-                                'Replacement equipment',
-                                'Premium support'
-                            ],
-                            popular: false
+                    // insurance plans - will be loaded from database
+                    let insurancePlans = [];
+
+                    async function loadInsurancePlans() {
+                        try {
+                            const res = await fetch('php/get_insurance_plans.php');
+                            const data = await res.json();
+                            if (data.success) {
+                                insurancePlans = data.plans;
+                                renderInsurance();
+                            }
+                        } catch (e) {
+                            console.error('Error loading insurance plans:', e);
                         }
-                    ];
+                    }
 
                     let currentInsurance = null;
                     let pendingAgreementId = null; // For payment flow
@@ -1723,6 +1704,29 @@
                                             ${statusText}
                                         </span>
                                     </div>
+
+                                    ${agreement.insurancePlanName ? (() => {
+                                    const insStatus = agreement.insuranceStatus || 'Inactive';
+                                    const isActive = insStatus === 'Active';
+                                    const statusColor = isActive ? '#065f46' : '#92400e';
+                                    const statusBg = isActive ? '#d1fae5' : '#fef3c7';
+                                    const statusBorder = isActive ? '#6ee7b7' : '#fcd34d';
+                                    return `
+                                        <div style="background: #eff6ff; padding: 0.5rem 0.85rem; border-radius: 10px; margin-bottom: 0.85rem; border: 1px solid #dbeafe; display: flex; align-items: center; gap: 0.5rem;">
+                                            <span class="material-icons-outlined" style="font-size: 1.1rem; color: #3b82f6;">verified_user</span>
+                                            <div style="flex: 1;">
+                                                <p style="font-size: 0.75rem; color: #1e40af; font-weight: 700; margin: 0; line-height: 1.2;">${agreement.insurancePlanName}</p>
+                                                <p style="font-size: 0.65rem; color: #3b82f6; margin: 0.15rem 0 0 0;">
+                                                    Coverage: &#8377;${agreement.insuranceCoverage ? parseInt(agreement.insuranceCoverage).toLocaleString() : 'N/A'}
+                                                </p>
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <p style="font-size: 0.8rem; font-weight: 700; color: #1e40af; margin: 0;">&#8377;${parseInt(agreement.insuranceFee).toLocaleString()}</p>
+                                                <span style="display:inline-block;font-size:0.6rem;font-weight:700;padding:0.15rem 0.4rem;border-radius:4px;text-transform:uppercase;background:${statusBg};color:${statusColor};border:1px solid ${statusBorder};">${insStatus}</span>
+                                            </div>
+                                        </div>`;
+                                })() : ''}
+
                     
                     <div class="agreement-details">
                         <div class="detail-item">
@@ -1835,13 +1839,46 @@
                             modalTitle.textContent = 'Sign Rental Agreement';
                             modalId.textContent = agreementId;
 
+                            // Build payment cost-preview for the signing modal
+                            const _baseAmt = parseFloat(agreement.amount) || 0;
+                            const _insFee = agreement.insuranceFee || 0;
+                            const _deposit = agreement.deposit || Math.round(_baseAmt * 0.2);
+                            const _total = _baseAmt + _insFee + _deposit;
+                            const _insName = agreement.insurancePlanName || null;
+
+                            const _insRow = _insFee > 0 && _insName ? `
+                                <div style="display:flex;justify-content:space-between;padding:0.45rem 0;border-bottom:1px solid #dbeafe;">
+                                    <span style="color:#1e40af;font-size:0.85rem;"><span style="vertical-align:middle;">&#128737;</span> Insurance (${_insName})</span>
+                                    <span style="font-weight:700;color:#1e40af;font-size:0.85rem;">&#8377;${_insFee.toLocaleString()}</span>
+                                </div>` : '';
+
+                            const _costPreview = `
+                            <div style="background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;">
+                                <div style="font-weight:700;font-size:0.82rem;text-transform:uppercase;color:#0369a1;margin-bottom:0.6rem;letter-spacing:0.05em;">&#128179; Payment Summary</div>
+                                <div style="display:flex;justify-content:space-between;padding:0.45rem 0;border-bottom:1px solid #bae6fd;">
+                                    <span style="color:#475569;font-size:0.85rem;">Rental Amount</span>
+                                    <span style="font-weight:700;font-size:0.85rem;">&#8377;${_baseAmt.toLocaleString()}</span>
+                                </div>
+                                ${_insRow}
+                                <div style="display:flex;justify-content:space-between;padding:0.45rem 0;border-bottom:1px solid #bae6fd;">
+                                    <span style="color:#475569;font-size:0.85rem;">Security Deposit (20%)</span>
+                                    <span style="font-weight:700;font-size:0.85rem;">&#8377;${_deposit.toLocaleString()}</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;padding:0.5rem 0;margin-top:0.2rem;">
+                                    <span style="font-weight:800;color:#0f172a;">Total Payable</span>
+                                    <span style="font-weight:800;font-size:1.1rem;color:#10b981;">&#8377;${_total.toLocaleString()}</span>
+                                </div>
+                            </div>`;
+
                             // Injected Agreement Text + Signature Tabs
                             docBody.innerHTML = `
-                    <div style="font-family: 'Times New Roman', serif; line-height: 1.6; max-height: 300px; overflow-y: auto; padding-right: 1rem; border-bottom: 1px solid #eee; margin-bottom: 1rem;">
+                    <div style="font-family: 'Times New Roman', serif; line-height: 1.6; max-height: 260px; overflow-y: auto; padding-right: 1rem; border-bottom: 1px solid #eee; margin-bottom: 1rem;">
                         ${data.agreement_html}
                     </div>
+
+                    ${_costPreview}
                     
-                    <div style="margin-top: 1rem;">
+                    <div style="margin-top: 0.75rem;">
                         <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Digital Signature:</label>
                         <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">Choose how to sign. By signing, you agree to be legally bound by this contract.</p>
                         
@@ -2012,11 +2049,20 @@
                             return;
                         }
 
-                        let amount = agreement.amount ? parseFloat(agreement.amount) : 0;
+                        const baseAmt = agreement.amount ? parseFloat(agreement.amount) : 0;
+                        const insFee = agreement.insuranceFee || 0;
+                        const depositAmt = agreement.deposit || 0;
+                        let amount = baseAmt + insFee + depositAmt;
                         if (amount <= 0) {
                             alert('Error: Invalid payment amount.');
                             return;
                         }
+
+                        // Store breakdown so openPaymentModal can render it
+                        window._paymentBaseAmount = baseAmt;
+                        window._paymentInsuranceFee = insFee;
+                        window._paymentDeposit = depositAmt;
+                        window._paymentInsuranceName = agreement.insurancePlanName || null;
 
                         closeModal('agreementModal');
 
@@ -2166,14 +2212,51 @@
 
                     // Open Payment Modal
                     // type: 'booking' or 'rental_request'
-                    function openPaymentModal(id, title, amount, type = 'booking') {
+                    // insuranceCtx: { name, fee } optional
+                    function openPaymentModal(id, title, amount, type = 'booking', insuranceCtx = null) {
                         document.getElementById('paymentTitle').textContent = title;
+
+                        // Build itemised breakdown
+                        const baseForCalc = window._paymentBaseAmount || 0;
+                        const depositForCalc = window._paymentDeposit || 0;
+                        const insForCalc = window._paymentInsuranceFee || 0;
+                        const insName = insuranceCtx ? insuranceCtx.name : (window._paymentInsuranceName || null);
+
+                        let breakdownRows = `
+                            <div style="display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid #e5e7eb;">
+                                <span style="color:#64748b;">Rental Amount</span>
+                                <span style="font-weight:700;">&#8377;${baseForCalc.toLocaleString()}</span>
+                            </div>`;
+
+                        if (insForCalc > 0 && insName) {
+                            breakdownRows += `
+                            <div style="display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid #e5e7eb;">
+                                <span style="color:#64748b;display:flex;align-items:center;gap:0.3rem;">
+                                    <span class="material-icons-outlined" style="font-size:1rem;color:#3b82f6;">verified_user</span>
+                                    Insurance (${insName})
+                                </span>
+                                <span style="font-weight:700;color:#3b82f6;">&#8377;${insForCalc.toLocaleString()}</span>
+                            </div>`;
+                        }
+
+                        if (depositForCalc > 0) {
+                            breakdownRows += `
+                            <div style="display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid #e5e7eb;">
+                                <span style="color:#64748b;">Security Deposit (20%)</span>
+                                <span style="font-weight:700;">&#8377;${depositForCalc.toLocaleString()}</span>
+                            </div>`;
+                        }
+
+                        breakdownRows += `
+                            <div style="display:flex;justify-content:space-between;padding:0.75rem 0;margin-top:0.25rem;">
+                                <span style="font-weight:700;font-size:1.05rem;color:#0f172a;">Total Payable</span>
+                                <span style="font-weight:800;font-size:1.2rem;color:#10b981;">&#8377;${amount.toLocaleString()}</span>
+                            </div>`;
+
                         document.getElementById('qrPaymentDetails').innerHTML = `
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <p style="color: #666; font-size: 0.9rem;">Total Payable Amount</p>
-                    <div style="font-size: 2rem; font-weight: bold; color: var(--primary);">₹${amount.toLocaleString()}</div>
-                </div>
-            `;
+                            <div style="background:#f8fafc;border-radius:12px;padding:1rem;border:1px solid #e2e8f0;">
+                                ${breakdownRows}
+                            </div>`;
 
                         // Store details for processing (Global vars for Razorpay)
                         window.currentPaymentAmount = amount;
@@ -2249,25 +2332,30 @@
                     // Render insurance plans
                     function renderInsurance() {
                         const grid = document.getElementById('insuranceGrid');
+                        if (!grid) return;
+                        if (insurancePlans.length === 0) {
+                            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">Loading insurance plans...</div>';
+                            return;
+                        }
                         grid.innerHTML = insurancePlans.map(plan => `
                 <div class="insurance-card" style="position: relative;">
-                    ${plan.popular ? '<div class="popular-badge"><span class="material-icons-outlined" style="font-size: 1.1em; vertical-align: bottom;">star</span> MOST POPULAR</div>' : ''}
+                    ${plan.price == 999 ? '<div class="popular-badge"><span class="material-icons-outlined" style="font-size: 1.1em; vertical-align: bottom;">star</span> MOST POPULAR</div>' : ''}
                     <div class="insurance-header">
-                        <div class="insurance-type">${plan.type}</div>
-                        <div class="insurance-name">${plan.name}</div>
-                        <div class="insurance-price"><span style="font-family: sans-serif;">&#8377;</span>${plan.price}<span>/${plan.period}</span></div>
+                        <div class="insurance-type">Coverage Plan</div>
+                        <div class="insurance-name">${plan.plan_name}</div>
+                        <div class="insurance-price"><span style="font-family: sans-serif;">&#8377;</span>${parseInt(plan.price)}<span>/month</span></div>
                     </div>
                     <div class="insurance-content">
                         <ul class="insurance-features">
-                            ${plan.features.map(feature => `
+                            ${(Array.isArray(plan.features) ? plan.features : []).map(feature => `
                                 <li>
                                     <span class="material-icons-outlined">check_circle</span>
                                     ${feature}
                                 </li>
                             `).join('')}
                         </ul>
-                        <button class="btn btn-primary" style="width: 100%;" onclick="openInsuranceModal(${plan.id})">
-                            <span class="material-icons-outlined">shopping_cart</span>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openInsuranceModal(parseInt('${plan.id}', 10))">
+                            <span class="material-icons-outlined">verified_user</span>
                             Get Coverage
                         </button>
                     </div>
@@ -2295,7 +2383,9 @@
                     <div class="section-title">1. PARTIES</div>
                     <p>This agreement is made on ${new Date(agreement.startDate).toLocaleDateString()} between:</p>
                     <p><strong>LESSOR (Owner):</strong> ${agreement.ownerName}</p>
+                    <p style="margin-left: 1rem; color: #555;">Address: ${agreement.ownerAddress || 'Not Provided'}</p>
                     <p><strong>LESSEE (Farmer):</strong> ${agreement.farmerName}</p>
+                    <p style="margin-left: 1rem; color: #555;">Address: ${agreement.farmerAddress || 'Not Provided'}</p>
                 </div>
 
                 <div class="section">
@@ -2313,9 +2403,33 @@
                 <div class="section">
                     <div class="section-title">4. RENTAL CHARGES</div>
                     <p><strong>Rental Amount:</strong> &#8377;${agreement.amount.toLocaleString()}</p>
+                    ${agreement.insurancePlanName ? `<p><strong>Insurance Fee (${agreement.insurancePlanName}):</strong> &#8377;${agreement.insuranceFee.toLocaleString()}</p>` : ''}
                     <p><strong>Security Deposit:</strong> &#8377;${agreement.deposit.toLocaleString()}</p>
-                    <p><strong>Total:</strong> &#8377;${(agreement.amount + agreement.deposit).toLocaleString()}</p>
+                    <p><strong>Total:</strong> &#8377;${(agreement.amount + agreement.deposit + (agreement.insuranceFee || 0)).toLocaleString()}</p>
                 </div>
+
+                ${agreement.insurancePlanName ? `
+                <div class="section" style="background: #f0f7ff; border-left: 4px solid #3b82f6; padding: 1rem; border-radius: 8px;">
+                    <div class="section-title" style="color: #1e40af;">
+                        <span class="material-icons-outlined" style="vertical-align: middle; font-size: 1.2rem;">verified_user</span> 
+                        INSURANCE COVERAGE
+                    </div>
+                    <p><strong>Plan:</strong> ${agreement.insurancePlanName}</p>
+                    <p><strong>Coverage Amount:</strong> &#8377;${agreement.insuranceCoverage ? parseInt(agreement.insuranceCoverage).toLocaleString() : 'N/A'}</p>
+                    <p><strong>Insurance Fee:</strong> &#8377;${(agreement.insuranceFee || 0).toLocaleString()}</p>
+                    <p><strong>Status:</strong> <span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.65rem;border-radius:20px;font-size:0.82rem;font-weight:700;background:${(agreement.insuranceStatus === 'Active') ? '#d1fae5' : '#fef3c7'};color:${(agreement.insuranceStatus === 'Active') ? '#065f46' : '#92400e'};border:1px solid ${(agreement.insuranceStatus === 'Active') ? '#6ee7b7' : '#fcd34d'};">
+                        <span class="material-icons-outlined" style="font-size:0.9rem;">${(agreement.insuranceStatus === 'Active') ? 'check_circle' : 'schedule'}</span>
+                        ${agreement.insuranceStatus || 'Inactive'}
+                    </span></p>
+                    ${agreement.insuranceStatus === 'Active' ? `
+                    <p style="font-size:0.85rem;color:#475569;margin-top:0.5rem;">
+                        <strong>Valid Period:</strong> ${new Date(agreement.startDate).toLocaleDateString()} &mdash; ${new Date(agreement.endDate).toLocaleDateString()}
+                        <em style="color:#10b981;font-size:0.78rem;margin-left:0.5rem;">(aligned with rental period)</em>
+                    </p>` : `
+                    <p style="font-size:0.82rem;color:#92400e;margin-top:0.4rem;">&#9432; Insurance becomes <strong>Active</strong> automatically after successful payment.</p>`}
+                </div>
+                ` : ''}
+
 
                 <div class="section">
                     <div class="section-title">5. PAYMENT STATUS</div>
@@ -2540,13 +2654,47 @@
 
                     // Open insurance modal
                     function openInsuranceModal(planId) {
-                        const plan = insurancePlans.find(p => p.id === planId);
-                        if (!plan) return;
+                        // Use == (loose equality) to handle type mismatch:
+                        // API returns id as string, onclick passes as number
+                        const numericId = parseInt(planId, 10);
+                        const plan = insurancePlans.find(p => parseInt(p.id, 10) === numericId);
+                        if (!plan) {
+                            console.error('Insurance plan not found for id:', planId, '| Available:', insurancePlans.map(p => p.id));
+                            alert('Could not load plan details. Please refresh the page and try again.');
+                            return;
+                        }
 
                         currentInsurance = plan;
-                        document.getElementById('insuranceModalTitle').textContent = `Purchase ${plan.name}`;
-                        document.getElementById('insuranceCoverage').textContent = plan.features.join(' \u2022 ');
-                        document.getElementById('totalPremium').value = `\u20B9${plan.price}/month`;
+                        document.getElementById('insuranceModalTitle').textContent = `Purchase ${plan.plan_name}`;
+
+                        const features = Array.isArray(plan.features) ? plan.features.join(' \u2022 ') : '';
+                        document.getElementById('insuranceCoverage').textContent = features;
+                        document.getElementById('totalPremium').value = `\u20B9${parseInt(plan.price)}/month`;
+
+                        // Populate equipmentSelect — show ANY rental request that isn't paid/expired
+                        const eqSelect = document.getElementById('equipmentSelect');
+                        const eligibleRequests = agreements.filter(a => {
+                            if (!a.id.startsWith('REQ-')) return false; // must be a request
+                            if (a.status === 'expired') return false;
+                            if (a.paymentStatus === 'paid') return false;
+                            // Include pending, approved, initiated, pending_payment statuses
+                            return true;
+                        });
+
+                        if (eligibleRequests.length === 0) {
+                            eqSelect.innerHTML = '<option value="">No active rental requests found</option>';
+                        } else {
+                            eqSelect.innerHTML = '<option value="">Select rental to insure</option>' +
+                                eligibleRequests.map(r => {
+                                    const insLabel = r.insurancePlanId ? ' (insurance already added)' : '';
+                                    return `<option value="${r.id.replace('REQ-', '')}">${r.title} (${r.id})${insLabel}</option>`;
+                                }).join('');
+                        }
+
+                        // Prefill user info
+                        const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                        if (document.getElementById('buyerName')) document.getElementById('buyerName').value = userData.name || '';
+                        if (document.getElementById('buyerPhone')) document.getElementById('buyerPhone').value = userData.phone || '';
 
                         document.getElementById('insuranceModal').classList.add('active');
                     }
@@ -2725,17 +2873,23 @@
                             
                             <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-left: 4px solid #10b981; border-radius: 4px;">
                                 <span style="color: #64748b; font-weight: 600;">Rental Amount:</span>
-                                <span style="font-weight: 700; color: #1e293b;">₹${agreement.amount.toLocaleString()}</span>
+                                <span style="font-weight: 700; color: #1e293b;">&#8377;${agreement.amount.toLocaleString()}</span>
                             </div>
                             
+                            ${agreement.insuranceFee > 0 ? `
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 4px;">
+                                <span style="color: #1e40af; font-weight: 600;"><span style="vertical-align:middle;font-size:1rem;">&#128737;</span> Insurance (${agreement.insurancePlanName || 'Plan'}):</span>
+                                <span style="font-weight: 700; color: #1e40af;">&#8377;${agreement.insuranceFee.toLocaleString()}</span>
+                            </div>` : ''}
+                            
                             <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-left: 4px solid #10b981; border-radius: 4px;">
-                                <span style="color: #64748b; font-weight: 600;">Security Deposit:</span>
-                                <span style="font-weight: 700; color: #1e293b;">₹${agreement.deposit.toLocaleString()}</span>
+                                <span style="color: #64748b; font-weight: 600;">Security Deposit (20%):</span>
+                                <span style="font-weight: 700; color: #1e293b;">&#8377;${agreement.deposit.toLocaleString()}</span>
                             </div>
                             
                             <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-left: 4px solid #059669; border-radius: 4px;">
                                 <span style="color: #64748b; font-weight: 600; font-size: 1.1rem;">Total Amount:</span>
-                                <span style="font-weight: 700; color: #059669; font-size: 1.2rem;">₹${(agreement.amount + agreement.deposit).toLocaleString()}</span>
+                                <span style="font-weight: 700; color: #059669; font-size: 1.2rem;">&#8377;${(agreement.amount + agreement.deposit + (agreement.insuranceFee || 0)).toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
@@ -2785,8 +2939,13 @@
                                 </div>
                                 
                                 <div style="background: white; padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem;">
-                                    <div style="color: #92400e; font-weight: 600; margin-bottom: 0.5rem;">Amount Due:</div>
-                                    <div style="font-size: 2rem; font-weight: 700; color: #d97706;">₹${(agreement.amount + agreement.deposit).toLocaleString()}</div>
+                                    <div style="color: #92400e; font-weight: 600; margin-bottom: 0.75rem;">Amount Due (Breakdown):</div>
+                                    <div style="display:grid;gap:0.5rem;font-size:0.9rem;margin-bottom:0.75rem;">
+                                        <div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Rental</span><span>&#8377;${agreement.amount.toLocaleString()}</span></div>
+                                        ${agreement.insuranceFee > 0 ? `<div style="display:flex;justify-content:space-between;"><span style="color:#1e40af;">Insurance (${agreement.insurancePlanName || 'Plan'})</span><span style="color:#1e40af;">&#8377;${(agreement.insuranceFee || 0).toLocaleString()}</span></div>` : ''}
+                                        <div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Security Deposit (20%)</span><span>&#8377;${agreement.deposit.toLocaleString()}</span></div>
+                                    </div>
+                                    <div style="font-size: 2rem; font-weight: 700; color: #d97706;">&#8377;${(agreement.amount + agreement.deposit + (agreement.insuranceFee || 0)).toLocaleString()}</div>
                                 </div>
                             </div>
                         `}
@@ -2839,29 +2998,51 @@
                     }
 
                     // Purchase insurance
-                    function purchaseInsurance() {
+                    async function purchaseInsurance() {
                         const form = document.getElementById('insuranceForm');
+                        const eqSelect = document.getElementById('equipmentSelect');
+                        const requestId = eqSelect.value;
+
+                        if (!requestId) {
+                            alert('Please select a rental request to insure.');
+                            return;
+                        }
 
                         if (!form.checkValidity()) {
                             alert('Please fill in all required fields');
                             return;
                         }
 
-                        const purchaseData = {
-                            plan: currentInsurance.name,
-                            equipment: document.getElementById('equipmentSelect').value,
-                            period: document.getElementById('coveragePeriod').value,
-                            name: document.getElementById('buyerName').value,
-                            phone: document.getElementById('buyerPhone').value,
-                            premium: currentInsurance.price
-                        };
+                        const btn = event.currentTarget;
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = '<span class="material-icons-outlined spin">sync</span> Applying...';
+                        btn.disabled = true;
 
-                        console.log('Insurance Purchase:', purchaseData);
+                        try {
+                            const res = await fetch('php/update_rental_insurance.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    request_id: requestId,
+                                    insurance_plan_id: currentInsurance.id,
+                                    insurance_fee: currentInsurance.price
+                                })
+                            });
+                            const data = await res.json();
 
-                        alert(`Insurance purchased successfully!\n\nPlan: ${purchaseData.plan}\nEquipment: ${purchaseData.equipment}\nCoverage: ${purchaseData.period} month(s)\n\nYour policy documents will be sent to your email.`);
-
-                        closeModal('insuranceModal');
-                        form.reset();
+                            if (data.success) {
+                                alert(`Insurance applied successfully to ${eqSelect.options[eqSelect.selectedIndex].text}!\n\nPlan: ${currentInsurance.plan_name}\nPremium: \u20B9${currentInsurance.price}\n\nThis will be added to your final payment.`);
+                                closeModal('insuranceModal');
+                                loadAgreementsFromDatabase(); // Refresh
+                            } else {
+                                throw new Error(data.error || 'Failed to apply insurance');
+                            }
+                        } catch (e) {
+                            alert('Error: ' + e.message);
+                        } finally {
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        }
                     }
 
                     // Get current user type

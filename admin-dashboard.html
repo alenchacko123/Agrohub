@@ -200,6 +200,297 @@
             background: var(--primary);
             color: white;
         }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-ghost {
+            background: #f3f4f6;
+            color: var(--text-dark);
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            transition: .2s;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.78rem;
+            border-radius: 5px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 520px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: slideUp .25s ease;
+        }
+
+        .modal-box.wide {
+            max-width: 680px;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-gray);
+            line-height: 1;
+            padding: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        /* Role badges */
+        .role-badge {
+            padding: 0.2rem 0.65rem;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .role-admin {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .role-farmer {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .role-owner {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .role-worker {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-suspended {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* Filter bar */
+        .filter-bar {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+            align-items: center;
+        }
+
+        .filter-bar input,
+        .filter-bar select {
+            padding: 0.5rem 0.85rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            outline: none;
+            background: white;
+        }
+
+        .filter-bar input:focus,
+        .filter-bar select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, .1);
+        }
+
+        .filter-bar input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* User row actions */
+        .action-group {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        /* Notification textarea */
+        .modal-box textarea {
+            width: 100%;
+            padding: .75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: .875rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-box select,
+        .modal-box input[type=password],
+        .modal-box input[type=text] {
+            width: 100%;
+            padding: .65rem .85rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: .9rem;
+        }
+
+        .modal-box label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: .4rem;
+            font-size: .875rem;
+        }
+
+        .modal-box .form-group {
+            margin-bottom: 1rem;
+        }
+
+        /* User detail card inside modal */
+        .user-detail-card {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .user-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .user-meta p {
+            font-size: .8rem;
+            color: var(--text-gray);
+            margin-top: .2rem;
+        }
+
+        .user-meta strong {
+            font-size: 1rem;
+        }
+
+        /* Toast */
+        #admin-toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: #1f2937;
+            color: white;
+            padding: .85rem 1.5rem;
+            border-radius: 10px;
+            font-size: .9rem;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .2);
+            display: none;
+            z-index: 9999;
+            animation: fadeInUp .3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #admin-toast.success {
+            background: #065f46;
+        }
+
+        #admin-toast.error {
+            background: #991b1b;
+        }
     </style>
 </head>
 
@@ -278,102 +569,346 @@
                 </div>
             </div>
 
-            <div class="table-container">
-                <h3>Recent Activity</h3>
-                <p style="color: var(--text-gray); margin-top: 1rem;">System activity logs and charts will appear here.
-                </p>
+            <div class="table-container" style="padding:1.5rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+                    <h3 style="font-size:1rem; font-weight:700; margin:0;">Recent Activity</h3>
+                    <button onclick="loadActivity()"
+                        style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:.85rem;display:flex;align-items:center;gap:.25rem;">
+                        <span class="material-icons-outlined" style="font-size:1rem;">refresh</span> Refresh
+                    </button>
+                </div>
+                <div id="activity-feed" style="display:flex; flex-direction:column; gap:0;">
+                    <div style="text-align:center;color:var(--text-gray);padding:2rem;">Loading activity...</div>
+                </div>
             </div>
         </div>
 
         <!-- Users View -->
         <div id="view-users" class="dashboard-view">
-            <h1 style="margin-bottom: 1.5rem;">User Management</h1>
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+                <h1>User Management</h1>
+                <div id="users-count-badge"
+                    style="background:var(--light); color:var(--dark); padding:.4rem 1rem; border-radius:50px; font-weight:600; font-size:.9rem;">
+                    Loading...</div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <input type="text" id="user-search" placeholder="🔍  Search by name or email..."
+                    oninput="debounceLoadUsers()">
+                <select id="user-role-filter" onchange="loadUsers()">
+                    <option value="all">All Roles</option>
+                    <option value="farmer">Farmer</option>
+                    <option value="owner">Owner</option>
+                    <option value="worker">Worker</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <select id="user-status-filter" onchange="loadUsers()">
+                    <option value="">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+            </div>
+
             <div class="table-container">
                 <table id="users-table">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>User</th>
                             <th>Email</th>
                             <th>Role</th>
                             <th>Status</th>
+                            <th>Joined</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="users-body"></tbody>
+                    <tbody id="users-body">
+                        <tr>
+                            <td colspan="7" style="text-align:center;color:var(--text-gray);padding:2rem">Loading
+                                users...</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
 
         <!-- Listings View -->
         <div id="view-listings" class="dashboard-view">
-            <h1 style="margin-bottom: 1.5rem;">Equipment Listings</h1>
-            <div id="listings-grid"
-                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
-                <!-- Cards populated by JS -->
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+                <h1>Equipment Listings</h1>
+                <button class="btn btn-primary btn-sm" onclick="loadEquipment()"
+                    style="display:flex;align-items:center;gap:.4rem;">
+                    <span class="material-icons-outlined" style="font-size:1rem;">refresh</span> Refresh
+                </button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="stats-grid" style="margin-bottom:1.5rem;">
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#7c3aed;">agriculture</span>
+                    <div class="stat-value" id="eq-total">—</div>
+                    <div class="stat-label">Total Equipment</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#10b981;">event_available</span>
+                    <div class="stat-value" id="eq-rental">—</div>
+                    <div class="stat-label">For Rent</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#f59e0b;">sell</span>
+                    <div class="stat-value" id="eq-secondhand">—</div>
+                    <div class="stat-label">For Sale (2nd Hand)</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#ef4444;">block</span>
+                    <div class="stat-value" id="eq-unavailable">—</div>
+                    <div class="stat-label">Unavailable / Sold</div>
+                </div>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div
+                style="display:flex; gap:.5rem; margin-bottom:1.5rem; border-bottom:2px solid #f3f4f6; padding-bottom:.75rem;">
+                <button id="eq-tab-rental" onclick="switchEqTab('rental')" class="eq-tab-btn" style="padding:.5rem 1.25rem; border:none; border-radius:8px; font-weight:600; cursor:pointer;
+                           background:var(--primary); color:#fff; font-size:.85rem;">
+                    <span class="material-icons-outlined"
+                        style="font-size:.9rem;vertical-align:middle;">agriculture</span>
+                    Rental Equipment
+                </button>
+                <button id="eq-tab-secondhand" onclick="switchEqTab('secondhand')" class="eq-tab-btn" style="padding:.5rem 1.25rem; border:none; border-radius:8px; font-weight:600; cursor:pointer;
+                           background:var(--light); color:var(--text-gray); font-size:.85rem;">
+                    <span class="material-icons-outlined" style="font-size:.9rem;vertical-align:middle;">sell</span>
+                    Second-Hand For Sale
+                </button>
+            </div>
+
+            <!-- Rental Equipment Grid -->
+            <div id="eq-panel-rental">
+                <div id="listings-grid"
+                    style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1.5rem;">
+                    <div style="color:var(--text-gray);padding:2rem;">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Second-Hand Equipment Table -->
+            <div id="eq-panel-secondhand" style="display:none;">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Equipment</th>
+                                <th>Category</th>
+                                <th>Owner</th>
+                                <th>Condition</th>
+                                <th>Location</th>
+                                <th>Selling Price</th>
+                                <th>Original Price</th>
+                                <th>Year</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="secondhand-body">
+                            <tr>
+                                <td colspan="10" style="text-align:center;color:var(--text-gray);padding:2rem;">
+                                    Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- Rentals View -->
         <div id="view-rentals" class="dashboard-view">
-            <h1 style="margin-bottom: 1.5rem;">Rental Transactions</h1>
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+                <h1>Rental Transactions</h1>
+                <button class="btn btn-primary btn-sm" onclick="loadRentals()"
+                    style="display:flex;align-items:center;gap:.4rem;"><span class="material-icons-outlined"
+                        style="font-size:1rem;">refresh</span> Refresh</button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="stats-grid" style="margin-bottom:1.5rem;">
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#7c3aed;">receipt_long</span>
+                    <div class="stat-value" id="rent-total">—</div>
+                    <div class="stat-label">Total Transactions</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#3b82f6;">play_circle</span>
+                    <div class="stat-value" id="rent-active">—</div>
+                    <div class="stat-label">Active / Confirmed</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#f59e0b;">hourglass_empty</span>
+                    <div class="stat-value" id="rent-pending">—</div>
+                    <div class="stat-label">Pending Requests</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#10b981;">check_circle</span>
+                    <div class="stat-value" id="rent-completed">—</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+
             <div class="table-container">
                 <table id="rentals-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>#</th>
+                            <th>Type</th>
                             <th>Equipment</th>
                             <th>Farmer</th>
+                            <th>Owner</th>
                             <th>Dates</th>
                             <th>Amount</th>
+                            <th>Payment</th>
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody id="rentals-body"></tbody>
+                    <tbody id="rentals-body">
+                        <tr>
+                            <td colspan="9" style="text-align:center;color:var(--text-gray);padding:2rem;">Loading...
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
 
         <!-- Jobs View -->
         <div id="view-jobs" class="dashboard-view">
-            <h1 style="margin-bottom: 1.5rem;">Job Postings</h1>
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+                <h1>Job Postings</h1>
+                <button class="btn btn-primary btn-sm" onclick="loadJobs()"
+                    style="display:flex;align-items:center;gap:.4rem;"><span class="material-icons-outlined"
+                        style="font-size:1rem;">refresh</span> Refresh</button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="stats-grid" style="margin-bottom:1.5rem;">
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#7c3aed;">work</span>
+                    <div class="stat-value" id="job-total">—</div>
+                    <div class="stat-label">Total Postings</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#10b981;">play_circle</span>
+                    <div class="stat-value" id="job-open">—</div>
+                    <div class="stat-label">Open Jobs</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#6b7280;">lock</span>
+                    <div class="stat-value" id="job-closed">—</div>
+                    <div class="stat-label">Closed / Filled</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#f59e0b;">hourglass_empty</span>
+                    <div class="stat-value" id="job-pending">—</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+
+            <!-- Search Filter -->
+            <div class="filter-bar">
+                <input type="text" id="job-search" placeholder="🔍  Search by title, location or poster..."
+                    oninput="debounceLoadJobs()">
+                <select id="job-status-filter" onchange="loadJobs()">
+                    <option value="">All Statuses</option>
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
+                    <option value="filled">Filled</option>
+                    <option value="pending">Pending</option>
+                </select>
+            </div>
+
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>Title</th>
+                            <th>#</th>
+                            <th>Job Title</th>
+                            <th>Category</th>
                             <th>Posted By</th>
                             <th>Location</th>
                             <th>Wage</th>
+                            <th>Workers</th>
+                            <th>Applications</th>
+                            <th>Start Date</th>
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody id="jobs-body"></tbody>
+                    <tbody id="jobs-body">
+                        <tr>
+                            <td colspan="10" style="text-align:center;color:var(--text-gray);padding:2rem;">Loading...
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
 
         <!-- Financials View -->
         <div id="view-financials" class="dashboard-view">
-            <h1 style="margin-bottom: 1.5rem;">Financials & Payments</h1>
-            <div class="stats-grid">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+                <h1>Financials &amp; Payments</h1>
+                <button class="btn btn-primary btn-sm" onclick="loadPayments()"
+                    style="display:flex;align-items:center;gap:.4rem;"><span class="material-icons-outlined"
+                        style="font-size:1rem;">refresh</span> Refresh</button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="stats-grid" style="margin-bottom:1.5rem;">
                 <div class="stat-card">
-                    <div class="stat-label">Total Revenue</div>
+                    <span class="material-icons-outlined" style="color:#7c3aed;">payments</span>
                     <div class="stat-value" id="fin-revenue">₹0</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#3b82f6;">receipt_long</span>
+                    <div class="stat-value" id="fin-total">—</div>
+                    <div class="stat-label">Total Transactions</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#10b981;">check_circle</span>
+                    <div class="stat-value" id="fin-paid">—</div>
+                    <div class="stat-label">Paid / Completed</div>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons-outlined" style="color:#f59e0b;">hourglass_empty</span>
+                    <div class="stat-value" id="fin-pending">—</div>
+                    <div class="stat-label">Pending / Other</div>
                 </div>
             </div>
+
             <div class="table-container">
-                <h3>Transaction History</h3>
+                <h3 style="margin-bottom:1rem; font-size:1rem; font-weight:700;">Transaction History</h3>
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Date</th>
+                            <th>#</th>
+                            <th>Date &amp; Time</th>
+                            <th>Payer</th>
+                            <th>Equipment</th>
                             <th>Amount</th>
                             <th>Method</th>
+                            <th>Transaction ID</th>
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody id="payments-body"></tbody>
+                    <tbody id="payments-body">
+                        <tr>
+                            <td colspan="8" style="text-align:center;color:var(--text-gray);padding:2rem;">Loading...
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -511,6 +1046,107 @@
 
     </main>
 
+    <!-- Toast Notification -->
+    <div id="admin-toast"></div>
+
+    <!-- Modal: Manage User -->
+    <div class="modal-overlay" id="modal-manage">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Manage User</h2>
+                <button class="modal-close" onclick="closeModal('modal-manage')">&times;</button>
+            </div>
+            <div id="manage-user-card"></div>
+            <div style="display:flex; flex-direction:column; gap:.75rem;">
+                <button class="btn btn-info" onclick="openRoleModal()">🔄 Change Role</button>
+                <button class="btn btn-warning" id="btn-suspend" onclick="toggleSuspend()">⏸ Suspend User</button>
+                <button class="btn btn-primary" onclick="openNotifModal()">📢 Send Notification</button>
+                <button class="btn btn-ghost" onclick="openPasswordModal()">🔑 Reset Password</button>
+                <button class="btn btn-danger" onclick="confirmDeleteUser()">🗑 Delete User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Change Role -->
+    <div class="modal-overlay" id="modal-role">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Change User Role</h2>
+                <button class="modal-close" onclick="closeModal('modal-role')">&times;</button>
+            </div>
+            <div id="role-user-card"></div>
+            <div class="form-group">
+                <label>Select New Role</label>
+                <select id="new-role-select">
+                    <option value="farmer">Farmer</option>
+                    <option value="owner">Owner</option>
+                    <option value="worker">Worker</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeModal('modal-role')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveRole()">Save Role</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Reset Password -->
+    <div class="modal-overlay" id="modal-password">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Reset Password</h2>
+                <button class="modal-close" onclick="closeModal('modal-password')">&times;</button>
+            </div>
+            <div id="pw-user-card"></div>
+            <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="new-password-input" placeholder="Min. 8 characters">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeModal('modal-password')">Cancel</button>
+                <button class="btn btn-primary" onclick="savePassword()">Reset Password</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Send Notification -->
+    <div class="modal-overlay" id="modal-notif">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Send Notification</h2>
+                <button class="modal-close" onclick="closeModal('modal-notif')">&times;</button>
+            </div>
+            <div id="notif-user-card"></div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea id="notif-message" placeholder="Type your message to this user..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeModal('modal-notif')">Cancel</button>
+                <button class="btn btn-primary" onclick="sendNotification()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirm Delete -->
+    <div class="modal-overlay" id="modal-delete">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 style="color:#ef4444;">⚠ Delete User</h2>
+                <button class="modal-close" onclick="closeModal('modal-delete')">&times;</button>
+            </div>
+            <div id="delete-user-card"></div>
+            <p style="color:var(--text-gray); font-size:.9rem; margin-bottom:1rem;">This action is
+                <strong>permanent</strong>. All data linked to this user may be affected. Are you sure?
+            </p>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeModal('modal-delete')">Cancel</button>
+                <button class="btn btn-danger" onclick="deleteUser()">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- NAVIGATION & INIT ---
         function switchView(viewId) {
@@ -551,94 +1187,494 @@
             } catch (e) { console.error(e); }
         }
 
-        // --- USERS ---
+        // ===================== USER MANAGEMENT =====================
+        let _activeUser = null; // currently selected user object
+        let _searchTimer = null;
+
+        function debounceLoadUsers() {
+            clearTimeout(_searchTimer);
+            _searchTimer = setTimeout(loadUsers, 350);
+        }
+
+        function roleBadge(role) {
+            const cls = { admin: 'role-admin', farmer: 'role-farmer', owner: 'role-owner', worker: 'role-worker' };
+            return `<span class="role-badge ${cls[role] || ''}">${role}</span>`;
+        }
+
+        function userCard(u) {
+            const initials = (u.name || '?').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+            return `<div class="user-detail-card">
+                <div class="user-avatar">${initials}</div>
+                <div class="user-meta">
+                    <strong>${u.name}</strong>
+                    <p>${u.email}</p>
+                    <p style="margin-top:.4rem;">${roleBadge(u.user_type)}</p>
+                </div>
+            </div>`;
+        }
+
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('admin-toast');
+            t.textContent = msg;
+            t.className = type;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3500);
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
         async function loadUsers() {
-            const res = await fetch('php/get_all_users.php'); // Existing script
+            const search = document.getElementById('user-search').value;
+            const role = document.getElementById('user-role-filter').value;
+            const status = document.getElementById('user-status-filter').value;
+
+            const params = new URLSearchParams({ action: 'get_users', search, role, status });
+            const res = await fetch('php/admin/manage_user.php?' + params);
             const data = await res.json();
             const tbody = document.getElementById('users-body');
-            tbody.innerHTML = data.users.map(u => `
-                <tr>
-                    <td>${u.name}</td>
-                    <td>${u.email}</td>
-                    <td><span class="status-badge" style="background:#e0e7ff; color:#3730a3">${u.user_type}</span></td>
-                    <td><span class="status-badge" style="background:#dcfce7; color:#166534">${u.status || 'Verified'}</span></td>
+
+            if (!data.success || !data.users.length) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-gray);padding:2rem">No users found.</td></tr>`;
+                document.getElementById('users-count-badge').textContent = '0 users';
+                return;
+            }
+
+            document.getElementById('users-count-badge').textContent = `${data.count} user${data.count !== 1 ? 's' : ''}`;
+            tbody.innerHTML = data.users.map((u, i) => {
+                const suspended = parseInt(u.is_suspended);
+                const statusBadge = suspended
+                    ? `<span class="role-badge badge-suspended">Suspended</span>`
+                    : `<span class="role-badge badge-active">Active</span>`;
+                const joined = u.created_at ? new Date(u.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+                return `<tr>
+                    <td style="color:var(--text-gray);font-size:.85rem;">${i + 1}</td>
+                    <td><strong>${u.name}</strong></td>
+                    <td style="font-size:.875rem;">${u.email}</td>
+                    <td>${roleBadge(u.user_type)}</td>
+                    <td>${statusBadge}</td>
+                    <td style="font-size:.8rem;color:var(--text-gray);">${joined}</td>
                     <td>
-                        <button class="btn" style="padding:0.25rem 0.5rem; font-size:0.8rem;" onclick="alert('Use dedicated user edit modal (to be integrated)')">Manage</button>
+                        <div class="action-group">
+                            <button class="btn btn-primary btn-sm" onclick="openManageModal(${JSON.stringify(u).replace(/"/g, '&quot;')})">Manage</button>
+                        </div>
                     </td>
-                </tr>
-            `).join('');
+                </tr>`;
+            }).join('');
+        }
+
+        function openManageModal(u) {
+            _activeUser = u;
+            document.getElementById('manage-user-card').innerHTML = userCard(u);
+            const suspended = parseInt(u.is_suspended);
+            document.getElementById('btn-suspend').textContent = suspended ? '✅ Unsuspend User' : '⏸ Suspend User';
+            document.getElementById('btn-suspend').className = suspended ? 'btn btn-success' : 'btn btn-warning';
+            openModal('modal-manage');
+        }
+
+        function openRoleModal() {
+            document.getElementById('role-user-card').innerHTML = userCard(_activeUser);
+            document.getElementById('new-role-select').value = _activeUser.user_type;
+            closeModal('modal-manage');
+            openModal('modal-role');
+        }
+
+        async function saveRole() {
+            const role = document.getElementById('new-role-select').value;
+            const res = await fetch('php/admin/manage_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'change_role', user_id: _activeUser.id, role })
+            });
+            const data = await res.json();
+            closeModal('modal-role');
+            if (data.success) { showToast('✅ ' + data.message); loadUsers(); }
+            else showToast('❌ ' + data.error, 'error');
+        }
+
+        async function toggleSuspend() {
+            const suspended = parseInt(_activeUser.is_suspended);
+            const res = await fetch('php/admin/manage_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'suspend_user', user_id: _activeUser.id, suspend: suspended ? 0 : 1 })
+            });
+            const data = await res.json();
+            closeModal('modal-manage');
+            if (data.success) { showToast('✅ ' + data.message); loadUsers(); }
+            else showToast('❌ ' + data.error, 'error');
+        }
+
+        function openPasswordModal() {
+            document.getElementById('pw-user-card').innerHTML = userCard(_activeUser);
+            document.getElementById('new-password-input').value = '';
+            closeModal('modal-manage');
+            openModal('modal-password');
+        }
+
+        async function savePassword() {
+            const pw = document.getElementById('new-password-input').value;
+            const res = await fetch('php/admin/manage_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'reset_password', user_id: _activeUser.id, password: pw })
+            });
+            const data = await res.json();
+            closeModal('modal-password');
+            if (data.success) showToast('✅ ' + data.message);
+            else showToast('❌ ' + data.error, 'error');
+        }
+
+        function openNotifModal() {
+            document.getElementById('notif-user-card').innerHTML = userCard(_activeUser);
+            document.getElementById('notif-message').value = '';
+            closeModal('modal-manage');
+            openModal('modal-notif');
+        }
+
+        async function sendNotification() {
+            const msg = document.getElementById('notif-message').value.trim();
+            if (!msg) { showToast('⚠ Please enter a message', 'error'); return; }
+            const res = await fetch('php/admin/manage_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'send_notification', user_id: _activeUser.id, message: msg })
+            });
+            const data = await res.json();
+            closeModal('modal-notif');
+            if (data.success) showToast('✅ Notification sent!');
+            else showToast('❌ ' + data.error, 'error');
+        }
+
+        function confirmDeleteUser() {
+            document.getElementById('delete-user-card').innerHTML = userCard(_activeUser);
+            closeModal('modal-manage');
+            openModal('modal-delete');
+        }
+
+        async function deleteUser() {
+            const res = await fetch('php/admin/manage_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete_user', user_id: _activeUser.id })
+            });
+            const data = await res.json();
+            closeModal('modal-delete');
+            if (data.success) { showToast('🗑 User deleted.'); loadUsers(); }
+            else showToast('❌ ' + data.error, 'error');
         }
 
         // --- EQUIPMENT ---
+        function switchEqTab(tab) {
+            document.getElementById('eq-panel-rental').style.display = tab === 'rental' ? 'block' : 'none';
+            document.getElementById('eq-panel-secondhand').style.display = tab === 'secondhand' ? 'block' : 'none';
+            document.getElementById('eq-tab-rental').style.background = tab === 'rental' ? 'var(--primary)' : 'var(--light)';
+            document.getElementById('eq-tab-rental').style.color = tab === 'rental' ? '#fff' : 'var(--text-gray)';
+            document.getElementById('eq-tab-secondhand').style.background = tab === 'secondhand' ? 'var(--primary)' : 'var(--light)';
+            document.getElementById('eq-tab-secondhand').style.color = tab === 'secondhand' ? '#fff' : 'var(--text-gray)';
+        }
+
         async function loadEquipment() {
-            const res = await fetch('php/get_all_equipment.php');
-            const data = await res.json();
             const grid = document.getElementById('listings-grid');
-            grid.innerHTML = data.equipment.map(e => `
-                <div class="stat-card">
-                    <img src="${e.image_url}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:1rem;">
-                    <h4>${e.equipment_name}</h4>
-                    <p style="color:var(--text-gray); font-size:0.9rem;">${e.location}</p>
-                    <div style="margin-top:1rem; display:flex; justify-content:space-between; align-items:center;">
-                        <span class="status-badge">${e.approval_status}</span>
-                        <span style="font-weight:bold;">₹${e.price_per_day}/day</span>
-                    </div>
-                </div>
-            `).join('');
+            const shBody = document.getElementById('secondhand-body');
+            grid.innerHTML = `<div style="color:var(--text-gray);padding:2rem;">Loading...</div>`;
+            shBody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--text-gray);padding:2rem;">Loading...</td></tr>`;
+
+            try {
+                // Fetch both in parallel
+                const [r1, r2] = await Promise.all([
+                    fetch('php/get_all_equipment.php').then(r => r.json()),
+                    fetch('php/get_secondhand_equipment.php').then(r => r.json()),
+                ]);
+
+                const rental = (r1.success ? r1.equipment : []) || [];
+                const secondhand = (r2.success ? r2.equipment : []) || [];
+
+                // Update summary cards
+                const unavailable = rental.filter(e => (e.availability_status || '').toLowerCase() !== 'available').length;
+                document.getElementById('eq-total').textContent = rental.length + secondhand.length;
+                document.getElementById('eq-rental').textContent = rental.length;
+                document.getElementById('eq-secondhand').textContent = secondhand.length;
+                document.getElementById('eq-unavailable').textContent = unavailable + (secondhand.filter(s => !s.is_available || s.is_available == 0).length);
+
+                // ── RENTAL cards ────────────────────────────────────
+                if (!rental.length) {
+                    grid.innerHTML = `<div style="color:var(--text-gray);padding:2rem;">No rental equipment found.</div>`;
+                } else {
+                    const availColor = s => ({
+                        available: '#10b981', rented: '#f59e0b', maintenance: '#ef4444'
+                    })[(s || '').toLowerCase()] || '#6b7280';
+
+                    grid.innerHTML = rental.map(e => {
+                        const ac = availColor(e.availability_status);
+                        const approvedBadge = (e.approval_status || 'pending').toLowerCase() === 'approved'
+                            ? `<span class="role-badge" style="background:#dcfce7;color:#15803d;font-size:.7rem;">Approved</span>`
+                            : `<span class="role-badge" style="background:#fef3c7;color:#92400e;font-size:.7rem;">${e.approval_status || 'Pending'}</span>`;
+                        return `
+                        <div class="stat-card" style="padding:0; overflow:hidden; border-radius:16px;">
+                            <div style="position:relative;">
+                                <img src="${e.image_url || 'https://placehold.co/400x200/e8f5e9/2e7d32?text=Equipment'}"
+                                     style="width:100%; height:150px; object-fit:cover;"
+                                     onerror="this.src='https://placehold.co/400x200/e8f5e9/2e7d32?text=Equipment'">
+                                <span style="position:absolute;top:8px;right:8px;background:${ac}22;color:${ac};
+                                            font-size:.7rem;padding:.2rem .6rem;border-radius:50px;font-weight:600;
+                                            backdrop-filter:blur(4px);">
+                                    ${e.availability_status || 'N/A'}
+                                </span>
+                            </div>
+                            <div style="padding:1rem;">
+                                <div style="font-weight:700;font-size:.95rem;margin-bottom:.25rem;">${e.equipment_name}</div>
+                                <div style="font-size:.8rem;color:var(--text-gray);margin-bottom:.75rem;">${e.location || 'N/A'} &bull; ${e.owner_name || 'Owner'}</div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    ${approvedBadge}
+                                    <span style="font-weight:700;color:var(--primary);">&#8377;${parseFloat(e.price_per_day || 0).toLocaleString('en-IN')}/day</span>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+
+                // ── SECOND-HAND table rows ──────────────────────────
+                if (!secondhand.length) {
+                    shBody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--text-gray);padding:2rem;">No second-hand equipment listed for sale.</td></tr>`;
+                } else {
+                    const condColor = c => ({
+                        'excellent': '#10b981', 'good': '#3b82f6', 'fair': '#f59e0b',
+                        'poor': '#ef4444', 'like new': '#10b981'
+                    })[(c || '').toLowerCase()] || '#6b7280';
+
+                    shBody.innerHTML = secondhand.map((s, i) => {
+                        const cc = condColor(s.condition_status);
+                        const avail = parseInt(s.is_available) === 1;
+                        const price = parseFloat(s.selling_price || 0).toLocaleString('en-IN');
+                        const origP = s.original_price ? '&#8377;' + parseFloat(s.original_price).toLocaleString('en-IN') : '—';
+                        return `<tr>
+                            <td style="color:var(--text-gray);font-size:.85rem;">${i + 1}</td>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:.75rem;">
+                                    <img src="${s.image_url || 'https://placehold.co/48x48/f3f4f6/6b7280?text=?'}"
+                                         style="width:44px;height:44px;object-fit:cover;border-radius:8px;"
+                                         onerror="this.src='https://placehold.co/48x48/f3f4f6/6b7280?text=?'">
+                                    <strong>${s.equipment_name}</strong>
+                                </div>
+                            </td>
+                            <td><span class="role-badge role-owner" style="font-size:.7rem;">${s.category || '—'}</span></td>
+                            <td>
+                                <div style="font-size:.875rem;">${s.owner_name || '—'}</div>
+                                <div style="font-size:.75rem;color:var(--text-gray);">${s.owner_email || ''}</div>
+                            </td>
+                            <td><span class="role-badge" style="background:${cc}22;color:${cc};font-size:.75rem;">${s.condition_status || '—'}</span></td>
+                            <td style="font-size:.85rem;">${s.location || '—'}</td>
+                            <td style="font-weight:700;color:var(--primary);">&#8377;${price}</td>
+                            <td style="font-size:.85rem;color:var(--text-gray);">${origP}</td>
+                            <td style="font-size:.8rem;">${s.year_of_manufacture || '—'}</td>
+                            <td><span class="role-badge" style="background:${avail ? '#dcfce7' : '#fee2e2'};color:${avail ? '#15803d' : '#b91c1c'};">
+                                ${avail ? 'Available' : 'Sold'}
+                            </span></td>
+                        </tr>`;
+                    }).join('');
+                }
+
+            } catch (err) {
+                grid.innerHTML = `<div style="color:#ef4444;padding:1rem;">Error: ${err.message}</div>`;
+                shBody.innerHTML = `<tr><td colspan="10" style="color:#ef4444;padding:1rem;">Error: ${err.message}</td></tr>`;
+            }
         }
 
         // --- RENTALS ---
         async function loadRentals() {
-            const res = await fetch('php/admin/get_rentals.php');
-            const data = await res.json();
-            if (data.success) {
-                const tbody = document.getElementById('rentals-body');
-                tbody.innerHTML = data.rentals.map(r => `
-                    <tr>
-                        <td>#${r.id}</td>
-                        <td>${r.equipment_name}</td>
-                        <td>${r.farmer_name}</td>
-                        <td>${r.start_date} to ${r.end_date}</td>
-                        <td>₹${parseFloat(r.total_amount).toLocaleString()}</td>
-                        <td><span class="status-badge" style="background:${r.status_color}20; color:${r.status_color}">${r.status_label}</span></td>
-                    </tr>
-                `).join('');
+            const tbody = document.getElementById('rentals-body');
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--text-gray);padding:2rem;">Loading...</td></tr>`;
+            try {
+                const res = await fetch('php/admin/get_rentals.php');
+                const data = await res.json();
+
+                if (!data.success) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#ef4444;padding:2rem;">Error: ${data.error || 'Unknown error'}</td></tr>`;
+                    return;
+                }
+
+                const rentals = data.rentals || [];
+
+                // Update summary cards
+                const total = rentals.length;
+                const active = rentals.filter(r => ['Active', 'Confirmed'].includes(r.status_label)).length;
+                const pending = rentals.filter(r => r.status_label === 'Pending').length;
+                const completed = rentals.filter(r => r.status_label === 'Completed').length;
+                document.getElementById('rent-total').textContent = total;
+                document.getElementById('rent-active').textContent = active;
+                document.getElementById('rent-pending').textContent = pending;
+                document.getElementById('rent-completed').textContent = completed;
+
+                if (!rentals.length) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--text-gray);padding:2rem;">No rental transactions found.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = rentals.map((r, i) => {
+                    const typeBadge = r.source === 'booking'
+                        ? `<span class="role-badge role-farmer">Booking</span>`
+                        : `<span class="role-badge role-worker">Request</span>`;
+
+                    const payBadge = r.payment_status
+                        ? `<span class="role-badge" style="background:#fef3c7;color:#92400e;">${r.payment_status}</span>`
+                        : `<span style="color:var(--text-gray);font-size:.8rem;">—</span>`;
+
+                    const fmt = v => v ? new Date(v).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+                    const amount = parseFloat(r.total_amount || 0);
+
+                    return `<tr>
+                        <td style="color:var(--text-gray);font-size:.85rem;">${i + 1}</td>
+                        <td>${typeBadge}</td>
+                        <td><strong>${r.equipment_name || '<em style="color:var(--text-gray)">Unknown</em>'}</strong></td>
+                        <td>
+                            <div style="font-size:.9rem;">${r.farmer_name || '—'}</div>
+                            <div style="font-size:.75rem;color:var(--text-gray);">${r.farmer_email || ''}</div>
+                        </td>
+                        <td style="font-size:.85rem;">${r.owner_name || '—'}</td>
+                        <td style="font-size:.8rem;white-space:nowrap;">${fmt(r.start_date)} → ${fmt(r.end_date)}</td>
+                        <td style="font-weight:600;">₹${amount.toLocaleString('en-IN')}</td>
+                        <td>${payBadge}</td>
+                        <td><span class="role-badge" style="background:${r.status_color}22;color:${r.status_color};">${r.status_label}</span></td>
+                    </tr>`;
+                }).join('');
+
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#ef4444;padding:2rem;">Network error: ${err.message}</td></tr>`;
             }
         }
 
         // --- JOBS ---
+        let _jobSearchTimer = null;
+        function debounceLoadJobs() {
+            clearTimeout(_jobSearchTimer);
+            _jobSearchTimer = setTimeout(loadJobs, 350);
+        }
+
         async function loadJobs() {
-            const res = await fetch('php/admin/get_jobs.php');
-            const data = await res.json();
-            if (data.success) {
-                const tbody = document.getElementById('jobs-body');
-                tbody.innerHTML = data.jobs.map(j => `
-                    <tr>
-                        <td>${j.title}</td>
-                        <td>${j.posted_by}</td>
-                        <td>${j.location}</td>
-                        <td>₹${j.wage}</td>
-                        <td><span class="status-badge">${j.status || 'Open'}</span></td>
-                    </tr>
-                `).join('');
+            const tbody = document.getElementById('jobs-body');
+            tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--text-gray);padding:2rem;">Loading...</td></tr>`;
+            try {
+                const search = (document.getElementById('job-search') || {}).value || '';
+                const status = (document.getElementById('job-status-filter') || {}).value || '';
+                const params = new URLSearchParams({ search, status });
+
+                const res = await fetch('php/admin/get_jobs.php?' + params);
+                const data = await res.json();
+
+                if (!data.success) {
+                    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#ef4444;padding:2rem;">Error: ${data.error || 'Unknown error'}</td></tr>`;
+                    return;
+                }
+
+                // Update summary cards
+                if (document.getElementById('job-total')) {
+                    document.getElementById('job-total').textContent = data.total || 0;
+                    document.getElementById('job-open').textContent = data.open || 0;
+                    document.getElementById('job-closed').textContent = data.closed || 0;
+                    document.getElementById('job-pending').textContent = data.pending || 0;
+                }
+
+                const jobs = data.jobs || [];
+                if (!jobs.length) {
+                    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--text-gray);padding:2rem;">No job postings found.</td></tr>`;
+                    return;
+                }
+
+                const statusColor = s => ({
+                    open: '#10b981', closed: '#6b7280', filled: '#3b82f6',
+                    pending: '#f59e0b', cancelled: '#ef4444'
+                })[s?.toLowerCase()] || '#6b7280';
+
+                const fmt = v => v ? new Date(v).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+
+                tbody.innerHTML = jobs.map((j, i) => {
+                    const sc = statusColor(j.status);
+                    const wage = parseFloat(j.wage || 0).toLocaleString('en-IN');
+                    return `<tr>
+                        <td style="color:var(--text-gray);font-size:.85rem;">${i + 1}</td>
+                        <td>
+                            <strong>${j.title || '—'}</strong>
+                            <div style="font-size:.75rem;color:var(--text-gray);">${j.job_type || ''}</div>
+                        </td>
+                        <td><span class="role-badge role-owner" style="font-size:.7rem;">${j.job_category || '—'}</span></td>
+                        <td>
+                            <div style="font-size:.875rem;">${j.posted_by || '—'}</div>
+                            <div style="font-size:.75rem;color:var(--text-gray);">${j.poster_email || ''}</div>
+                        </td>
+                        <td style="font-size:.875rem;">${j.location || '—'}</td>
+                        <td style="font-weight:600;">&#8377;${wage}<span style="font-weight:400;font-size:.75rem;color:var(--text-gray);">/${j.payment_type || 'day'}</span></td>
+                        <td style="text-align:center;">${j.workers_needed || 1}</td>
+                        <td style="text-align:center;">
+                            <span class="role-badge" style="background:#ede9fe;color:#5b21b6;">${j.application_count || 0} applied</span>
+                        </td>
+                        <td style="font-size:.8rem;white-space:nowrap;">${fmt(j.start_date)}</td>
+                        <td><span class="role-badge" style="background:${sc}22;color:${sc};">${j.status || 'Open'}</span></td>
+                    </tr>`;
+                }).join('');
+
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#ef4444;padding:2rem;">Network error: ${err.message}</td></tr>`;
             }
         }
 
         // --- PAYMENTS ---
         async function loadPayments() {
-            const res = await fetch('php/admin/get_payments.php');
-            const data = await res.json();
-            if (data.success) {
-                const tbody = document.getElementById('payments-body');
-                tbody.innerHTML = data.payments.map(p => `
-                    <tr>
-                        <td>#${p.id}</td>
-                        <td>${new Date(p.created_at).toLocaleDateString()}</td>
-                        <td>₹${parseFloat(p.amount).toLocaleString()}</td>
-                        <td>${p.payment_method}</td>
-                        <td><span class="status-badge" style="background:#dcfce7; color:#166534">${p.status}</span></td>
-                    </tr>
-                `).join('');
+            const tbody = document.getElementById('payments-body');
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-gray);padding:2rem;">Loading...</td></tr>`;
+            try {
+                const res = await fetch('php/admin/get_payments.php');
+                const data = await res.json();
+
+                if (!data.success) {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#ef4444;padding:2rem;">Error: ${data.error || 'Unknown error'}</td></tr>`;
+                    return;
+                }
+
+                // Update summary cards
+                const rev = parseFloat(data.total_revenue || 0);
+                document.getElementById('fin-revenue').textContent = '\u20b9' + rev.toLocaleString('en-IN');
+                if (document.getElementById('fin-total')) document.getElementById('fin-total').textContent = data.total || 0;
+                if (document.getElementById('fin-paid')) document.getElementById('fin-paid').textContent = data.paid_count || 0;
+                if (document.getElementById('fin-pending')) document.getElementById('fin-pending').textContent = data.pending_count || 0;
+
+                const payments = data.payments || [];
+                if (!payments.length) {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-gray);padding:2rem;">No transactions found.</td></tr>`;
+                    return;
+                }
+
+                const statusColor = s => ({
+                    paid: '#10b981', success: '#10b981', captured: '#10b981', completed: '#10b981',
+                    pending: '#f59e0b', failed: '#ef4444', refunded: '#6b7280'
+                })[s?.toLowerCase()] || '#6b7280';
+
+                const fmt = v => v ? new Date(v).toLocaleString('en-IN', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                }) : '—';
+
+                tbody.innerHTML = payments.map((p, i) => {
+                    const amt = parseFloat(p.amount || 0).toLocaleString('en-IN');
+                    const sc = statusColor(p.status);
+                    const txn = p.transaction_id ? `<span style="font-size:.72rem;font-family:monospace;color:var(--text-gray);">${p.transaction_id.substring(0, 18)}...</span>` : '—';
+                    return `<tr>
+                        <td style="color:var(--text-gray);font-size:.85rem;">${i + 1}</td>
+                        <td style="font-size:.8rem;white-space:nowrap;">${fmt(p.created_at)}</td>
+                        <td>
+                            <div style="font-size:.875rem;">${p.payer_name || '—'}</div>
+                            <div style="font-size:.75rem;color:var(--text-gray);">${p.payer_email || ''}</div>
+                        </td>
+                        <td style="font-size:.875rem;">${p.equipment_name || '—'}</td>
+                        <td style="font-weight:700;color:var(--dark);">₹${amt}</td>
+                        <td style="font-size:.85rem;">${p.payment_method || '—'}</td>
+                        <td>${txn}</td>
+                        <td><span class="role-badge" style="background:${sc}22;color:${sc};">${p.status || 'unknown'}</span></td>
+                    </tr>`;
+                }).join('');
+
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#ef4444;padding:2rem;">Network error: ${err.message}</td></tr>`;
             }
         }
 
@@ -672,28 +1708,32 @@
                             if (field.type === 'checkbox') {
                                 field.checked = data.settings[key] === 'true';
                             } else {
-                                field.value = data.settings[key];
+                                field.value = data.settings[key] ?? '';
                             }
                         }
                     }
+                } else if (!data.success) {
+                    showToast('⚠ Could not load settings: ' + (data.error || 'Unknown error'), 'error');
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                showToast('⚠ Network error loading settings.', 'error');
+                console.error(e);
+            }
         }
 
         async function saveSettings(e) {
             e.preventDefault();
             const form = e.target;
-            const data = {};
+            const saveBtn = form.querySelector('[type=submit]');
+            const origText = saveBtn.textContent;
+            saveBtn.textContent = 'Saving...';
+            saveBtn.disabled = true;
 
-            // Collect all inputs, specifically handling checkboxes
+            const data = {};
             for (let i = 0; i < form.elements.length; i++) {
                 const field = form.elements[i];
                 if (field.name) {
-                    if (field.type === 'checkbox') {
-                        data[field.name] = field.checked ? 'true' : 'false';
-                    } else {
-                        data[field.name] = field.value;
-                    }
+                    data[field.name] = field.type === 'checkbox' ? (field.checked ? 'true' : 'false') : field.value;
                 }
             }
 
@@ -704,16 +1744,86 @@
                     headers: { 'Content-Type': 'application/json' }
                 });
                 const result = await res.json();
-                if (result.success) alert("Settings saved successfully!");
-                else alert("Error saving settings: " + (result.error || 'Unknown error'));
+                if (result.success) {
+                    showToast('✅ ' + (result.message || 'Settings saved successfully!'));
+                } else {
+                    showToast('❌ Error: ' + (result.error || 'Unknown error'), 'error');
+                }
             } catch (error) {
-                console.error('Error saving settings:', error);
-                alert("Network error saving settings.");
+                showToast('❌ Network error saving settings.', 'error');
+                console.error(error);
+            } finally {
+                saveBtn.textContent = origText;
+                saveBtn.disabled = false;
+            }
+        }
+
+        // --- RECENT ACTIVITY ---
+        async function loadActivity() {
+            const feed = document.getElementById('activity-feed');
+            feed.innerHTML = `<div style="text-align:center;color:var(--text-gray);padding:2rem;">Loading...</div>`;
+            try {
+                const res = await fetch('php/admin/get_recent_activity.php');
+                const data = await res.json();
+
+                if (!data.success) {
+                    feed.innerHTML = `<div style="color:#ef4444;padding:1rem;">Error: ${data.error || 'Failed to load'}</div>`;
+                    return;
+                }
+
+                const acts = data.activities || [];
+                if (!acts.length) {
+                    feed.innerHTML = `<div style="text-align:center;color:var(--text-gray);padding:2rem;">No recent activity yet.</div>`;
+                    return;
+                }
+
+                const timeAgo = ts => {
+                    const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
+                    if (diff < 60) return diff + 's ago';
+                    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+                    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+                    return Math.floor(diff / 86400) + 'd ago';
+                };
+
+                const iconMap = {
+                    user: 'person_add', booking: 'handshake', request: 'pending_actions',
+                    job: 'work', payment: 'payments'
+                };
+
+                feed.innerHTML = acts.map((a, i) => {
+                    const isLast = i === acts.length - 1;
+                    return `
+                    <div style="display:flex; gap:1rem; padding:.85rem 0; ${isLast ? '' : 'border-bottom:1px solid #f3f4f6;'}">
+                        <!-- Icon dot -->
+                        <div style="flex-shrink:0; display:flex; flex-direction:column; align-items:center;">
+                            <div style="width:36px; height:36px; border-radius:50%; background:${a.color}18;
+                                        display:flex; align-items:center; justify-content:center;">
+                                <span class="material-icons-outlined" style="font-size:1.1rem; color:${a.color};">${a.icon}</span>
+                            </div>
+                            ${!isLast ? `<div style="width:2px; flex:1; background:#f3f4f6; margin-top:4px; min-height:8px;"></div>` : ''}
+                        </div>
+                        <!-- Content -->
+                        <div style="flex:1; min-width:0;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem;">
+                                <div>
+                                    <span style="font-size:.85rem; font-weight:600; color:var(--dark);">${a.title}</span>
+                                    <div style="font-size:.82rem; color:var(--dark); margin-top:2px;">${a.detail || ''}</div>
+                                    ${a.sub ? `<div style="font-size:.75rem; color:var(--text-gray); margin-top:2px;">${a.sub}</div>` : ''}
+                                </div>
+                                <span style="font-size:.72rem; color:var(--text-gray); white-space:nowrap; flex-shrink:0;">${timeAgo(a.time)}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+            } catch (err) {
+                feed.innerHTML = `<div style="color:#ef4444;padding:1rem;">Network error: ${err.message}</div>`;
             }
         }
 
         // Initial Load
         loadStats();
+        loadActivity();
     </script>
 </body>
 

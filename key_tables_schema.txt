@@ -1,0 +1,43 @@
+Table: rental_requests
+  id - int(11)
+  equipment_id - int(11)
+  equipment_name - varchar(255)
+  farmer_id - int(11)
+  farmer_name - varchar(255)
+  farmer_email - varchar(255)
+  owner_id - int(11)
+  start_date - date
+  end_date - date
+  num_days - int(11)
+  total_amount - decimal(10,2)
+  delivery_address - text
+  need_operator - tinyint(1)
+  need_insurance - tinyint(1)
+  special_requirements - text
+  status - varchar(50)
+  created_at - timestamp
+  updated_at - timestamp
+  agreement_status - varchar(50)
+  is_notification_dismissed - tinyint(1)
+  is_dismissed - tinyint(1)
+
+Table: agreements
+  id - int(11)
+  rental_request_id - int(11)
+  farmer_id - int(11)
+  owner_id - int(11)
+  equipment_id - int(11)
+  agreement_content - text
+  farmer_signature - varchar(255)
+  signed_at - datetime
+  status - enum('pending','signed','expired','farmer_signed','fully_signed')
+  created_at - timestamp
+  signature_type - enum('text','image')
+  signature_data - longtext
+  ip_address - varchar(45)
+  owner_signature_data - longtext
+  owner_signature_type - enum('text','image')
+  owner_signed_at - datetime
+  owner_ip_address - varchar(45)
+  agreement_pdf_path - varchar(255)
+

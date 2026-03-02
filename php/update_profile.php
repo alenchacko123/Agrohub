@@ -62,7 +62,8 @@ try {
         'farm_size' => 'VARCHAR(50)', 
         'phone' => 'VARCHAR(20)',
         'business_name' => 'VARCHAR(255)',
-        'equipment_count' => 'VARCHAR(50)'
+        'equipment_count' => 'VARCHAR(50)',
+        'address' => 'TEXT'
     ];
     
     foreach ($columns as $col => $type) {
@@ -100,6 +101,7 @@ try {
     $email = isset($input['email']) ? sanitize($input['email']) : '';
     $phone = isset($input['phone']) ? sanitize($input['phone']) : null;
     $location = isset($input['location']) ? sanitize($input['location']) : null;
+    $address = isset($input['address']) ? sanitize($input['address']) : null;
     $farm_size = isset($input['farm_size']) ? sanitize($input['farm_size']) : null;
     $business_name = isset($input['business_name']) ? sanitize($input['business_name']) : null;
     $equipment_count = isset($input['equipment_count']) ? sanitize($input['equipment_count']) : null;
@@ -135,6 +137,12 @@ try {
         $updateFields[] = "location = ?";
         $types .= "s";
         $params[] = $location;
+    }
+
+    if ($address !== null) {
+        $updateFields[] = "address = ?";
+        $types .= "s";
+        $params[] = $address;
     }
 
     if ($farm_size !== null) {
@@ -242,7 +250,7 @@ try {
     }
 
     // Fetch updated user data to return
-    $stmt = $conn->prepare("SELECT id, name, email, phone, location, farm_size, profile_picture, user_type, gender, date_of_birth, experience_years, daily_wage, worker_type, bio FROM users WHERE id = ?");
+    $stmt = $conn->prepare("SELECT id, name, email, phone, location, address, farm_size, profile_picture, user_type, gender, date_of_birth, experience_years, daily_wage, worker_type, bio FROM users WHERE id = ?");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     $updatedUser = $stmt->get_result()->fetch_assoc();
@@ -254,6 +262,7 @@ try {
         'email' => $updatedUser['email'],
         'phone' => $updatedUser['phone'],
         'location' => $updatedUser['location'],
+        'address' => $updatedUser['address'],
         'farm_size' => $updatedUser['farm_size'],
         'user_type' => $updatedUser['user_type'],
         'picture' => $updatedUser['profile_picture'],

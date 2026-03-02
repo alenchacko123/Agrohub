@@ -28,7 +28,13 @@ try {
     // Build query based on user type
     $sql = "SELECT rr.*, 
                    f.name as farmer_name, 
-                   o.name as owner_name";
+                   f.address as farmer_address,
+                   f.location as farmer_location,
+                   o.name as owner_name,
+                   o.address as owner_address,
+                   o.location as owner_location,
+                   ip.plan_name as insurance_plan_name,
+                   ip.coverage_amount as insurance_coverage_amount";
     
     if ($hasAgreements) {
         $sql .= ", a.signature_data, a.signature_type, a.signed_at,
@@ -43,6 +49,8 @@ try {
     if ($hasAgreements) {
         $sql .= " LEFT JOIN agreements a ON a.rental_request_id = rr.id";
     }
+    
+    $sql .= " LEFT JOIN insurance_plans ip ON rr.insurance_plan_id = ip.id";
 
     $sql .= " WHERE ";
 

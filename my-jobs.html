@@ -656,17 +656,24 @@
                 const contactHtml = job.farmer_phone ? `
                     <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
                         <div style="font-weight: 600; margin-bottom: 0.5rem; color: #1a1a2e;">Farmer Contact Details:</div>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
                             <a href="tel:${job.farmer_phone}" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
                                 <span class="material-icons-outlined">call</span> ${job.farmer_phone}
                             </a>
-                            ${job.farmer_email ? `
-                            <a href="mailto:${job.farmer_email}" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
-                                <span class="material-icons-outlined">email</span> Email
-                            </a>` : ''}
+                            <a href="job-chat.html?job_id=${job.job_id}&role=worker&other_name=${encodeURIComponent(job.farmer_name || 'Farmer')}&job_title=${encodeURIComponent(job.job_title)}&back=my-jobs.html"
+                               class="btn btn-primary" style="font-size: 0.9rem; padding: 0.5rem 1.2rem; text-decoration: none; background: linear-gradient(135deg,#7c3aed,#6d28d9);">
+                                <span class="material-icons-outlined">chat</span> Message Farmer
+                            </a>
                         </div>
                     </div>
-                ` : '';
+                ` : `
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                        <a href="job-chat.html?job_id=${job.job_id}&role=worker&other_name=${encodeURIComponent(job.farmer_name || 'Farmer')}&job_title=${encodeURIComponent(job.job_title)}&back=my-jobs.html"
+                           class="btn btn-primary" style="font-size: 0.9rem; padding: 0.5rem 1.2rem; text-decoration: none; display: inline-flex; background: linear-gradient(135deg,#7c3aed,#6d28d9);">
+                            <span class="material-icons-outlined">chat</span> Message Farmer
+                        </a>
+                    </div>
+                `;
 
                 actions = `
                     ${contactHtml}

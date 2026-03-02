@@ -562,7 +562,18 @@
                 font-size: 2rem;
             }
         }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
+
 </head>
 
 <body>
@@ -644,6 +655,17 @@
                             id="modalCondition">-</span> | <strong>Year:</strong> <span id="modalYear">-</span></p>
                 </div>
 
+                <!-- Seller contact info (populated by JS) -->
+                <div id="modalSellerInfo"
+                    style="display:none; margin-bottom:1rem; background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 1px solid #a7f3d0; border-radius: 12px; padding: 1rem 1.25rem; font-size: 0.9rem; line-height: 1.8; color: var(--text-dark);">
+                    <h4
+                        style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--primary-green);">
+                        <span class="material-icons-outlined" style="font-size:1.1rem;">contact_phone</span>
+                        Seller Contact Details
+                    </h4>
+                </div>
+
+
                 <div class="warranty-box">
                     <h4>
                         <span class="material-icons-outlined">verified_user</span>
@@ -651,6 +673,8 @@
                     </h4>
                     <p>All equipment comes with a 30-day warranty and has been inspected by certified technicians.</p>
                 </div>
+
+
 
                 <form id="purchaseForm">
                     <div class="form-row">
@@ -696,20 +720,7 @@
                         </div>
                     </div>
 
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="needDelivery" checked>
-                        <label for="needDelivery">Include delivery & installation (+₹3,000)</label>
-                    </div>
 
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="extendedWarranty">
-                        <label for="extendedWarranty">Extended warranty for 1 year (+₹5,000)</label>
-                    </div>
-
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="needTraining">
-                        <label for="needTraining">Free operator training session (Included)</label>
-                    </div>
 
                     <div class="form-group">
                         <label>Additional Notes (Optional)</label>
@@ -726,10 +737,59 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closePurchaseModal()">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="submitPurchase()">Confirm Purchase</button>
+                <button type="button" id="confirmPurchaseBtn" class="btn btn-primary" onclick="submitPurchase()">Confirm
+                    Purchase</button>
             </div>
         </div>
     </div>
+
+    <!-- ===== SUCCESS MODAL ===== -->
+    <div class="modal" id="successModal">
+        <div class="modal-content" style="max-width: 480px; text-align: center;">
+            <div style="padding: 3rem 2rem;">
+                <!-- Animated checkmark -->
+                <div
+                    style="width: 80px; height: 80px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; box-shadow: 0 8px 25px rgba(34,197,94,0.35); animation: successPop 0.4s cubic-bezier(0.175,0.885,0.32,1.275);">
+                    <span class="material-icons-outlined" style="font-size: 2.5rem; color: #fff;">check_circle</span>
+                </div>
+                <h2
+                    style="font-family: var(--font-serif); font-size: 1.65rem; color: var(--text-dark); margin-bottom: 0.5rem;">
+                    Enquiry Sent! 🎉</h2>
+                <p style="color: var(--text-gray); font-size: 0.95rem; margin-bottom: 1.75rem;" id="successMessage">Your
+                    enquiry has been sent to the owner. They will contact you shortly.</p>
+
+                <!-- Buyer summary card -->
+                <div id="successSummary"
+                    style="background: linear-gradient(135deg,#ecfdf5,#d1fae5); border: 1px solid #a7f3d0; border-radius: 14px; padding: 1.25rem 1.5rem; text-align: left; font-size: 0.9rem; line-height: 1.9; margin-bottom: 1.5rem; color: var(--text-dark);">
+                </div>
+
+                <!-- Owner contact chip (shown if available) -->
+                <div id="ownerContactChip"
+                    style="display:none; background: rgba(0,119,182,0.08); border: 1px solid rgba(0,119,182,0.2); border-radius: 50px; padding: 0.5rem 1.25rem; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #0077b6; font-weight: 600; margin-bottom: 1.75rem;">
+                    <span class="material-icons-outlined" style="font-size: 1rem;">mark_email_read</span>
+                    <span id="ownerEmailChipText"></span>
+                </div>
+
+                <button onclick="closeSuccessModal()"
+                    style="width: 100%; padding: 0.875rem; background: linear-gradient(135deg, var(--primary-green), var(--dark-green)); color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                    Back to Listings
+                </button>
+            </div>
+        </div>
+    </div>
+    <style>
+        @keyframes successPop {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
 
     <script>
         // Function to redirect to the appropriate dashboard based on referrer or sessionStorage
@@ -772,182 +832,104 @@
             }
         });
 
-        // Sample used equipment data
-        const usedEquipmentData = [
-            {
-                id: 1,
-                name: "Mahindra 575 DI Tractor",
-                category: "tractor",
-                condition: "excellent",
-                description: "Well-maintained 45 HP tractor with only 2000 hours of usage. Perfect for small to medium farms.",
-                price: 385000,
-                originalPrice: 450000,
-                year: 2019,
-                hours: 2000,
-                location: "Bangalore, Karnataka",
-                verified: true,
-                warranty: "6 months",
-                specs: {
-                    hp: "45 HP",
-                    drive: "4WD",
-                    transmission: "8F+2R"
-                },
-                image: "https://images.unsplash.com/photo-1599933334295-06183e37c5a4?q=80&w=600&auto=format&fit=crop"
-            },
-            {
-                id: 2,
-                name: "John Deere 5050D",
-                category: "tractor",
-                condition: "good",
-                description: "Reliable 50 HP tractor, serviced regularly. Great value for money.",
-                price: 420000,
-                originalPrice: 550000,
-                year: 2018,
-                hours: 3500,
-                location: "Mysore, Karnataka",
-                verified: true,
-                warranty: "3 months",
-                specs: {
-                    hp: "50 HP",
-                    drive: "4WD",
-                    transmission: "9F+3R"
-                },
-                image: "https://images.unsplash.com/photo-1596434442749-da99859f518e?q=80&w=600&auto=format&fit=crop"
-            },
-            {
-                id: 3,
-                name: "Rotavator 7ft Heavy Duty",
-                category: "tiller",
-                condition: "excellent",
-                description: "Like new condition, barely used. Perfect for soil preparation.",
-                price: 75000,
-                originalPrice: 95000,
-                year: 2021,
-                hours: 150,
-                location: "Hassan, Karnataka",
-                verified: true,
-                warranty: "12 months",
-                specs: {
-                    width: "7 ft",
-                    blades: "40 Blades",
-                    type: "Heavy Duty"
-                },
-                image: "https://images.unsplash.com/photo-1598155523122-38423bb4d6cf?q=80&w=600&auto=format&fit=crop"
-            },
-            {
-                id: 4,
-                name: "Mahindra Arjun Harvester",
-                category: "harvester",
-                condition: "good",
-                description: "100 HP combined harvester in working condition. Ideal for wheat and paddy.",
-                price: 1250000,
-                originalPrice: 1800000,
-                year: 2017,
-                hours: 5000,
-                location: "Mandya, Karnataka",
-                verified: true,
-                warranty: "3 months",
-                specs: {
-                    hp: "100 HP",
-                    capacity: "1.5 acres/hr",
-                    type: "Combined"
-                },
-                image: "https://images.unsplash.com/photo-1530210124570-666017645b71?q=80&w=600&auto=format&fit=crop"
-            },
-            {
-                id: 5,
-                name: "Seed Drill 11-Row",
-                category: "planter",
-                condition: "excellent",
-                description: "Precision seeding equipment, minimal usage. Perfect for large-scale farming.",
-                price: 95000,
-                originalPrice: 125000,
-                year: 2020,
-                hours: 500,
-                location: "Tumkur, Karnataka",
-                verified: true,
-                warranty: "9 months",
-                specs: {
-                    rows: "11 Rows",
-                    spacing: "Adjustable",
-                    type: "Tractor-mounted"
-                },
-                image: "https://images.unsplash.com/photo-1622383563227-0440378c608a?q=80&w=600&auto=format&fit=crop"
-            },
-            {
-                id: 6,
-                name: "Power Tiller 8HP",
-                category: "tiller",
-                condition: "fair",
-                description: "Compact power tiller for small farms and greenhouses.",
-                price: 28000,
-                originalPrice: 45000,
-                year: 2016,
-                hours: 4000,
-                location: "Bangalore, Karnataka",
-                verified: false,
-                warranty: "1 month",
-                specs: {
-                    hp: "8 HP",
-                    fuel: "Diesel",
-                    type: "Walking Type"
-                },
-                image: "https://images.unsplash.com/photo-1550147760-44c9966d6bc7?q=80&w=600&auto=format&fit=crop"
-            },
-            {
-                id: 7,
-                name: "Sprayer 400L Tractor Mounted",
-                category: "sprayer",
-                condition: "good",
-                description: "Efficient spraying system with boom and nozzles in good condition.",
-                price: 55000,
-                originalPrice: 75000,
-                year: 2019,
-                hours: 800,
-                location: "Hassan, Karnataka",
-                verified: true,
-                warranty: "6 months",
-                specs: {
-                    capacity: "400L",
-                    boom: "12ft",
-                    nozzles: "10 Nos"
-                },
-                image: "https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=600&auto=format&fit=crop"
-            },
-            {
-                id: 8,
-                name: "Cultivator 13-Tyne",
-                category: "tiller",
-                condition: "excellent",
-                description: "Heavy duty cultivator for deep soil preparation, barely used.",
-                price: 48000,
-                originalPrice: 62000,
-                year: 2021,
-                hours: 200,
-                location: "Bangalore, Karnataka",
-                verified: true,
-                warranty: "12 months",
-                specs: {
-                    tynes: "13 Tyne",
-                    width: "7.5 ft",
-                    type: "Spring Loaded"
-                },
-                image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=600&auto=format&fit=crop"
-            }
-        ];
 
+        // All equipment data loaded from backend
+        let usedEquipmentData = [];
         let currentEquipment = null;
 
-        // Render equipment cards
-        function renderEquipment(data = usedEquipmentData) {
+        // ── Fetch equipment from backend ──────────────────────────────────────────
+        async function fetchEquipment() {
             const grid = document.getElementById('equipmentGrid');
+            grid.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:4rem; color:#94a3b8;">
+                    <span class="material-icons-outlined" style="font-size:4rem; animation:spin 1s linear infinite; color:#0077b6;">sync</span>
+                    <p style="margin-top:1rem; font-size:1.1rem; font-weight:500;">Loading available equipment...</p>
+                </div>`;
+
+            try {
+                const response = await fetch('php/get_secondhand_equipment.php');
+                const result = await response.json();
+
+                if (result.success) {
+                    // Normalise DB rows into the shape the rest of the code expects
+                    usedEquipmentData = result.equipment.map(row => ({
+                        id: parseInt(row.id),
+                        name: row.equipment_name,
+                        category: row.category,
+                        condition: row.condition_status,          // 'excellent' | 'good' | 'fair'
+                        description: row.description || '',
+                        price: parseFloat(row.selling_price),
+                        originalPrice: row.original_price ? parseFloat(row.original_price) : parseFloat(row.selling_price),
+                        year: row.year_of_manufacture || '—',
+                        hours: parseInt(row.hours_used) || 0,
+                        location: row.location || '—',
+                        ownerName: row.owner_name || '',
+                        ownerPhone: row.owner_phone || '',
+                        ownerEmail: row.owner_email || '',
+                        verified: false,
+                        warranty: row.warranty || null,
+                        image: row.image_url || null,
+                        specs: {
+                            year: row.year_of_manufacture || '—',
+                            hours: parseInt(row.hours_used) ? parseInt(row.hours_used).toLocaleString() + 'h' : '—',
+                            location: (row.location || '—').split(',')[0]
+                        }
+                    }));
+
+                    if (usedEquipmentData.length === 0) {
+                        grid.innerHTML = `
+                            <div style="grid-column:1/-1; text-align:center; padding:4rem; color:#94a3b8;">
+                                <span class="material-icons-outlined" style="font-size:5rem; color:#cbd5e1;">agriculture</span>
+                                <h3 style="margin-top:1rem; font-size:1.3rem; font-weight:600; color:#64748b;">No equipment listed yet</h3>
+                                <p style="margin-top:0.5rem;">Check back soon — owners are listing their used equipment here.</p>
+                            </div>`;
+                    } else {
+                        renderEquipment(usedEquipmentData);
+                    }
+                } else {
+                    throw new Error(result.error || 'Unknown error');
+                }
+            } catch (err) {
+                console.error('Failed to load equipment:', err);
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1; text-align:center; padding:4rem; color:#ef4444;">
+                        <span class="material-icons-outlined" style="font-size:4rem;">error_outline</span>
+                        <p style="margin-top:1rem; font-size:1rem;">Could not load equipment. Please try refreshing the page.</p>
+                        <button onclick="fetchEquipment()" style="margin-top:1rem; padding:0.6rem 1.5rem; background:#0077b6; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">
+                            Retry
+                        </button>
+                    </div>`;
+            }
+        }
+
+        // ── Render equipment cards ────────────────────────────────────────────────
+        function renderEquipment(data) {
+            const grid = document.getElementById('equipmentGrid');
+            if (!data || data.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1; text-align:center; padding:4rem; color:#94a3b8;">
+                        <span class="material-icons-outlined" style="font-size:4rem; color:#cbd5e1;">search_off</span>
+                        <h3 style="margin-top:1rem; font-size:1.3rem; font-weight:600; color:#64748b;">No results found</h3>
+                        <p style="margin-top:0.5rem;">Try adjusting your filters or search term.</p>
+                    </div>`;
+                return;
+            }
+
             grid.innerHTML = data.map(item => {
-                const discount = Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100);
+                const hasDiscount = item.originalPrice > item.price;
+                const discount = hasDiscount ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100) : 0;
+                const imgHtml = item.image
+                    ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;">`
+                    : `<span class="material-icons-outlined" style="font-size:72px; color:#94a3b8;">agriculture</span>`;
+
+                const warrantyLabel = item.warranty ? ` • ${item.warranty} warranty` : '';
+                const discountLabel = discount > 0 ? `${discount}% off${warrantyLabel}` : (item.warranty ? `${item.warranty} warranty` : '');
+
                 return `
                 <div class="equipment-card" onclick="openPurchaseModal(${item.id})">
                     <div class="equipment-image">
-                        <img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="condition-badge ${item.condition}">${item.condition.toUpperCase()}</div>
+                        ${imgHtml}
+                        <div class="condition-badge ${item.condition}">${(item.condition || '').toUpperCase()}</div>
                         ${item.verified ? '<div class="verified-badge"><span class="material-icons-outlined" style="font-size: 1rem;">verified</span>Verified</div>' : ''}
                     </div>
                     <div class="equipment-content">
@@ -960,40 +942,46 @@
                                 </div>
                                 <div class="meta-item">
                                     <span class="material-icons-outlined" style="font-size: 1rem;">schedule</span>
-                                    ${item.hours}h
+                                    ${item.hours > 0 ? item.hours.toLocaleString() + 'h' : '—'}
                                 </div>
                                 <div class="meta-item">
                                     <span class="material-icons-outlined" style="font-size: 1rem;">location_on</span>
-                                    ${item.location.split(',')[0]}
+                                    ${(item.location || '—').split(',')[0]}
                                 </div>
                             </div>
                             <p class="equipment-description">${item.description}</p>
                         </div>
                         <div class="equipment-specs">
-                            ${Object.entries(item.specs).map(([key, value]) => `
-                                <div class="spec-item">
-                                    <span class="spec-label">${key.toUpperCase()}</span>
-                                    <span class="spec-value">${value}</span>
-                                </div>
-                            `).join('')}
+                            <div class="spec-item">
+                                <span class="spec-label">CATEGORY</span>
+                                <span class="spec-value" style="text-transform:capitalize">${item.category}</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">CONDITION</span>
+                                <span class="spec-value" style="text-transform:capitalize">${item.condition}</span>
+                            </div>
+                            ${item.ownerName ? `<div class="spec-item">
+                                <span class="spec-label">SELLER</span>
+                                <span class="spec-value">${item.ownerName}</span>
+                            </div>` : ''}
                         </div>
                         <div class="equipment-footer">
                             <div class="equipment-price">
-                                <span class="price-value">₹${item.price.toLocaleString()}</span>
-                                <span class="original-price">₹${item.originalPrice.toLocaleString()}</span>
-                                <span class="price-label">${discount}% off • ${item.warranty} warranty</span>
+                                <span class="price-value">₹${item.price.toLocaleString('en-IN')}</span>
+                                ${hasDiscount ? `<span class="original-price">₹${item.originalPrice.toLocaleString('en-IN')}</span>` : ''}
+                                ${discountLabel ? `<span class="price-label">${discountLabel}</span>` : ''}
                             </div>
                             <button class="buy-btn">
-                                Buy Now
-                                <span class="material-icons-outlined">shopping_cart</span>
+                                Contact Seller
+                                <span class="material-icons-outlined">phone</span>
                             </button>
                         </div>
                     </div>
-                </div>
-            `}).join('');
+                </div>`;
+            }).join('');
         }
 
-        // Filter functionality
+        // ── Filter functionality ──────────────────────────────────────────────────
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const category = document.getElementById('categoryFilter').value;
@@ -1024,16 +1012,27 @@
         document.getElementById('conditionFilter').addEventListener('change', applyFilters);
         document.getElementById('priceFilter').addEventListener('change', applyFilters);
 
-        // Open purchase modal
+        // ── Purchase / Contact modal ──────────────────────────────────────────────
         function openPurchaseModal(equipmentId) {
             const equipment = usedEquipmentData.find(e => e.id === equipmentId);
             if (!equipment) return;
 
             currentEquipment = equipment;
-            document.getElementById('modalEquipmentName').textContent = `Purchase ${equipment.name}`;
-            document.getElementById('modalPrice').textContent = `₹${equipment.price.toLocaleString()}`;
-            document.getElementById('modalCondition').textContent = equipment.condition.toUpperCase();
+            document.getElementById('modalEquipmentName').textContent = `Contact Seller — ${equipment.name}`;
+            document.getElementById('modalPrice').textContent = `₹${equipment.price.toLocaleString('en-IN')}`;
+            document.getElementById('modalCondition').textContent = (equipment.condition || '').toUpperCase();
             document.getElementById('modalYear').textContent = equipment.year;
+
+            // Show seller contact info if available
+            const sellerInfoEl = document.getElementById('modalSellerInfo');
+            if (sellerInfoEl) {
+                let sellerHtml = '';
+                if (equipment.ownerName) sellerHtml += `<div><strong>Seller:</strong> ${equipment.ownerName}</div>`;
+                if (equipment.ownerPhone) sellerHtml += `<div><strong>Phone:</strong> <a href="tel:${equipment.ownerPhone}" style="color:#0077b6;">${equipment.ownerPhone}</a></div>`;
+                if (equipment.ownerEmail) sellerHtml += `<div><strong>Email:</strong> <a href="mailto:${equipment.ownerEmail}" style="color:#0077b6;">${equipment.ownerEmail}</a></div>`;
+                sellerInfoEl.innerHTML = sellerHtml;
+                sellerInfoEl.style.display = sellerHtml ? 'block' : 'none';
+            }
 
             document.getElementById('purchaseModal').classList.add('active');
             calculateTotal();
@@ -1053,22 +1052,12 @@
             let total = currentEquipment.price;
             const paymentMethod = document.getElementById('paymentMethod').value;
 
-            // Apply discount for full payment
             if (paymentMethod === 'full') {
                 total = total * 0.95; // 5% discount
             }
 
-            // Add delivery charge
-            if (document.getElementById('needDelivery').checked) {
-                total += 3000;
-            }
 
-            // Add extended warranty
-            if (document.getElementById('extendedWarranty').checked) {
-                total += 5000;
-            }
-
-            document.getElementById('totalAmount').value = `₹${Math.round(total).toLocaleString()}`;
+            document.getElementById('totalAmount').value = `₹${Math.round(total).toLocaleString('en-IN')}`;
         }
 
         // Event listeners for calculation
@@ -1077,43 +1066,95 @@
             emiOptions.style.display = this.value === 'emi' ? 'block' : 'none';
             calculateTotal();
         });
-        document.getElementById('needDelivery').addEventListener('change', calculateTotal);
-        document.getElementById('extendedWarranty').addEventListener('change', calculateTotal);
+
 
         // Submit purchase
-        function submitPurchase() {
+        async function submitPurchase() {
             const form = document.getElementById('purchaseForm');
 
             if (!form.checkValidity()) {
-                alert('Please fill in all required fields');
+                form.reportValidity();
                 return;
             }
 
-            const purchaseData = {
-                equipment: currentEquipment.name,
-                equipmentId: currentEquipment.id,
-                buyerName: document.getElementById('buyerName').value,
-                buyerPhone: document.getElementById('buyerPhone').value,
-                buyerEmail: document.getElementById('buyerEmail').value,
-                deliveryAddress: document.getElementById('deliveryAddress').value,
-                paymentMethod: document.getElementById('paymentMethod').value,
-                emiDuration: document.getElementById('emiDuration')?.value || null,
-                needDelivery: document.getElementById('needDelivery').checked,
-                extendedWarranty: document.getElementById('extendedWarranty').checked,
-                needTraining: document.getElementById('needTraining').checked,
-                additionalNotes: document.getElementById('additionalNotes').value,
-                totalAmount: document.getElementById('totalAmount').value
+            const btn = document.getElementById('confirmPurchaseBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="material-icons-outlined" style="animation:spin 1s linear infinite;font-size:1rem;">sync</span> Submitting...';
+            btn.disabled = true;
+
+            const payload = {
+                equipment_id: currentEquipment.id,
+                equipment_name: currentEquipment.name,
+                buyer_name: document.getElementById('buyerName').value.trim(),
+                buyer_phone: document.getElementById('buyerPhone').value.trim(),
+                buyer_email: document.getElementById('buyerEmail').value.trim(),
+                delivery_address: document.getElementById('deliveryAddress').value.trim(),
+                payment_method: document.getElementById('paymentMethod').value,
+                additional_notes: document.getElementById('additionalNotes').value.trim(),
+                total_amount: document.getElementById('totalAmount').value
             };
 
-            console.log('Purchase Data:', purchaseData);
+            try {
+                const res = await fetch('php/submit_purchase_enquiry.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
 
-            alert(`Purchase order submitted successfully!\n\nEquipment: ${purchaseData.equipment}\nTotal Amount: ${purchaseData.totalAmount}\n\nOur team will contact you within 24 hours to confirm the purchase and schedule delivery.`);
-
-            closePurchaseModal();
+                if (data.success) {
+                    closePurchaseModal();
+                    showSuccessModal(payload, data);
+                } else {
+                    throw new Error(data.error || 'Failed to submit enquiry');
+                }
+            } catch (err) {
+                console.error('Enquiry error:', err);
+                alert('Failed to send enquiry: ' + err.message + '\nPlease try again.');
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
         }
 
-        // Initialize
-        renderEquipment();
+        // Show success modal
+        function showSuccessModal(payload, data) {
+            const paymentLabels = {
+                full: 'Full Payment (5% discount)',
+                emi: 'EMI Plan',
+                finance: 'Equipment Financing'
+            };
+
+            document.getElementById('successMessage').textContent =
+                `Your purchase enquiry for "${currentEquipment ? currentEquipment.name : payload.equipment_name}" has been sent to the owner. They will contact you shortly.`;
+
+            document.getElementById('successSummary').innerHTML = `
+                <div><strong>👤 Your Name:</strong> ${payload.buyer_name}</div>
+                <div><strong>📞 Your Phone:</strong> ${payload.buyer_phone}</div>
+                <div><strong>📧 Your Email:</strong> ${payload.buyer_email}</div>
+                <div><strong>💳 Payment:</strong> ${paymentLabels[payload.payment_method] || payload.payment_method}</div>
+                <div><strong>💰 Amount:</strong> ${payload.total_amount}</div>
+            `;
+
+            if (data.owner_email) {
+                const chip = document.getElementById('ownerContactChip');
+                chip.style.display = 'inline-flex';
+                document.getElementById('ownerEmailChipText').textContent = `Notification sent to owner: ${data.owner_email}`;
+            }
+
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        // Close success modal
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('active');
+            const chip = document.getElementById('ownerContactChip');
+            if (chip) chip.style.display = 'none';
+        }
+
+        // ── Initialise ────────────────────────────────────────────────────────────
+        fetchEquipment();
+
     </script>
 </body>
 

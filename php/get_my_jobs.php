@@ -4,58 +4,80 @@ header('Access-Control-Allow-Origin: *');
 
 require_once 'config.php';
 
-// Enable error logging
 error_log("=== GET MY JOBS API CALLED ===");
 
 try {
     if (!isset($_GET['farmer_id'])) {
         error_log("ERROR: No farmer_id provided");
-        echo json_encode(['success' => false, 'message' => 'Farmer ID is required', 'debug' => 'No farmer_id in request']);
+        echo json_encode(['success' => false, 'message' => 'Farmer ID is required']);
         exit;
     }
-    
+
     $farmer_id = (int)$_GET['farmer_id'];
     error_log("Farmer ID: " . $farmer_id);
-    
-    // Get all jobs posted by this farmer
-    $sql = "SELECT * FROM job_postings WHERE farmer_id = ? ORDER BY created_at DESC";
+
+    // ── STEP 1: Auto-expire any jobs whose date has passed ──────────────────
+    // A job is expired if:
+    //   • end_date IS set AND end_date < today, OR
+    //   • end_date IS NULL and (start_date + duration_days) < today
+    // Only update jobs currently marked Open or Filled (not already Closed/Expired).
+    $expireSQL = "UPDATE job_postings
+                  SET status = 'Expired', updated_at = NOW()
+                  WHERE farmer_id = ?
+                    AND status NOT IN ('Expired', 'Closed')
+                    AND (
+                          (end_date IS NOT NULL AND end_date < CURDATE())
+                          OR
+                          (end_date IS NULL AND DATE_ADD(start_date, INTERVAL duration_days DAY) < CURDATE())
+                        )";
+    $expireStmt = $conn->prepare($expireSQL);
+    $expired_count = 0;
+    if ($expireStmt) {
+        $expireStmt->bind_param("i", $farmer_id);
+        $expireStmt->execute();
+        $expired_count = $expireStmt->affected_rows;
+        $expireStmt->close();
+        error_log("Auto-expired $expired_count jobs for farmer_id=$farmer_id");
+    }
+
+    // ── STEP 2: Fetch only NON-expired jobs for this farmer ─────────────────
+    $sql = "SELECT * FROM job_postings
+            WHERE farmer_id = ?
+              AND status != 'Expired'
+            ORDER BY created_at DESC";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
-        error_log("Prepare failed: " . $conn->error);
         throw new Exception("Prepare failed: " . $conn->error);
     }
     $stmt->bind_param("i", $farmer_id);
     if (!$stmt->execute()) {
-        error_log("Execute failed: " . $stmt->error);
         throw new Exception("Execute failed: " . $stmt->error);
     }
     $result = $stmt->get_result();
-    
-    error_log("Query executed. Rows found: " . $result->num_rows);
-    
-    $jobs = [];
+    error_log("Query executed. Active rows found: " . $result->num_rows);
+
+    $jobs  = [];
+    $today = new DateTime('today');
+
     while ($row = $result->fetch_assoc()) {
-        // Parse JSON fields if they exist
+        // Parse JSON fields
         if (isset($row['requirements']) && is_string($row['requirements'])) {
             $row['requirements'] = json_decode($row['requirements'], true);
         }
         if (isset($row['responsibilities']) && is_string($row['responsibilities'])) {
             $row['responsibilities'] = json_decode($row['responsibilities'], true);
         }
-        
-        // Backward compatibility
+
+        // Backward compatibility for wage column name
         if (isset($row['payment_amount'])) {
             $row['wage_per_day'] = $row['payment_amount'];
         } else {
-             // If column not found (should not happen with SELECT *), handle gracefully
-             $row['wage_per_day'] = isset($row['wage_per_day']) ? $row['wage_per_day'] : 0;
+            $row['wage_per_day'] = $row['wage_per_day'] ?? 0;
         }
-        
-        // Calculate days posted
+
+        // Calculate "posted X days ago"
         $created = new DateTime($row['created_at']);
-        $now = new DateTime();
-        $diff = $now->diff($created);
-        
+        $diff    = $today->diff($created);
         if ($diff->days == 0) {
             $row['posted_ago'] = 'today';
         } elseif ($diff->days == 1) {
@@ -63,38 +85,45 @@ try {
         } else {
             $row['posted_ago'] = $diff->days . ' days ago';
         }
-        
-        // Get application count (if table exists)
+
+        // Calculate expiry date for display
+        if (!empty($row['end_date'])) {
+            $expiry = new DateTime($row['end_date']);
+        } elseif (!empty($row['start_date']) && !empty($row['duration_days'])) {
+            $expiry = new DateTime($row['start_date']);
+            $expiry->modify('+' . (int)$row['duration_days'] . ' days');
+        } else {
+            $expiry = null;
+        }
+        $row['expiry_date'] = $expiry ? $expiry->format('Y-m-d') : null;
+
+        // Days remaining until expiry
+        if ($expiry) {
+            $daysLeft             = (int)$today->diff($expiry)->days;
+            $row['days_remaining'] = ($expiry >= $today) ? $daysLeft : 0;
+        } else {
+            $row['days_remaining'] = null;
+        }
+
         $row['application_count'] = 0;
-        // Skip application count for now - table may not exist or have different schema
-        // This allows jobs to load even without application tracking
-        
         $jobs[] = $row;
     }
-    
-    error_log("Total jobs to return: " . count($jobs));
-    
+
+    error_log("Total active jobs to return: " . count($jobs));
+
     echo json_encode([
-        'success' => true,
-        'jobs' => $jobs,
-        'count' => count($jobs),
-        'debug' => [
-            'farmer_id' => $farmer_id,
-            'query' => $sql,
-            'rows_found' => count($jobs)
-        ]
+        'success'      => true,
+        'jobs'         => $jobs,
+        'count'        => count($jobs),
+        'auto_expired' => $expired_count,
     ]);
-    
+
     $stmt->close();
 } catch (Exception $e) {
     error_log("Exception: " . $e->getMessage());
     echo json_encode([
         'success' => false,
         'message' => 'Error: ' . $e->getMessage(),
-        'debug' => [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]
     ]);
 }
 

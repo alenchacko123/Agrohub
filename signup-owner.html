@@ -861,6 +861,15 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="address">Full Address</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="address" class="form-input" placeholder="House No, Street, Landmark"
+                            required>
+                        <span class="material-icons-outlined">home</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="equipmentCount">Number of Equipment to List</label>
                     <div class="input-wrapper">
                         <select id="equipmentCount" class="form-input" required>
@@ -957,6 +966,10 @@
             location: {
                 test: value => value.length >= 3 && /^[a-zA-Z\s]+$/.test(value),
                 message: 'Location must contain only letters (min. 3 characters)'
+            },
+            address: {
+                test: value => value.length >= 10,
+                message: 'Please provide a complete address (min. 10 characters)'
             },
             equipmentCount: {
                 test: value => value !== '',
@@ -1107,6 +1120,7 @@
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
             const location = document.getElementById('location').value;
+            const address = document.getElementById('address').value;
             const equipmentCount = document.getElementById('equipmentCount').value;
             const password = document.getElementById('password').value;
 
@@ -1126,6 +1140,7 @@
                     businessName: businessName,
                     phone: phone,
                     location: location,
+                    address: address,
                     equipmentCount: equipmentCount
                 };
 

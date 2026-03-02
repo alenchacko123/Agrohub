@@ -64,6 +64,14 @@ function handleSignup($data) {
     $email = isset($data['email']) ? sanitize($data['email']) : '';
     $password = isset($data['password']) ? $data['password'] : '';
     $userType = isset($data['userType']) ? sanitize($data['userType']) : 'farmer';
+    $phone = isset($data['phone']) ? sanitize($data['phone']) : null;
+    $location = isset($data['location']) ? sanitize($data['location']) : null;
+    $address = isset($data['address']) ? sanitize($data['address']) : null;
+    // Farmer fields
+    $farmSize = isset($data['farmSize']) ? sanitize($data['farmSize']) : null;
+    // Owner fields
+    $businessName = isset($data['businessName']) ? sanitize($data['businessName']) : null;
+    $equipmentCount = isset($data['equipmentCount']) ? sanitize($data['equipmentCount']) : null;
 
     if (empty($name) || empty($email) || empty($password)) {
         jsonResponse(false, 'All fields are required');
@@ -86,8 +94,10 @@ function handleSignup($data) {
 
     // Create user
     $hashedPassword = hashPassword($password);
-    $stmt = $conn->prepare("INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $name, $email, $hashedPassword, $userType);
+    
+    // Construct simplified query based on available fields or just use a comprehensive one with nulls
+    $stmt = $conn->prepare("INSERT INTO users (name, email, password, user_type, phone, location, address, farm_size, business_name, equipment_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssssssss", $name, $email, $hashedPassword, $userType, $phone, $location, $address, $farmSize, $businessName, $equipmentCount);
     
     if ($stmt->execute()) {
         $userId = $stmt->insert_id;
@@ -98,7 +108,12 @@ function handleSignup($data) {
                 'name' => $name,
                 'email' => $email,
                 'userType' => $userType,
-                'phone' => null,
+                'phone' => $phone,
+                'location' => $location,
+                'address' => $address,
+                'farm_size' => $farmSize,
+                'business_name' => $businessName,
+                'equipment_count' => $equipmentCount,
                 'profile_completed' => false
             ],
             'token' => $session['token']
@@ -151,6 +166,7 @@ function handleLogin($data) {
                     'picture' => $user['profile_picture'],
                     'phone' => $user['phone'],
                     'location' => isset($user['location']) ? $user['location'] : null,
+                    'address' => isset($user['address']) ? $user['address'] : null,
                     'farm_size' => isset($user['farm_size']) ? $user['farm_size'] : null,
                     'business_name' => isset($user['business_name']) ? $user['business_name'] : null,
                     'equipment_count' => isset($user['equipment_count']) ? $user['equipment_count'] : null,
@@ -337,6 +353,7 @@ function handleGoogleAuth($data) {
             'picture' => $picture,
             'phone' => isset($user['phone']) ? $user['phone'] : null,
             'location' => isset($user['location']) ? $user['location'] : null,
+            'address' => isset($user['address']) ? $user['address'] : null,
             'farm_size' => isset($user['farm_size']) ? $user['farm_size'] : null,
             'business_name' => isset($user['business_name']) ? $user['business_name'] : null,
             'equipment_count' => isset($user['equipment_count']) ? $user['equipment_count'] : null,

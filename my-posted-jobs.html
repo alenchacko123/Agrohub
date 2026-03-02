@@ -299,6 +299,58 @@
                 gap: 1rem;
             }
         }
+
+        /* Expiry badge */
+        .expiry-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 0.75rem;
+            border-radius: 50px;
+            margin-top: 0.5rem;
+        }
+
+        .expiry-safe {
+            background: rgba(22, 163, 74, 0.1);
+            color: #15803d;
+        }
+
+        .expiry-soon {
+            background: rgba(245, 158, 11, 0.12);
+            color: #b45309;
+        }
+
+        .expiry-urgent {
+            background: rgba(239, 68, 68, 0.12);
+            color: #dc2626;
+        }
+
+        /* Auto-expired notice banner */
+        .expired-notice {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #fcd34d;
+            border-left: 4px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+
+        .expired-notice button {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #92400e;
+            line-height: 1;
+        }
     </style>
 </head>
 
@@ -314,6 +366,7 @@
             <p class="page-subtitle">Manage your job postings and view applications</p>
         </div>
 
+        <div id="expiredNotice" style="display:none;"></div>
         <div class="jobs-grid" id="jobsGrid">
             <div class="loading">
                 <span class="material-icons-outlined"
@@ -409,13 +462,24 @@
                 console.log('API Response:', result);
 
                 if (result.success) {
+                    // Show auto-expiry notice if any jobs were just expired
+                    if (result.auto_expired > 0) {
+                        const notice = document.getElementById('expiredNotice');
+                        notice.style.display = 'flex';
+                        notice.innerHTML = `
+                            <span class="material-icons-outlined" style="font-size:1.3rem;color:#f59e0b;">schedule</span>
+                            <span><strong>${result.auto_expired} job${result.auto_expired > 1 ? 's were' : ' was'} automatically removed</strong> because the job date has passed.</span>
+                            <button onclick="this.parentElement.style.display='none'" title="Dismiss">&times;</button>
+                        `;
+                    }
+
                     console.log('Jobs count:', result.jobs?.length || 0);
                     if (result.jobs && result.jobs.length > 0) {
                         console.log('Displaying jobs:', result.jobs);
                         displayJobs(result.jobs);
                     } else {
-                        console.warn('No jobs returned from API');
-                        showEmptyState();
+                        console.warn('No active jobs returned from API');
+                        showEmptyState(result.auto_expired > 0);
                     }
                 } else {
                     console.error('API returned error:', result.message);
@@ -444,15 +508,42 @@
                 return icons[category?.toLowerCase()] || icons['default'];
             }
 
-            grid.innerHTML = jobs.map(job => `
+            grid.innerHTML = jobs.map(job => {
+                function getJobIcon(category) {
+                    const icons = {
+                        'planting': '🌱', 'harvesting': '🚜', 'irrigation': '💧',
+                        'pesticide': '🌿', 'weeding': '🪴', 'default': '🌾'
+                    };
+                    return icons[category?.toLowerCase()] || icons['default'];
+                }
+
+                // Expiry badge helper
+                let expiryBadge = '';
+                if (job.expiry_date) {
+                    const dr = job.days_remaining;
+                    let cls = 'expiry-safe', icon = 'event_available', label = '';
+                    if (dr === null || dr > 7) {
+                        cls = 'expiry-safe'; icon = 'event_available'; label = `Expires ${new Date(job.expiry_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+                    } else if (dr > 3) {
+                        cls = 'expiry-soon'; icon = 'schedule'; label = `Expires in ${dr} days`;
+                    } else if (dr > 0) {
+                        cls = 'expiry-urgent'; icon = 'warning'; label = `Expires in ${dr} day${dr > 1 ? 's' : ''} ⚠️`;
+                    } else {
+                        cls = 'expiry-urgent'; icon = 'warning'; label = 'Expires today!';
+                    }
+                    expiryBadge = `<span class="expiry-badge ${cls}"><span class="material-icons-outlined" style="font-size:0.9rem;">${icon}</span>${label}</span>`;
+                }
+
+                return `
                 <div class="job-card">
                     <span class="job-status status-active">Available</span>
-                    
+
                     <div class="job-card-header">
                         <div class="job-icon">${getJobIcon(job.job_category)}</div>
                         <div class="job-title-section">
                             <h3>${job.job_title}</h3>
                             <div class="job-meta">Posted ${job.posted_ago || 'recently'}</div>
+                            ${expiryBadge}
                         </div>
                     </div>
 
@@ -476,7 +567,7 @@
                                 <span class="material-icons-outlined detail-icon">payments</span>
                                 Wage
                             </div>
-                            <div class="detail-value">₹${Number(job.wage_per_day).toFixed(2)}/day</div>
+                            <div class="detail-value">&#8377;${Number(job.wage_per_day).toFixed(2)}/day</div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">
@@ -488,7 +579,7 @@
                     </div>
 
                     <div class="job-description">
-                        ${job.description || 'No description provided'}
+                        ${job.description || job.job_description || 'No description provided'}
                     </div>
 
                     <div class="job-footer">
@@ -510,19 +601,23 @@
                             </button>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
-        function showEmptyState() {
+        function showEmptyState(allExpired = false) {
             const grid = document.getElementById('jobsGrid');
+            const msg = allExpired
+                ? 'All your job postings have expired and been removed. <a href="post-job.html">Post a new job</a> to find workers!'
+                : 'You haven\'t posted any jobs yet. <a href="post-job.html">Post your first job</a> to find workers!';
+            const icon = allExpired ? 'event_busy' : 'work_off';
             grid.innerHTML = `
                 <div class="empty-state">
                     <div class="icon">
-                        <span class="material-icons-outlined" style="font-size: inherit;">work_off</span>
+                        <span class="material-icons-outlined" style="font-size: inherit;">${icon}</span>
                     </div>
-                    <h3>No Posted Jobs</h3>
-                    <p>You haven't posted any jobs yet. <a href="post-job.html">Post your first job</a> to find workers!</p>
+                    <h3>${allExpired ? 'No Active Jobs' : 'No Posted Jobs'}</h3>
+                    <p>${msg}</p>
                 </div>
             `;
         }

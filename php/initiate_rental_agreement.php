@@ -25,8 +25,8 @@ try {
     
     // 2. Fetch Request Details (Join with Equipment & Users)
     $sql = "SELECT r.*, e.equipment_name, e.price_per_day, e.owner_id, 
-                   u_farmer.name as farmer_name, u_farmer.email as farmer_email, u_farmer.phone as farmer_phone,
-                   u_owner.name as owner_name, u_owner.email as owner_email, u_owner.phone as owner_phone
+                   u_farmer.name as farmer_name, u_farmer.email as farmer_email, u_farmer.phone as farmer_phone, u_farmer.address as farmer_address, u_farmer.location as farmer_location,
+                   u_owner.name as owner_name, u_owner.email as owner_email, u_owner.phone as owner_phone, u_owner.address as owner_address, u_owner.location as owner_location
             FROM rental_requests r
             JOIN equipment e ON r.equipment_id = e.id
             JOIN users u_farmer ON r.farmer_id = u_farmer.id
@@ -69,13 +69,35 @@ try {
         $updateStmt->close();
     }
     
-    // 6. Generate Agreement Text (Dynamic)
+    // 6. Fetch Insurance Details if selected
+    $insurance_info = "";
+    $insurance_total = 0;
+    if ($request['insurance_plan_id']) {
+        $ins_sql = "SELECT * FROM insurance_plans WHERE id = ?";
+        $ins_stmt = $conn->prepare($ins_sql);
+        $ins_stmt->bind_param("i", $request['insurance_plan_id']);
+        $ins_stmt->execute();
+        $ins_res = $ins_stmt->get_result();
+        if ($ins_plan = $ins_res->fetch_assoc()) {
+            $insurance_info = "\n\nInsurance Coverage: " . $ins_plan['plan_name'] . 
+                            "\nCoverage Amount: ₹" . number_format($ins_plan['coverage_amount']) . 
+                            "\nInsurance Fee: ₹" . number_format($request['insurance_fee']);
+            $insurance_total = $request['insurance_fee'];
+        }
+        $ins_stmt->close();
+    }
+
+    // 7. Generate Agreement Text (Dynamic)
     // Fetch template from settings if available, else use default
     $template = "Rental Agreement\n\n" .
-                "This agreement is made between [OWNER_NAME] (Owner) and [FARMER_NAME] (Renter).\n\n" .
+                "This agreement is made between [OWNER_NAME] (Owner)\nAddress: [OWNER_ADDRESS]\n\n" .
+                "AND\n\n" .
+                "[FARMER_NAME] (Renter)\nAddress: [FARMER_ADDRESS].\n\n" .
                 "Equipment: [EQUIPMENT_NAME]\n" .
                 "Rental Period: [START_DATE] to [END_DATE]\n" .
-                "Total Amount: [AMOUNT]\n\n" .
+                "Base Rental Amount: [AMOUNT]" .
+                "[INSURANCE_INFO]\n" .
+                "Total Payable: [TOTAL_AMOUNT]\n\n" .
                 "Terms & Conditions:\n" .
                 "1. The Renter agrees to return the equipment in good condition.\n" .
                 "2. Any damages incurred during the rental period are the responsibility of the Renter.\n" .
@@ -84,14 +106,18 @@ try {
                 
     // Replace placeholders
     $agreement_text = str_replace(
-        ['[OWNER_NAME]', '[FARMER_NAME]', '[EQUIPMENT_NAME]', '[START_DATE]', '[END_DATE]', '[AMOUNT]'],
+        ['[OWNER_NAME]', '[OWNER_ADDRESS]', '[FARMER_NAME]', '[FARMER_ADDRESS]', '[EQUIPMENT_NAME]', '[START_DATE]', '[END_DATE]', '[AMOUNT]', '[INSURANCE_INFO]', '[TOTAL_AMOUNT]'],
         [
             $request['owner_name'], 
+            ($request['owner_address'] && strlen($request['owner_address']) > 2) ? $request['owner_address'] : ($request['owner_location'] ? $request['owner_location'] : 'Not Provided'),
             $request['farmer_name'], 
+            ($request['farmer_address'] && strlen($request['farmer_address']) > 2) ? $request['farmer_address'] : ($request['farmer_location'] ? $request['farmer_location'] : 'Not Provided'),
             $request['equipment_name'], 
             date('d M Y', strtotime($request['start_date'])), 
             date('d M Y', strtotime($request['end_date'])), 
-            '₹' . number_format($request['total_amount'])
+            '₹' . number_format($request['total_amount']),
+            $insurance_info,
+            '₹' . number_format($request['total_amount'] + $insurance_total)
         ],
         $template
     );

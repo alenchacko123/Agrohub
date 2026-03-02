@@ -486,6 +486,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label>Farm Address</label>
+                            <input type="text" id="profile-address-input" value="" placeholder="Complete Address">
+                        </div>
+
+                        <div class="form-group">
                             <label>Change Password (leave blank to keep current)</label>
                             <div class="pass-input-container">
                                 <input type="password" id="profile-pass-input" value="" placeholder="••••••••">
@@ -539,6 +544,7 @@
                             if (document.getElementById('profile-email-input')) document.getElementById('profile-email-input').value = userData.email || '';
                             if (document.getElementById('profile-phone-input')) document.getElementById('profile-phone-input').value = userData.phone || '';
                             if (document.getElementById('profile-location-input')) document.getElementById('profile-location-input').value = userData.location || '';
+                            if (document.getElementById('profile-address-input')) document.getElementById('profile-address-input').value = userData.address || '';
                             if (document.getElementById('profile-farmsize-input')) document.getElementById('profile-farmsize-input').value = userData.farm_size || '';
 
                             // Update sidebar and welcome message
@@ -592,6 +598,7 @@
                     const newEmail = document.getElementById('profile-email-input').value;
                     const newPhone = document.getElementById('profile-phone-input').value;
                     const newLocation = document.getElementById('profile-location-input').value;
+                    const newAddress = document.getElementById('profile-address-input').value;
                     const newFarmSize = document.getElementById('profile-farmsize-input').value;
                     const newPassword = document.getElementById('profile-pass-input').value;
                     const profileImg = document.getElementById('profile-display-img').src;
@@ -604,6 +611,7 @@
                             email: newEmail,
                             phone: newPhone,
                             location: newLocation,
+                            address: newAddress,
                             farm_size: newFarmSize,
                             password: newPassword,
                             picture: profileImg.startsWith('data:image') ? profileImg : null
@@ -634,6 +642,7 @@
                                     userData.email = newEmail;
                                     userData.phone = newPhone;
                                     userData.location = newLocation;
+                                    userData.address = newAddress;
                                     userData.farm_size = newFarmSize;
                                     if (payload.picture) userData.picture = payload.picture;
                                     localStorage.setItem('agrohub_user', JSON.stringify(userData));

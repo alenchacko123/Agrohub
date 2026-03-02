@@ -1,0 +1,26 @@
+-- Create secondhand_equipment table for owner-listed used equipment for sale
+CREATE TABLE IF NOT EXISTS secondhand_equipment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    owner_id INT NOT NULL,
+    owner_name VARCHAR(255) NOT NULL,
+    owner_phone VARCHAR(30),
+    owner_email VARCHAR(255),
+    equipment_name VARCHAR(255) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    condition_status VARCHAR(50) NOT NULL,
+    selling_price DECIMAL(12, 2) NOT NULL,
+    original_price DECIMAL(12, 2),
+    year_of_manufacture VARCHAR(10),
+    hours_used INT DEFAULT 0,
+    location VARCHAR(255),
+    description TEXT,
+    image_url VARCHAR(500),
+    warranty VARCHAR(100),
+    is_available TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_owner (owner_id),
+    INDEX idx_category (category),
+    INDEX idx_condition (condition_status),
+    INDEX idx_available (is_available)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

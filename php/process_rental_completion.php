@@ -87,6 +87,12 @@ try {
     $hasTransactionId = $conn->query("SHOW COLUMNS FROM bookings LIKE 'transaction_id'")->num_rows > 0;
     $hasRequestId = $conn->query("SHOW COLUMNS FROM bookings LIKE 'request_id'")->num_rows > 0;
     
+    // Adjust total to include insurance and 20% security deposit
+    $base_amount = floatval($request['total_amount']);
+    $insurance_fee = (isset($request['insurance_fee']) && $request['insurance_fee'] > 0) ? floatval($request['insurance_fee']) : 0;
+    $deposit = round($base_amount * 0.2);
+    $final_total = $base_amount + $insurance_fee + $deposit;
+
     // Build SQL based on available columns
     $columns = ['farmer_id', 'equipment_id', 'start_date', 'end_date', 'total_amount', 'status', 'created_at'];
     $values = ['?', '?', '?', '?', '?', "'active'", 'NOW()'];
@@ -96,7 +102,7 @@ try {
         $request['equipment_id'],
         $request['start_date'],
         $request['end_date'],
-        $request['total_amount']
+        $request['total_amount'] // Keep base amount in 'total_amount' column
     ];
     
     if ($hasPaymentStatus) {
@@ -115,7 +121,7 @@ try {
         $columns[] = 'paid_amount';
         $values[] = '?';
         $bindTypes .= 'd';
-        $bindParams[] = $request['total_amount'];
+        $bindParams[] = $final_total; // Use final total for paid amount
     }
     if ($hasPaidAt) {
         $columns[] = 'paid_at';
@@ -132,6 +138,35 @@ try {
         $values[] = '?';
         $bindTypes .= 'i';
         $bindParams[] = $clean_id;
+    }
+
+    // Add Insurance Columns
+    if ($insurance_fee > 0) {
+        $columns[] = 'insurance_plan_id';
+        $values[] = '?';
+        $bindTypes .= 'i';
+        $bindParams[] = $request['insurance_plan_id'];
+
+        $columns[] = 'insurance_fee';
+        $values[] = '?';
+        $bindTypes .= 'd';
+        $bindParams[] = $insurance_fee;
+
+        $columns[] = 'insurance_status';
+        $values[] = "'Active'";
+
+        $columns[] = 'insurance_start_date';
+        $values[] = '?';
+        $bindTypes .= 's';
+        $bindParams[] = $request['start_date'];
+
+        $columns[] = 'insurance_end_date';
+        $values[] = '?';
+        $bindTypes .= 's';
+        $bindParams[] = $request['end_date'];
+    } else {
+        $columns[] = 'insurance_status';
+        $values[] = "'Inactive'";
     }
     
     $bookingSql = "INSERT INTO bookings (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $values) . ")";

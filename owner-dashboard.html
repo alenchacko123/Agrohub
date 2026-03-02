@@ -1486,6 +1486,12 @@
                     Agreements
                     <span class="badge" id="agreementsBadge" style="display: none;">0</span>
                 </a>
+                <a href="#" class="nav-item" id="sellEquipmentNavItem"
+                    onclick="showSellEquipmentSection(); return false;">
+                    <span class="material-icons-outlined">sell</span>
+                    Sell Equipment
+                    <span class="badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);">NEW</span>
+                </a>
 
                 <div class="nav-section">
                     <span class="nav-section-title">Account</span>
@@ -1774,8 +1780,235 @@
             </div>
         </div>
     </div>
+    </div>
+
+    <!-- ====================== SELL SECOND-HAND EQUIPMENT VIEW ====================== -->
+    <div id="sellEquipmentView"
+        style="display: none; position: fixed; top: 0; left: var(--sidebar-width); right: 0; bottom: 0; overflow-y: auto; background: var(--bg-light, #f0f4f8); z-index: 100; padding: 2rem;">
+
+        <!-- Back button -->
+        <div style="margin-bottom: 1rem;">
+            <button onclick="hideSellEquipmentSection()"
+                style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem; background: white; color: var(--text-dark); border: 2px solid #e5e7eb; border-radius: 10px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.06);"
+                onmouseover="this.style.borderColor='#0077b6'; this.style.color='#0077b6';"
+                onmouseout="this.style.borderColor='#e5e7eb'; this.style.color='var(--text-dark)';">
+                <span class="material-icons-outlined" style="font-size: 1.1rem;">arrow_back</span>
+                Back to Dashboard
+            </button>
+        </div>
+
+        <!-- Header -->
+
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+            <div>
+                <h2
+                    style="font-family: var(--font-serif); font-size: 2rem; color: var(--text-dark); margin-bottom: 0.5rem;">
+                    🏷️ Sell Second-Hand Equipment</h2>
+                <p style="font-size: 0.95rem; color: var(--text-gray);">List your used equipment for sale and connect
+                    with buyers</p>
+            </div>
+            <button onclick="document.getElementById('sellEquipmentFormSection').scrollIntoView({behavior:'smooth'})"
+                style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.5rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(245,158,11,0.3);">
+                <span class="material-icons-outlined">add_circle</span>
+                Add New Listing
+            </button>
+        </div>
+
+        <!-- My Current Listings -->
+        <div
+            style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--text-dark);">📋 My Current
+                    Listings</h3>
+                <button onclick="loadMySecondhandListings()"
+                    style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #eff6ff; color: var(--primary-blue); border: 1px solid rgba(0,119,182,0.2); border-radius: 10px; font-size: 0.85rem; font-weight: 500; cursor: pointer;">
+                    <span class="material-icons-outlined" style="font-size: 1rem;">refresh</span> Refresh
+                </button>
+            </div>
+            <div id="mySecondhandGrid"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-light);">
+                    <span class="material-icons-outlined"
+                        style="font-size: 3rem; animation: spin 1s linear infinite; color: var(--primary-blue);">sync</span>
+                    <p style="margin-top: 1rem; font-weight: 500;">Loading your listings...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add New Listing Form -->
+        <div id="sellEquipmentFormSection"
+            style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+            <h3
+                style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--text-dark); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                <span class="material-icons-outlined" style="color: #f59e0b;">sell</span>
+                List Equipment for Sale
+            </h3>
+
+            <!-- Info Banner -->
+            <div
+                style="background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(217,119,6,0.12)); border-left: 4px solid #f59e0b; padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                <div
+                    style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #92400e; margin-bottom: 0.25rem;">
+                    <span class="material-icons-outlined" style="font-size: 1.2rem;">info</span>
+                    How it works
+                </div>
+                <p style="font-size: 0.9rem; color: #78350f;">Fill in your equipment details below and submit. Your
+                    listing will appear in the <strong>Buy Used Equipment</strong> marketplace for farmers to browse and
+                    contact you.</p>
+            </div>
+
+            <form id="sellEquipmentForm" onsubmit="submitSellEquipment(event)">
+                <!-- Row 1: Name & Category -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <label
+                            style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Equipment
+                            Name *</label>
+                        <input type="text" id="sh_equipment_name" required placeholder="e.g. Mahindra 575 DI Tractor"
+                            style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Category
+                            *</label>
+                        <select id="sh_category" required
+                            style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit; background:#fafafa;">
+                            <option value="">Select Category</option>
+                            <option value="tractor">Tractor</option>
+                            <option value="harvester">Harvester</option>
+                            <option value="tiller">Tiller / Cultivator</option>
+                            <option value="planter">Planter / Seeder</option>
+                            <option value="sprayer">Sprayer</option>
+                            <option value="rotavator">Rotavator</option>
+                            <option value="plough">Plough</option>
+                            <option value="other">Other Equipment</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Condition & Selling Price -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <label
+                            style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Condition
+                            *</label>
+                        <select id="sh_condition" required
+                            style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit; background:#fafafa;">
+                            <option value="">Select Condition</option>
+                            <option value="excellent">Excellent</option>
+                            <option value="good">Good</option>
+                            <option value="fair">Fair</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Selling
+                            Price (₹) *</label>
+                        <input type="number" id="sh_selling_price" required min="1" placeholder="e.g. 385000"
+                            style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit;">
+                    </div>
+                </div>
+
+                <!-- Row 3: Original Price & Year -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <label
+                            style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Original/MRP
+                            Price (₹) <span style="color:#a0aec0;font-size:0.8rem;">(optional)</span></label>
+                        <input type="number" id="sh_original_price" min="0" placeholder="e.g. 450000"
+                            style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Year
+                            of Manufacture</label>
+                        <input type="number" id="sh_year" min="1990" max="2030" placeholder="e.g. 2019"
+                            style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit;">
+                    </div>
+                </div>
+
+                <!-- Row 4: Hours Used & Location -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <label
+                            style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Hours
+                            Used</label>
+                        <input type="number" id="sh_hours_used" min="0" placeholder="e.g. 2000"
+                            style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Location
+                            *</label>
+                        <input type="text" id="sh_location" required placeholder="e.g. Bangalore, Karnataka"
+                            style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit;">
+                    </div>
+                </div>
+
+                <!-- Warranty -->
+                <div style="margin-bottom: 1.25rem;">
+                    <label
+                        style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Warranty
+                        / Guarantee <span style="color:#a0aec0;font-size:0.8rem;">(if any)</span></label>
+                    <input type="text" id="sh_warranty" placeholder="e.g. 3 months engine warranty"
+                        style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit;">
+                </div>
+
+                <!-- Description -->
+                <div style="margin-bottom: 1.25rem;">
+                    <label
+                        style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Description
+                        *</label>
+                    <textarea id="sh_description" required rows="4"
+                        placeholder="Describe the equipment — condition, usage history, specifications, any defects, why selling, etc."
+                        style="width:100%; padding:0.75rem 1rem; border:2px solid #e5e7eb; border-radius:12px; font-size:0.9rem; transition:all 0.3s; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <!-- Image Upload -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label
+                        style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); font-size: 0.9rem;">Equipment
+                        Photo <span style="color:#a0aec0;font-size:0.8rem;">(optional)</span></label>
+                    <div id="sh_image_upload_box"
+                        style="border: 2px dashed #cbd5e1; padding: 2rem; text-align: center; border-radius: 12px; cursor: pointer; position: relative; transition:all 0.3s; background:#fafafa;"
+                        onclick="document.getElementById('sh_file_input').click()"
+                        ondragover="event.preventDefault(); this.style.borderColor='#f59e0b';"
+                        ondragleave="this.style.borderColor='#cbd5e1';" ondrop="handleSellImageDrop(event)">
+                        <div id="sh_image_preview_container" style="display: none; margin-bottom: 1rem;">
+                            <img id="sh_image_preview" src="" alt="Preview"
+                                style="max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: cover;">
+                            <button type="button" onclick="removeSellImage(event)"
+                                style="position: absolute; top: 1rem; right: 1rem; background: rgba(239,68,68,0.9); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                <span class="material-icons-outlined" style="font-size: 18px;">close</span>
+                            </button>
+                        </div>
+                        <div id="sh_upload_placeholder">
+                            <span class="material-icons-outlined"
+                                style="font-size: 3rem; color: var(--text-light);">add_a_photo</span>
+                            <p style="color: var(--text-gray); margin-top: 0.5rem; font-size: 0.9rem;">Click or drag
+                                image here</p>
+                            <p style="color: var(--text-light); font-size: 0.8rem;">JPG, PNG, WEBP up to 5MB</p>
+                        </div>
+                        <input type="file" id="sh_file_input" style="display: none;" accept="image/*"
+                            onchange="previewSellImage(this)">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="sh_submit_btn"
+                    style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; border-radius: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(245,158,11,0.4);">
+                    <span class="material-icons-outlined">sell</span>
+                    Publish Listing for Sale
+                </button>
+            </form>
+        </div>
+    </div>
+    <!-- ====================== END SELL SECTION ====================== -->
+
     </main>
     </div>
+
 
     <!-- Add Equipment Modal -->
     <div class="modal" id="addEquipmentModal">
@@ -2360,80 +2593,7 @@
         </div>
     </div>
 
-    <!-- Profile Modal -->
-    <div class="modal" id="profileModal">
-        <div class="modal-content" style="max-width: 650px; border-radius: 30px;">
-            <button class="close-modal" onclick="closeModal('profileModal')" style="top: 2rem; right: 2rem;">
-                <span class="material-icons-outlined">close</span>
-            </button>
-            <div class="modal-header" style="border-bottom: none; padding: 3rem 3rem 1rem;">
-                <h2 class="modal-title"
-                    style="font-family: var(--font-serif); font-size: 2.5rem; color: #1a1a2e; font-weight: 700;">Profile
-                    Settings</h2>
-            </div>
-            <div class="modal-body" style="padding: 0 3rem 3rem;">
-                <form>
-                    <!-- Avatar Upload Section -->
-                    <div style="display: flex; justify-content: center; margin-bottom: 2.5rem;">
-                        <div
-                            style="position: relative; width: 180px; height: 180px; border-radius: 50%; border: 3px solid var(--primary-blue); padding: 5px;">
-                            <div id="profile-avatar-preview"
-                                style="width: 100%; height: 100%; border-radius: 50%; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; background-size: cover; background-position: center;">
-                                <span class="material-icons-outlined"
-                                    style="font-size: 5rem; color: #e2e8f0;">person</span>
-                            </div>
-                            <label for="avatar-upload"
-                                style="position: absolute; bottom: 8px; right: 8px; width: 45px; height: 45px; background: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; border: 3px solid white; box-shadow: 0 4px 10px rgba(0, 119, 182, 0.3); transition: all 0.3s ease;">
-                                <span class="material-icons-outlined" style="font-size: 20px;">photo_camera</span>
-                                <input type="file" id="avatar-upload" style="display: none;" accept="image/*"
-                                    onchange="previewAvatar(this)">
-                            </label>
-                        </div>
-                    </div>
 
-                    <div class="form-row" style="margin-bottom: 1.5rem;">
-                        <div class="form-group">
-                            <label
-                                style="font-size: 0.9rem; font-weight: 600; color: #64748b; margin-bottom: 0.75rem;">Full
-                                Name</label>
-                            <input type="text" value="ALEN CHACKO"
-                                style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 12px; font-weight: 500;">
-                        </div>
-                        <div class="form-group">
-                            <label
-                                style="font-size: 0.9rem; font-weight: 600; color: #64748b; margin-bottom: 0.75rem;">Email
-                                Address</label>
-                            <input type="email" value="alenchacko2028@mca.ajce.in"
-                                style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 12px; font-weight: 500;">
-                        </div>
-                    </div>
-
-                    <div class="form-group" style="position: relative; margin-bottom: 2.5rem;">
-                        <label
-                            style="font-size: 0.9rem; font-weight: 600; color: #64748b; margin-bottom: 0.75rem;">Change
-                            Password (leave blank to keep current)</label>
-                        <div style="position: relative;">
-                            <input type="password" value="********"
-                                style="background: #eff6ff; border: 1px solid #dbeafe; padding: 1rem; border-radius: 12px; width: 100%; padding-right: 3.5rem;">
-                            <span class="material-icons-outlined"
-                                style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer;"
-                                onclick="togglePasswordVisibility(this)">visibility</span>
-                        </div>
-                    </div>
-
-                    <button type="button" class="btn"
-                        style="width: 100%; background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; padding: 1.25rem; border-radius: 15px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 10px 20px rgba(0, 119, 182, 0.2); border: none; cursor: pointer; transition: all 0.3s ease;"
-                        onclick="alert('Profile Updated Successfully!')">
-                        <span class="material-icons-outlined">save</span>
-                        UPDATE PROFILE DETAILS
-                    </button>
-
-                    <p style="text-align: center; margin-top: 1.5rem; color: #94a3b8; font-size: 0.9rem;">Changes will
-                        be saved permanently to your account.</p>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <!-- View Equipment Details Modal -->
     <div class="modal" id="viewEquipmentDetailsModal">
@@ -4141,6 +4301,9 @@
                         } else if (nType === 'action_required') {
                             icon = 'assignment_late';
                             color = '#f59e0b';
+                        } else if (nType === 'purchase_enquiry') {
+                            icon = 'shopping_cart';
+                            color = '#fb8500';
                         }
 
                         // Agreement link: if related_agreement_id exists, link to agreements page
@@ -4971,6 +5134,16 @@
                         <p id="view-modal-location">Not provided</p>
                     </div>
                 </div>
+
+                <div class="profile-detail-item">
+                    <div class="detail-icon">
+                        <span class="material-icons-outlined">home</span>
+                    </div>
+                    <div class="detail-content">
+                        <label>Address</label>
+                        <p id="view-modal-address">Not provided</p>
+                    </div>
+                </div>
             </div>
 
             <div class="profile-view-footer">
@@ -4991,7 +5164,7 @@
                 <span class="material-icons-outlined">close</span>
             </button>
 
-            <h2 style="margin-top: 0; margin-bottom: 2rem; text-align: center;">Edit Profile</h2>
+            <h2>Profile Settings</h2>
 
             <div class="profile-avatar-section">
                 <div class="avatar-edit-wrapper">
@@ -5029,6 +5202,11 @@
                 <div class="form-group">
                     <label>Business Location / District</label>
                     <input type="text" id="profile-location-input" placeholder="Your Business Location">
+                </div>
+
+                <div class="form-group">
+                    <label>Full Address</label>
+                    <input type="text" id="profile-address-input" placeholder="Your Full Address">
                 </div>
 
                 <div class="form-group">
@@ -5072,7 +5250,9 @@
                 document.getElementById('view-modal-name').textContent = name;
                 document.getElementById('view-modal-email').textContent = userData.email || 'Not provided';
                 document.getElementById('view-modal-phone').textContent = userData.phone || 'Not provided';
+                document.getElementById('view-modal-phone').textContent = userData.phone || 'Not provided';
                 document.getElementById('view-modal-location').textContent = userData.location || 'Not provided';
+                document.getElementById('view-modal-address').textContent = userData.address || 'Not provided';
 
                 // Business Name
                 const businessEl = document.getElementById('view-business-container');
@@ -5139,6 +5319,7 @@
                     document.getElementById('profile-email-input').value = userData.email || '';
                     document.getElementById('profile-phone-input').value = userData.phone || '';
                     document.getElementById('profile-location-input').value = userData.location || '';
+                    document.getElementById('profile-address-input').value = userData.address || '';
                     document.getElementById('profile-business-input').value = userData.business_name || '';
                     if (document.getElementById('profile-equipment-input')) {
                         document.getElementById('profile-equipment-input').value = userData.equipment_count || '';
@@ -5174,6 +5355,7 @@
             const newEmail = document.getElementById('profile-email-input').value;
             const newPhone = document.getElementById('profile-phone-input').value;
             const newLocation = document.getElementById('profile-location-input').value;
+            const newAddress = document.getElementById('profile-address-input').value;
             const newBusiness = document.getElementById('profile-business-input').value;
             const newEquipment = document.getElementById('profile-equipment-input').value;
             const newPassword = document.getElementById('profile-pass-input').value;
@@ -5187,6 +5369,7 @@
                     email: newEmail,
                     phone: newPhone,
                     location: newLocation,
+                    address: newAddress,
                     business_name: newBusiness,
                     equipment_count: newEquipment,
                     password: newPassword,
@@ -5214,6 +5397,7 @@
                         userData.email = newEmail;
                         userData.phone = newPhone;
                         userData.location = newLocation;
+                        userData.address = newAddress;
                         userData.business_name = newBusiness;
                         userData.equipment_count = newEquipment;
                         if (payload.picture) userData.picture = payload.picture;
@@ -5425,7 +5609,243 @@
                 btn.disabled = false;
             }
         }
+
+        // ====================== SELL SECOND-HAND EQUIPMENT FUNCTIONS ======================
+
+        function showSellEquipmentSection() {
+            // Hide the main dashboard content
+            const mainContent = document.querySelector('main.main-content');
+            if (mainContent) mainContent.style.display = 'none';
+            const allBookingsView = document.getElementById('allBookingsView');
+            if (allBookingsView) allBookingsView.style.display = 'none';
+
+            // Show sell equipment view (fixed overlay — always starts at top)
+            const sellView = document.getElementById('sellEquipmentView');
+            if (sellView) {
+                sellView.style.display = 'block';
+                sellView.scrollTop = 0; // Reset scroll within the panel
+            }
+
+            // Update sidebar active state
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            const navItem = document.getElementById('sellEquipmentNavItem');
+            if (navItem) navItem.classList.add('active');
+
+            // Load owner's listings
+            loadMySecondhandListings();
+        }
+
+        function hideSellEquipmentSection() {
+            const sellView = document.getElementById('sellEquipmentView');
+            if (sellView) sellView.style.display = 'none';
+
+            // Restore main content
+            const mainContent = document.querySelector('main.main-content');
+            if (mainContent) mainContent.style.display = '';
+        }
+
+        async function loadMySecondhandListings() {
+            const grid = document.getElementById('mySecondhandGrid');
+            if (!grid) return;
+
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-light);">
+                <span class="material-icons-outlined" style="font-size: 3rem; animation: spin 1s linear infinite; color: var(--primary-blue);">sync</span>
+                <p style="margin-top: 1rem; font-weight: 500;">Loading your listings...</p>
+            </div>`;
+
+            try {
+                const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+                const ownerId = userData.id || 0;
+
+                const response = await fetch(`php/get_secondhand_equipment.php?owner_id=${ownerId}`);
+                const result = await response.json();
+
+                if (result.success && result.equipment.length > 0) {
+                    grid.innerHTML = result.equipment.map(item => {
+                        const conditionColors = { excellent: '#22c55e', good: '#3b82f6', fair: '#f59e0b' };
+                        const condColor = conditionColors[item.condition_status] || '#a0aec0';
+                        const sellPrice = parseFloat(item.selling_price);
+                        const origPrice = item.original_price ? parseFloat(item.original_price) : null;
+                        const discount = origPrice && origPrice > sellPrice
+                            ? Math.round(((origPrice - sellPrice) / origPrice) * 100) : 0;
+
+                        const imgHtml = item.image_url
+                            ? `<img src="${item.image_url}" alt="${item.equipment_name}" style="width:100%; height:100%; object-fit:cover;">`
+                            : `<span class="material-icons-outlined" style="font-size:64px; color:#cbd5e1;">agriculture</span>`;
+
+                        return `
+                        <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.07); transition: all 0.3s; border: 1px solid #f1f5f9;">
+                            <div style="height: 180px; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                                ${imgHtml}
+                                <div style="position: absolute; top: 0.75rem; left: 0.75rem; background: ${condColor}; color: white; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.7rem; font-weight: 700;">
+                                    ${(item.condition_status || 'N/A').toUpperCase()}
+                                </div>
+                                ${discount > 0 ? `<div style="position: absolute; top: 0.75rem; right: 0.75rem; background: rgba(239,68,68,0.9); color:white; padding:0.3rem 0.8rem; border-radius:50px; font-size:0.7rem; font-weight:700;">${discount}% OFF</div>` : ''}
+                            </div>
+                            <div style="padding: 1.25rem;">
+                                <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-dark);">${item.equipment_name}</h4>
+                                <p style="font-size: 0.8rem; color: var(--text-gray); margin-bottom: 0.75rem; text-transform: capitalize;">${item.category} ${item.year_of_manufacture ? '· ' + item.year_of_manufacture : ''} ${item.hours_used > 0 ? '· ' + parseInt(item.hours_used).toLocaleString() + 'h' : ''}</p>
+                                <p style="font-size: 0.8rem; color: var(--text-gray); margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.description || ''}</p>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem; border-top: 1px solid #f1f5f9;">
+                                    <div>
+                                        <div style="font-size: 1.3rem; font-weight: 700; color: #059669;">₹${sellPrice.toLocaleString('en-IN')}</div>
+                                        ${origPrice ? `<div style="font-size: 0.75rem; text-decoration: line-through; color: #a0aec0;">₹${origPrice.toLocaleString('en-IN')}</div>` : ''}
+                                    </div>
+                                    <button onclick="deleteSecondhandListing(${item.id})" 
+                                        style="display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.9rem; background: rgba(239,68,68,0.08); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s;"
+                                        onmouseover="this.style.background='rgba(239,68,68,0.15)'"
+                                        onmouseout="this.style.background='rgba(239,68,68,0.08)'">
+                                        <span class="material-icons-outlined" style="font-size:1rem;">delete</span> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                } else {
+                    grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-light);">
+                        <span class="material-icons-outlined" style="font-size: 4rem; color: #cbd5e1;">sell</span>
+                        <p style="margin-top: 1rem; font-size: 1.1rem; font-weight: 500; color: var(--text-gray);">No listings yet</p>
+                        <p style="font-size: 0.9rem; color: var(--text-light);">Use the form below to list your first second-hand equipment.</p>
+                    </div>`;
+                }
+            } catch (err) {
+                console.error('Error loading secondhand listings:', err);
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #ef4444;">
+                    <span class="material-icons-outlined" style="font-size: 3rem;">error_outline</span>
+                    <p style="margin-top: 0.5rem;">Failed to load listings. Please try again.</p>
+                </div>`;
+            }
+        }
+
+        async function deleteSecondhandListing(id) {
+            if (!confirm('Are you sure you want to remove this listing?')) return;
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            try {
+                const res = await fetch('php/delete_secondhand_equipment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, owner_id: userData.id })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    loadMySecondhandListings();
+                } else {
+                    alert('Failed to remove: ' + (result.error || 'Unknown error'));
+                }
+            } catch (e) {
+                alert('Error removing listing. Please try again.');
+            }
+        }
+
+        let sellImageData = null;
+
+        function previewSellImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    sellImageData = e.target.result;
+                    document.getElementById('sh_image_preview').src = e.target.result;
+                    document.getElementById('sh_image_preview_container').style.display = 'block';
+                    document.getElementById('sh_upload_placeholder').style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeSellImage(event) {
+            event.stopPropagation();
+            sellImageData = null;
+            document.getElementById('sh_image_preview').src = '';
+            document.getElementById('sh_image_preview_container').style.display = 'none';
+            document.getElementById('sh_upload_placeholder').style.display = 'block';
+            document.getElementById('sh_file_input').value = '';
+        }
+
+        function handleSellImageDrop(event) {
+            event.preventDefault();
+            event.currentTarget.style.borderColor = '#cbd5e1';
+            const file = event.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const input = document.getElementById('sh_file_input');
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                input.files = dt.files;
+                previewSellImage(input);
+            }
+        }
+
+        async function submitSellEquipment(event) {
+            event.preventDefault();
+
+            const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
+            if (!userData.id) {
+                alert('Please log in to list equipment.');
+                return;
+            }
+
+            const btn = document.getElementById('sh_submit_btn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="material-icons-outlined" style="animation:spin 1s linear infinite;">sync</span> Publishing...';
+            btn.disabled = true;
+
+            const payload = {
+                owner_id: userData.id,
+                owner_name: userData.name || 'Owner',
+                owner_phone: userData.phone || null,
+                owner_email: userData.email || null,
+                equipment_name: document.getElementById('sh_equipment_name').value.trim(),
+                category: document.getElementById('sh_category').value,
+                condition_status: document.getElementById('sh_condition').value,
+                selling_price: document.getElementById('sh_selling_price').value,
+                original_price: document.getElementById('sh_original_price').value || null,
+                year_of_manufacture: document.getElementById('sh_year').value || null,
+                hours_used: document.getElementById('sh_hours_used').value || 0,
+                location: document.getElementById('sh_location').value.trim(),
+                warranty: document.getElementById('sh_warranty').value.trim() || null,
+                description: document.getElementById('sh_description').value.trim(),
+                image_data: sellImageData || null
+            };
+
+            try {
+                const response = await fetch('php/submit_secondhand_equipment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    btn.innerHTML = '<span class="material-icons-outlined">check_circle</span> Published Successfully!';
+                    btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                    // Reset form
+                    document.getElementById('sellEquipmentForm').reset();
+                    sellImageData = null;
+                    document.getElementById('sh_image_preview_container').style.display = 'none';
+                    document.getElementById('sh_upload_placeholder').style.display = 'block';
+                    // Reload listings
+                    loadMySecondhandListings();
+                    // Scroll to listings
+                    document.getElementById('mySecondhandGrid').scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                        btn.disabled = false;
+                    }, 3000);
+                } else {
+                    alert('Failed to publish: ' + (result.error || 'Unknown error'));
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                console.error('Submit error:', err);
+                alert('Connection error. Please try again.');
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        }
+        // ====================== END SELL FUNCTIONS ======================
     </script>
+
 </body>
 
 </html>

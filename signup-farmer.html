@@ -852,6 +852,15 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="address">Full Address</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="address" class="form-input" placeholder="House No, Village, PO, Pin Code"
+                            required>
+                        <span class="material-icons-outlined">home</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="farmSize">Farm Size (in acres)</label>
                     <div class="input-wrapper">
                         <select id="farmSize" class="form-input" required>
@@ -942,8 +951,16 @@
                 message: 'Please enter a valid 10-digit mobile number'
             },
             location: {
-                test: value => value.length >= 3 && /^[a-zA-Z\s]+$/.test(value),
+                test: value => value.length >= 3 && /^[a-zA-Z\s,.-]+$/.test(value),
                 message: 'Location must contain only letters (min. 3 characters)'
+            },
+            address: {
+                test: value => value.length >= 10,
+                message: 'Please provide a complete address (min. 10 characters)'
+            },
+            address: {
+                test: value => value.length >= 10,
+                message: 'Please provide a complete address (min. 10 characters)'
             },
             farmSize: {
                 test: value => value !== '',
@@ -1094,6 +1111,9 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const location = document.getElementById('location').value;
+            const farmSize = document.getElementById('farmSize').value;
 
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.innerHTML;
@@ -1110,7 +1130,10 @@
                         email: email,
                         password: password,
                         userType: 'farmer',
-                        phone: phone
+                        phone: phone,
+                        address: address,
+                        location: location,
+                        farmSize: farmSize
                     })
                 });
 
