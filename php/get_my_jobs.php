@@ -16,11 +16,11 @@ try {
     $farmer_id = (int)$_GET['farmer_id'];
     error_log("Farmer ID: " . $farmer_id);
 
-    // ── STEP 1: Auto-expire any jobs whose date has passed ──────────────────
+    // ── STEP 1: Mark expired jobs (status update only — do NOT remove them) ──
     // A job is expired if:
     //   • end_date IS set AND end_date < today, OR
     //   • end_date IS NULL and (start_date + duration_days) < today
-    // Only update jobs currently marked Open or Filled (not already Closed/Expired).
+    // We mark them Expired so the UI can show them distinctly, but we keep them visible.
     $expireSQL = "UPDATE job_postings
                   SET status = 'Expired', updated_at = NOW()
                   WHERE farmer_id = ?
@@ -37,14 +37,15 @@ try {
         $expireStmt->execute();
         $expired_count = $expireStmt->affected_rows;
         $expireStmt->close();
-        error_log("Auto-expired $expired_count jobs for farmer_id=$farmer_id");
+        error_log("Marked $expired_count jobs as Expired for farmer_id=$farmer_id");
     }
 
-    // ── STEP 2: Fetch only NON-expired jobs for this farmer ─────────────────
+    // ── STEP 2: Fetch ALL jobs for this farmer (active + expired) ───────────
     $sql = "SELECT * FROM job_postings
             WHERE farmer_id = ?
-              AND status != 'Expired'
-            ORDER BY created_at DESC";
+            ORDER BY
+                CASE WHEN status = 'Expired' THEN 1 ELSE 0 END ASC,
+                created_at DESC";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         throw new Exception("Prepare failed: " . $conn->error);

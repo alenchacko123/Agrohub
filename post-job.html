@@ -351,6 +351,131 @@
             cursor: not-allowed;
         }
 
+        /* ── Inline field validation ── */
+        .field-error {
+            font-size: 0.8rem;
+            color: var(--error);
+            margin-top: 0.3rem;
+            display: none;
+            align-items: center;
+            gap: 0.3rem;
+            animation: fadeInErr 0.2s ease;
+        }
+
+        .field-error.visible {
+            display: flex;
+        }
+
+        @keyframes fadeInErr {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .field-hint {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .field-success {
+            font-size: 0.8rem;
+            color: var(--success);
+            margin-top: 0.3rem;
+            display: none;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .field-success.visible {
+            display: flex;
+        }
+
+        /* input states */
+        .form-group input.input-error,
+        .form-group select.input-error,
+        .form-group textarea.input-error {
+            border-color: var(--error) !important;
+            background: rgba(239, 68, 68, 0.04);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+        }
+
+        .form-group input.input-ok,
+        .form-group select.input-ok,
+        .form-group textarea.input-ok {
+            border-color: var(--success) !important;
+            background: rgba(34, 197, 94, 0.04);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.10);
+        }
+
+        /* char counter */
+        .char-counter {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-align: right;
+            margin-top: 0.2rem;
+        }
+
+        .char-counter.warn {
+            color: var(--warning);
+        }
+
+        .char-counter.limit {
+            color: var(--error);
+            font-weight: 600;
+        }
+
+        /* Re-post banner */
+        .repost-banner {
+            display: none;
+            align-items: flex-start;
+            gap: 1rem;
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 1.5px solid #fcd34d;
+            border-left: 5px solid #f59e0b;
+            border-radius: 14px;
+            padding: 1.1rem 1.4rem;
+            margin-bottom: 1.75rem;
+            font-size: 0.93rem;
+            color: #78350f;
+            animation: slideDown 0.4s ease;
+        }
+
+        .repost-banner.show {
+            display: flex;
+        }
+
+        .repost-banner .rb-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .repost-banner strong {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: #92400e;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 1rem;
@@ -395,6 +520,17 @@
 
         <div class="message" id="messageBox"></div>
 
+        <!-- Re-post notice (shown only when pre-filling from an expired job) -->
+        <div class="repost-banner" id="repostBanner">
+            <span class="rb-icon material-icons-outlined">refresh</span>
+            <div>
+                <strong>🔄 Re-Posting an Expired Job</strong>
+                All previous details have been pre-filled below. Please update the
+                <strong>Start Date</strong> and <strong>End Date</strong> to new upcoming dates before submitting.
+                You can also edit any other field as needed.
+            </div>
+        </div>
+
         <!-- Form Container -->
         <div class="form-container">
             <div class="info-card">
@@ -415,12 +551,18 @@
                     </h3>
                     <div class="form-grid">
                         <div class="form-group full-width">
-                            <label>Job Title <span class="required">*</span></label>
-                            <input type="text" id="jobTitle" placeholder="e.g., Rice Harvesting Worker" required>
+                            <label for="jobTitle">Job Title <span class="required">*</span></label>
+                            <input type="text" id="jobTitle" placeholder="e.g., Rice Harvesting Worker" maxlength="100"
+                                autocomplete="off" required>
+                            <span class="char-counter" id="jobTitleCounter">0/100</span>
+                            <span class="field-error" id="jobTitleError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
 
                         <div class="form-group">
-                            <label>Job Category <span class="required">*</span></label>
+                            <label for="jobCategory">Job Category <span class="required">*</span></label>
                             <select id="jobCategory" required>
                                 <option value="">Select category</option>
                                 <option value="Harvesting">Harvesting</option>
@@ -430,13 +572,22 @@
                                 <option value="General Labour">General Labour</option>
                                 <option value="Others">Others</option>
                             </select>
+                            <span class="field-error" id="jobCategoryError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
 
                         <div class="form-group">
-                            <label>Job Description <span class="required">*</span></label>
-                            <textarea id="jobDescription"
+                            <label for="jobDescription">Job Description <span class="required">*</span></label>
+                            <textarea id="jobDescription" maxlength="2000"
                                 placeholder="Describe the work in detail, including tasks, expectations, and working conditions..."
                                 required></textarea>
+                            <span class="char-counter" id="jobDescCounter">0/2000</span>
+                            <span class="field-error" id="jobDescriptionError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -449,50 +600,92 @@
                     </h3>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Number of Workers Needed <span class="required">*</span></label>
-                            <input type="number" id="workersNeeded" min="1" value="1" required>
+                            <label for="workersNeeded">Number of Workers Needed <span class="required">*</span></label>
+                            <input type="number" id="workersNeeded" min="1" max="500" value="1" required>
+                            <span class="field-hint">Between 1 and 500 workers</span>
+                            <span class="field-error" id="workersNeededError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
 
                         <div class="form-group">
-                            <label>Payment Type <span class="required">*</span></label>
+                            <label for="paymentType">Payment Type <span class="required">*</span></label>
                             <select id="paymentType" required onchange="updatePaymentFields()">
                                 <option value="Daily Wage">Daily Wage</option>
                                 <option value="Fixed Amount">Fixed Amount</option>
                             </select>
+                            <span class="field-error" id="paymentTypeError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
 
                         <div class="form-group">
-                            <label id="paymentAmountLabel">Payment Amount (&#8377;) <em id="paymentAmountSubLabel"
+                            <label id="paymentAmountLabel" for="paymentAmount">Payment Amount (&#8377;) <em
+                                    id="paymentAmountSubLabel"
                                     style="font-size:0.8rem;color:var(--text-gray);font-style:normal;">/day</em> <span
                                     class="required">*</span></label>
-                            <input type="number" id="paymentAmount" min="100" step="50" placeholder="e.g., 800"
-                                required>
+                            <input type="number" id="paymentAmount" min="1000" max="100000" step="50"
+                                placeholder="e.g., 1000" required>
+                            <span class="field-hint">Min &#8377;1,000 &mdash; Max &#8377;1,00,000</span>
+                            <span class="field-error" id="paymentAmountError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
 
                         <div class="form-group" id="workHoursGroup">
-                            <label>Work Hours per Day <span class="required">*</span></label>
-                            <input type="number" id="workHours" min="4" max="12" value="8" required>
+                            <label for="workHours">Work Hours per Day <span class="required">*</span></label>
+                            <input type="number" id="workHours" min="1" max="16" value="8" required>
+                            <span class="field-hint">Between 1 and 16 hours</span>
+                            <span class="field-error" id="workHoursError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
 
                         <div class="form-group">
-                            <label>Duration (Days) <span class="required">*</span></label>
-                            <input type="number" id="durationDays" min="1" placeholder="e.g., 3" required>
+                            <label for="durationDays">Duration (Days) <span class="required">*</span></label>
+                            <input type="number" id="durationDays" min="1" max="365" placeholder="e.g., 3" required>
+                            <span class="field-hint">1 to 365 days</span>
+                            <span class="field-error" id="durationDaysError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
 
                         <div class="form-group">
-                            <label>Start Date <span class="required">*</span></label>
+                            <label for="startDate">Start Date <span class="required">*</span></label>
                             <input type="date" id="startDate" required>
+                            <span class="field-hint">Must be today or a future date</span>
+                            <span class="field-error" id="startDateError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
 
                         <div class="form-group">
-                            <label>End Date (Optional)</label>
+                            <label for="endDate">End Date <em
+                                    style="font-weight:400;color:var(--text-light);">(Optional)</em></label>
                             <input type="date" id="endDate">
+                            <span class="field-hint">Must be on or after start date</span>
+                            <span class="field-error" id="endDateError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Location (Village, District, State) <span class="required">*</span></label>
-                            <input type="text" id="location"
+                            <label for="location">Location (Village, District, State) <span
+                                    class="required">*</span></label>
+                            <input type="text" id="location" maxlength="200"
                                 placeholder="e.g., Mysore Village, Mysore District, Karnataka" required>
+                            <span class="field-hint">At least 5 characters — include village, district and state</span>
+                            <span class="field-error" id="locationError">
+                                <span class="material-icons-outlined" style="font-size:0.9rem;">error_outline</span>
+                                <span></span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -578,9 +771,198 @@
     </div>
 
     <script>
-        // Set minimum date to today
-        document.getElementById('startDate').min = new Date().toISOString().split('T')[0];
-        document.getElementById('endDate').min = new Date().toISOString().split('T')[0];
+        // ══════════════════════════════════════════════════════════════════
+        // VALIDATION UTILITIES
+        // ══════════════════════════════════════════════════════════════════
+
+        /** Show an inline field error. Pass null/'' to clear. */
+        function fieldError(fieldId, message) {
+            const el = document.getElementById(fieldId);
+            const errEl = document.getElementById(fieldId + 'Error');
+            if (!el) return;
+            if (message) {
+                el.classList.add('input-error');
+                el.classList.remove('input-ok');
+                if (errEl) {
+                    errEl.querySelector('span:last-child').textContent = message;
+                    errEl.classList.add('visible');
+                }
+            } else {
+                el.classList.remove('input-error');
+                el.classList.add('input-ok');
+                if (errEl) errEl.classList.remove('visible');
+            }
+        }
+
+        /** Clear all field errors and success states */
+        function clearAllErrors() {
+            document.querySelectorAll('.input-error, .input-ok').forEach(el => {
+                el.classList.remove('input-error', 'input-ok');
+            });
+            document.querySelectorAll('.field-error.visible').forEach(el => {
+                el.classList.remove('visible');
+            });
+        }
+
+        // ── TODAY helper ─────────────────────────────────────────────────
+        function todayStr() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // PER-FIELD VALIDATOR FUNCTIONS  (return error string or '')
+        // ══════════════════════════════════════════════════════════════════
+
+        const validators = {
+            jobTitle(val) {
+                val = val.trim();
+                if (!val) return 'Job title is required.';
+                if (val.length < 5) return 'Job title must be at least 5 characters.';
+                if (val.length > 100) return 'Job title must not exceed 100 characters.';
+                if (/^[^a-zA-Z]+$/.test(val)) return 'Job title must contain at least one letter.';
+                return '';
+            },
+            jobCategory(val) {
+                if (!val) return 'Please select a job category.';
+                return '';
+            },
+            jobDescription(val) {
+                val = val.trim();
+                if (!val) return 'Job description is required.';
+                if (val.length < 20) return 'Description must be at least 20 characters.';
+                if (val.length > 2000) return 'Description must not exceed 2000 characters.';
+                return '';
+            },
+            workersNeeded(val) {
+                const n = parseInt(val);
+                if (!val || isNaN(n)) return 'Number of workers is required.';
+                if (n < 1) return 'At least 1 worker is required.';
+                if (n > 500) return 'Maximum 500 workers allowed.';
+                if (!Number.isInteger(n)) return 'Enter a whole number.';
+                return '';
+            },
+            paymentType(val) {
+                if (!val) return 'Please select a payment type.';
+                return '';
+            },
+            paymentAmount(val) {
+                const n = parseFloat(val);
+                if (!val || isNaN(n)) return 'Payment amount is required.';
+                if (n < 1000) return 'Amount must be at least \u20B91,000.';
+                if (n > 100000) return 'Amount must not exceed \u20B91,00,000.';
+                return '';
+            },
+            workHours(val) {
+                // only validate if the field is visible
+                const grp = document.getElementById('workHoursGroup');
+                if (grp && grp.style.display === 'none') return '';
+                const n = parseInt(val);
+                if (!val || isNaN(n)) return 'Work hours per day is required.';
+                if (n < 1) return 'Minimum 1 hour per day.';
+                if (n > 16) return 'Maximum 16 hours per day.';
+                return '';
+            },
+            durationDays(val) {
+                const n = parseInt(val);
+                if (!val || isNaN(n)) return 'Duration is required.';
+                if (n < 1) return 'Duration must be at least 1 day.';
+                if (n > 365) return 'Duration cannot exceed 365 days.';
+                return '';
+            },
+            startDate(val) {
+                if (!val) return 'Start date is required.';
+                if (val < todayStr()) return 'Start date cannot be in the past.';
+                return '';
+            },
+            endDate(val) {
+                if (!val) return ''; // optional
+                const startVal = document.getElementById('startDate').value;
+                if (startVal && val < startVal) return 'End date must be on or after start date.';
+                return '';
+            },
+            location(val) {
+                val = val.trim();
+                if (!val) return 'Location is required.';
+                if (val.length < 5) return 'Please enter a more specific location (min 5 characters).';
+                if (val.length > 200) return 'Location must not exceed 200 characters.';
+                return '';
+            }
+        };
+
+        /** Validate a single field and update UI. Returns true if valid. */
+        function validateField(id) {
+            const el = document.getElementById(id);
+            if (!el || !validators[id]) return true;
+            const err = validators[id](el.value);
+            fieldError(id, err);
+            return err === '';
+        }
+
+        /** Validate all main fields. Returns true if all pass. */
+        function validateAll() {
+            const fields = ['jobTitle', 'jobCategory', 'jobDescription',
+                'workersNeeded', 'paymentType', 'paymentAmount',
+                'workHours', 'durationDays', 'startDate', 'endDate', 'location'];
+            let valid = true;
+            let firstInvalid = null;
+            fields.forEach(id => {
+                const ok = validateField(id);
+                if (!ok && !firstInvalid) firstInvalid = id;
+                if (!ok) valid = false;
+            });
+            if (firstInvalid) {
+                const el = document.getElementById(firstInvalid);
+                if (el) { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            }
+            return valid;
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // REAL-TIME VALIDATION (blur + input)
+        // ══════════════════════════════════════════════════════════════════
+
+        ['jobTitle', 'jobCategory', 'jobDescription', 'workersNeeded', 'paymentType',
+            'paymentAmount', 'workHours', 'durationDays', 'startDate', 'endDate', 'location']
+            .forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                // Validate on blur
+                el.addEventListener('blur', () => validateField(id));
+                // Clear error while typing / re-validate on change for selects+dates
+                el.addEventListener('input', () => {
+                    if (el.classList.contains('input-error')) validateField(id);
+                });
+                el.addEventListener('change', () => {
+                    validateField(id);
+                    // Cross-field: re-validate endDate when startDate changes
+                    if (id === 'startDate') {
+                        document.getElementById('endDate').min = el.value;
+                        if (document.getElementById('endDate').value) validateField('endDate');
+                    }
+                });
+            });
+
+        // ── Character counters ──────────────────────────────────────────
+        function updateCounter(inputId, counterId, max) {
+            const el = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
+            if (!el || !counter) return;
+            el.addEventListener('input', () => {
+                const len = el.value.length;
+                counter.textContent = `${len}/${max}`;
+                counter.className = 'char-counter';
+                if (len >= max) counter.classList.add('limit');
+                else if (len >= max * 0.85) counter.classList.add('warn');
+            });
+        }
+        updateCounter('jobTitle', 'jobTitleCounter', 100);
+        updateCounter('jobDescription', 'jobDescCounter', 2000);
+
+        // ══════════════════════════════════════════════════════════════════
+        // SET MINIMUM DATE TO TODAY
+        // ══════════════════════════════════════════════════════════════════
+        document.getElementById('startDate').min = todayStr();
+        document.getElementById('endDate').min = todayStr();
 
         // ── Payment Type dynamic field update ────────────────────────────────
         function updatePaymentFields() {
@@ -592,23 +974,21 @@
             const hoursInput = document.getElementById('workHours');
 
             if (type === 'Fixed Amount') {
-                // Update label to show "Total Fixed Amount"
                 amtLabel.childNodes[0].textContent = 'Total Fixed Amount (\u20B9) ';
                 subLabel.textContent = '(one-time total)';
                 amtInput.placeholder = 'e.g., 5000';
-                amtInput.min = '100';
+                amtInput.min = '1000';
                 amtInput.step = '100';
-                // Hide work-hours field (not relevant for fixed total)
                 hoursGroup.style.display = 'none';
                 hoursInput.removeAttribute('required');
+                // Clear work hours error when hidden
+                fieldError('workHours', '');
             } else {
-                // Restore Daily Wage defaults
                 amtLabel.childNodes[0].textContent = 'Payment Amount (\u20B9) ';
                 subLabel.textContent = '/day';
                 amtInput.placeholder = 'e.g., 800';
-                amtInput.min = '100';
+                amtInput.min = '1000';
                 amtInput.step = '50';
-                // Show work-hours field again
                 hoursGroup.style.display = '';
                 hoursInput.setAttribute('required', 'required');
             }
@@ -617,22 +997,18 @@
         // Initialise on page load
         updatePaymentFields();
 
-        // Dynamic Responsibilities
+        // ── Dynamic Responsibilities ──────────────────────────────────
         function addResponsibility() {
             const list = document.getElementById('responsibilitiesList');
             const inputs = list.querySelectorAll('input[type="text"]');
 
-            // Validation: Check if the last input is empty
             if (inputs.length > 0) {
                 const lastInput = inputs[inputs.length - 1];
                 if (!lastInput.value.trim()) {
                     lastInput.focus();
-                    lastInput.style.borderColor = 'var(--error)';
+                    lastInput.classList.add('input-error');
                     showMessage('Please fill the current responsibility before adding a new one.', 'error');
-                    // Reset border color after 3 seconds
-                    setTimeout(() => {
-                        lastInput.style.borderColor = '#e5e7eb';
-                    }, 3000);
+                    setTimeout(() => lastInput.classList.remove('input-error'), 3000);
                     return;
                 }
             }
@@ -646,189 +1022,61 @@
                 </button>
             `;
             list.appendChild(item);
-
-            // Focus the new input
             item.querySelector('input').focus();
         }
 
-        // Update end date minimum when start date changes
-        document.getElementById('startDate').addEventListener('change', function () {
-            document.getElementById('endDate').min = this.value;
-        });
-
-        // Remove error border on input
-        document.addEventListener('input', function (e) {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
-                e.target.style.borderColor = '#e5e7eb';
-            }
-        });
-
-        // Form Submission
+        // ══════════════════════════════════════════════════════════════════
+        // FORM SUBMISSION
+        // ══════════════════════════════════════════════════════════════════
         document.getElementById('postJobForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const submitBtn = document.getElementById('submitBtn');
-            const messageBox = document.getElementById('messageBox');
 
-            // Get user data - check both possible localStorage keys
+            // 1. Auth check
             let userData = localStorage.getItem('user') || localStorage.getItem('agrohub_user');
-
             if (!userData) {
-                showMessage('Please login to post a job', 'error');
-                setTimeout(() => {
-                    window.location.href = 'login-farmer.html';
-                }, 2000);
+                showMessage('Please login to post a job.', 'error');
+                setTimeout(() => { window.location.href = 'login-farmer.html'; }, 2000);
                 return;
             }
-
             const user = JSON.parse(userData);
-
-            // Validate user data has required fields
             if (!user.id || !user.email) {
                 showMessage('Invalid user session. Please login again.', 'error');
-                setTimeout(() => {
-                    window.location.href = 'login-farmer.html';
-                }, 2000);
+                setTimeout(() => { window.location.href = 'login-farmer.html'; }, 2000);
                 return;
             }
 
-            // --- Custom Validations ---
+            // 2. Run all field validations
+            if (!validateAll()) {
+                showMessage('Please fix the highlighted errors before submitting.', 'error');
+                return;
+            }
 
-            // 1. Job Title Validation
+            // 3. Responsibilities check
+            const respInputs = document.querySelectorAll('#responsibilitiesList input');
+            const responsibilities = [];
+            respInputs.forEach(inp => { if (inp.value.trim()) responsibilities.push(inp.value.trim()); });
+            if (responsibilities.length === 0) {
+                showMessage('Please add at least one responsibility.', 'error');
+                if (respInputs.length > 0) { respInputs[0].focus(); respInputs[0].classList.add('input-error'); }
+                return;
+            }
+
+            // --- Read validated values ---
             const jobTitle = document.getElementById('jobTitle').value.trim();
-            if (jobTitle.length < 5) {
-                showMessage('Job Title must be at least 5 characters long.', 'error');
-                document.getElementById('jobTitle').focus();
-                document.getElementById('jobTitle').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 2. Job Category Validation
             const jobCategory = document.getElementById('jobCategory').value;
-            if (!jobCategory) {
-                showMessage('Please select a Job Category.', 'error');
-                document.getElementById('jobCategory').focus();
-                document.getElementById('jobCategory').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 3. Payment Type Validation
             const paymentType = document.getElementById('paymentType').value;
-            if (!paymentType) {
-                showMessage('Please select a Payment Type.', 'error');
-                document.getElementById('paymentType').focus();
-                document.getElementById('paymentType').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 4. Job Description Validation
             const description = document.getElementById('jobDescription').value.trim();
-            if (description.length < 20) {
-                showMessage('Please provide a more detailed job description (at least 20 characters).', 'error');
-                document.getElementById('jobDescription').focus();
-                document.getElementById('jobDescription').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 5. Workers Needed Validation
             const workersNeeded = parseInt(document.getElementById('workersNeeded').value);
-            if (isNaN(workersNeeded) || workersNeeded < 1) {
-                showMessage('Please specify at least 1 worker needed.', 'error');
-                document.getElementById('workersNeeded').focus();
-                document.getElementById('workersNeeded').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 6. Payment Amount Validation
             const amount = parseFloat(document.getElementById('paymentAmount').value);
-            if (isNaN(amount) || amount < 100) {
-                showMessage('Payment amount must be at least ₹100.', 'error');
-                document.getElementById('paymentAmount').focus();
-                document.getElementById('paymentAmount').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 7. Work Hours Validation
-            const hours = parseInt(document.getElementById('workHours').value);
-            if (isNaN(hours) || hours < 1 || hours > 12) {
-                showMessage('Work hours must be between 1 and 12 hours.', 'error');
-                document.getElementById('workHours').focus();
-                document.getElementById('workHours').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 8. Duration Validation
+            const hours = parseInt(document.getElementById('workHours').value) || 0;
             const duration = parseInt(document.getElementById('durationDays').value);
-            if (isNaN(duration) || duration < 1) {
-                showMessage('Duration must be at least 1 day.', 'error');
-                document.getElementById('durationDays').focus();
-                document.getElementById('durationDays').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 9. Date Validation
             const startDateVal = document.getElementById('startDate').value;
             const endDateVal = document.getElementById('endDate').value;
-
-            if (!startDateVal) {
-                showMessage('Please select a Start Date.', 'error');
-                document.getElementById('startDate').focus();
-                document.getElementById('startDate').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            const today = new Date().toISOString().split('T')[0];
-            if (startDateVal < today) {
-                showMessage('Start Date cannot be in the past.', 'error');
-                document.getElementById('startDate').focus();
-                document.getElementById('startDate').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            if (endDateVal && new Date(endDateVal) < new Date(startDateVal)) {
-                showMessage('End date cannot be earlier than start date.', 'error');
-                document.getElementById('endDate').focus();
-                document.getElementById('endDate').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 10. Location Validation
             const location = document.getElementById('location').value.trim();
-            if (location.length < 3) {
-                showMessage('Please provide a valid location (at least 3 characters).', 'error');
-                document.getElementById('location').focus();
-                document.getElementById('location').style.borderColor = 'var(--error)';
-                return;
-            }
-
-            // 11. Responsibilities Validation
-
-
-            const respInputs = document.querySelectorAll('#responsibilitiesList input');
-            let hasResponsibilities = false;
-            for (let input of respInputs) {
-                if (input.value.trim() !== '') {
-                    hasResponsibilities = true;
-                }
-            }
-            if (!hasResponsibilities) {
-                showMessage('Please add at least one responsibility.', 'error');
-                if (respInputs.length > 0) respInputs[0].focus();
-                return;
-            }
-
 
             // --- End Validations ---
-
-
-
-            // Collect responsibilities
-            const responsibilities = [];
-            document.querySelectorAll('#responsibilitiesList input').forEach(input => {
-                if (input.value.trim()) {
-                    responsibilities.push(input.value.trim());
-                }
-            });
 
             // Prepare job data with fallback for user ID
             // If user.id doesn't exist, use email hash or default to 1
@@ -922,6 +1170,102 @@
             `;
             messageBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+
+        // ── Re-post pre-fill ─────────────────────────────────────────────────
+        (function prefillRepost() {
+            const raw = sessionStorage.getItem('repost_job');
+            if (!raw) return;
+
+            let d;
+            try { d = JSON.parse(raw); } catch (e) { return; }
+            sessionStorage.removeItem('repost_job'); // consume once
+
+            // Show re-post banner
+            document.getElementById('repostBanner').classList.add('show');
+            // Update page title so the farmer knows what they're doing
+            document.querySelector('.page-title').textContent = '🔄 Re-Post a Job';
+            document.querySelector('.page-subtitle').textContent = 'Update the dates and post again to find workers';
+            document.getElementById('submitBtn').innerHTML =
+                '<span class="material-icons-outlined">refresh</span> Re-Post Job';
+
+            // ── Fill simple fields ───────────────────────────────────────────
+            const set = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; };
+
+            set('jobTitle', d.job_title);
+            set('jobDescription', d.job_description);
+            set('workersNeeded', d.workers_needed);
+            set('paymentAmount', d.payment_amount);
+            set('workHours', d.work_hours_per_day);
+            set('durationDays', d.duration_days);
+            set('location', d.location);
+            set('otherBenefits', d.other_benefits);
+
+            // ── Category select ──────────────────────────────────────────────
+            if (d.job_category) {
+                const sel = document.getElementById('jobCategory');
+                // Try to find exact match first, then case-insensitive
+                let found = false;
+                for (let opt of sel.options) {
+                    if (opt.value.toLowerCase() === d.job_category.toLowerCase()) {
+                        sel.value = opt.value;
+                        found = true;
+                        break;
+                    }
+                }
+                // If no match, add an option dynamically
+                if (!found && d.job_category) {
+                    const opt = new Option(d.job_category, d.job_category, true, true);
+                    sel.add(opt);
+                }
+            }
+
+            // ── Payment type select + update UI ─────────────────────────────
+            if (d.payment_type) {
+                const ptSel = document.getElementById('paymentType');
+                for (let opt of ptSel.options) {
+                    if (opt.value.toLowerCase() === d.payment_type.toLowerCase()) {
+                        ptSel.value = opt.value;
+                        break;
+                    }
+                }
+                updatePaymentFields();
+            }
+
+            // ── Checkboxes ───────────────────────────────────────────────────
+            const checkMap = {
+                accommodation: 'accommodation',
+                food: 'food',
+                transportation: 'transportation',
+                tools: 'tools'
+            };
+            Object.entries(checkMap).forEach(([key, id]) => {
+                const el = document.getElementById(id);
+                if (el) el.checked = !!d[key];
+            });
+
+            // ── Responsibilities ─────────────────────────────────────────────
+            const respArr = Array.isArray(d.responsibilities)
+                ? d.responsibilities.filter(r => typeof r === 'string' && r.trim())
+                : [];
+
+            if (respArr.length > 0) {
+                const list = document.getElementById('responsibilitiesList');
+                list.innerHTML = ''; // clear default empty item
+                respArr.forEach((text, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'list-item';
+                    item.innerHTML = `
+                        <input type="text" value="${text.replace(/"/g, '&quot;')}" placeholder="Enter a responsibility">
+                        ${i === 0 ? '' : '<button type="button" onclick="this.parentElement.remove()"><span class="material-icons-outlined">delete</span></button>'}
+                    `;
+                    list.appendChild(item);
+                });
+            }
+
+            // Dates left blank intentionally — farmer must set new dates
+            // Scroll to top so banner is visible
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        })();
     </script>
 </body>
 

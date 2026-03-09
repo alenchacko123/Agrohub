@@ -260,58 +260,74 @@ try {
         file_put_contents('payment_error_log.txt', date('[Y-m-d H:i:s] ') . "Payment Log Error: " . $e->getMessage() . "\n", FILE_APPEND);
     }
 
-    // 7. Notify Owner to Sign Agreement
+    // 7. Notify Owner to Sign Agreement (in-app + email)
     try {
-        // Get Owner ID
-        $ownSql = "SELECT owner_id, name as equipment_name FROM equipment WHERE id = ?";
+        // Get Owner details (id, name, email) and equipment name
+        $ownSql = "SELECT e.owner_id, e.name as equipment_name, u.name as owner_name, u.email as owner_email
+                   FROM equipment e
+                   JOIN users u ON u.id = e.owner_id
+                   WHERE e.id = ?";
         $ownStmt = $conn->prepare($ownSql);
         $ownStmt->bind_param("i", $request['equipment_id']);
         $ownStmt->execute();
         $ownRes = $ownStmt->get_result();
-        
+
         if ($ownRes->num_rows > 0) {
             $equipmentData = $ownRes->fetch_assoc();
-            $owner_id = $equipmentData['owner_id'];
-            $eq_name = $equipmentData['equipment_name'];
-            
-            // Insert Notification
-            $notifMsg = "Action Required: Please sign the rental agreement for " . $eq_name . " (Booking #" . $booking_id . ")";
+            $owner_id    = $equipmentData['owner_id'];
+            $eq_name     = $equipmentData['equipment_name'];
+            $owner_name  = $equipmentData['owner_name'];
+            $owner_email = $equipmentData['owner_email'];
+
+            // ── In-App Notification ──────────────────────────────────────────
+            $notifMsg    = "Action Required: Please sign the rental agreement for " . $eq_name . " (Booking #" . $booking_id . ")";
             $notifAction = "agreements.html?id=AGR-" . $booking_id;
-            
-            // Check if columns exist (safe insert)
-            $nCols = ['user_id', 'message', 'type', 'created_at', 'is_read'];
-            $nVals = ['?', '?', "'action_required'", 'NOW()', '0'];
-            $nTypes = 'is';
+
+            $nCols   = ['user_id', 'message', 'type', 'created_at', 'is_read'];
+            $nVals   = ['?', '?', "'action_required'", 'NOW()', '0'];
+            $nTypes  = 'is';
             $nParams = [$owner_id, $notifMsg];
-            
-            // Add related_id/action_url if they exist (we know they do from schema check, but allow fallback)
+
             $checkRel = $conn->query("SHOW COLUMNS FROM notifications LIKE 'related_id'");
             if ($checkRel && $checkRel->num_rows > 0) {
-                $nCols[] = 'related_id';
-                $nVals[] = '?';
-                $nTypes .= 'i';
-                $nParams[] = $booking_id;
+                $nCols[] = 'related_id'; $nVals[] = '?'; $nTypes .= 'i'; $nParams[] = $booking_id;
             }
             $checkUrl = $conn->query("SHOW COLUMNS FROM notifications LIKE 'action_url'");
             if ($checkUrl && $checkUrl->num_rows > 0) {
-                $nCols[] = 'action_url';
-                $nVals[] = '?';
-                $nTypes .= 's';
-                $nParams[] = $notifAction;
+                $nCols[] = 'action_url'; $nVals[] = '?'; $nTypes .= 's'; $nParams[] = $notifAction;
             }
-            
-            $notifSql = "INSERT INTO notifications (" . implode(', ', $nCols) . ") VALUES (" . implode(', ', $nVals) . ")";
+
+            $notifSql  = "INSERT INTO notifications (" . implode(', ', $nCols) . ") VALUES (" . implode(', ', $nVals) . ")";
             $notifStmt = $conn->prepare($notifSql);
             if ($notifStmt) {
                 $notifStmt->bind_param($nTypes, ...$nParams);
                 $notifStmt->execute();
                 $notifStmt->close();
             }
+
+            // ── Email Notification to Owner ──────────────────────────────────
+            if (!empty($owner_email)) {
+                require_once __DIR__ . '/send_agreement_email.php';
+
+                // Get farmer name
+                $farmerNameRow = $conn->query("SELECT name FROM users WHERE id = " . intval($request['farmer_id']));
+                $farmer_name   = ($farmerNameRow && $farmerNameRow->num_rows > 0)
+                                 ? $farmerNameRow->fetch_assoc()['name'] : 'The Farmer';
+
+                sendFarmerPaidEmail(
+                    $owner_email,
+                    $owner_name,
+                    $farmer_name,
+                    $eq_name,
+                    'AGR-' . $booking_id,
+                    $final_total,
+                    date('Y-m-d H:i:s')
+                );
+            }
         }
         $ownStmt->close();
     } catch (Exception $e) {
-         // Log notification error but don't fail booking
-         file_put_contents('debug_log.txt', "Notification Error: " . $e->getMessage() . "\n", FILE_APPEND);
+         file_put_contents('debug_log.txt', "Notification/Email Error: " . $e->getMessage() . "\n", FILE_APPEND);
     }
     
     // Commit Transaction

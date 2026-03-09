@@ -1,0 +1,51 @@
+﻿[Sun Mar 08 16:52:26.513655 2026] [php:notice] [pid 8288:tid 1904] [client ::1:54752] Farmer ID: 12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:52:26.515015 2026] [php:notice] [pid 8288:tid 1904] [client ::1:54752] Marked 0 jobs as Expired for farmer_id=12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:52:26.517064 2026] [php:notice] [pid 8288:tid 1904] [client ::1:54752] Query executed. Active rows found: 3, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:52:26.517064 2026] [php:notice] [pid 8288:tid 1904] [client ::1:54752] Total active jobs to return: 3, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:52:39.829547 2026] [php:notice] [pid 8288:tid 1904] [client ::1:59221] === GET MY JOBS API CALLED ===, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:52:39.829547 2026] [php:notice] [pid 8288:tid 1904] [client ::1:59221] Farmer ID: 12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:52:39.829547 2026] [php:notice] [pid 8288:tid 1904] [client ::1:59221] Marked 0 jobs as Expired for farmer_id=12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:52:39.834617 2026] [php:notice] [pid 8288:tid 1904] [client ::1:59221] Query executed. Active rows found: 3, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:52:39.834617 2026] [php:notice] [pid 8288:tid 1904] [client ::1:59221] Total active jobs to return: 3, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:57:52.254709 2026] [php:notice] [pid 8288:tid 1904] [client ::1:61580] === GET MY JOBS API CALLED ===, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:57:52.254709 2026] [php:notice] [pid 8288:tid 1904] [client ::1:61580] Farmer ID: 12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:57:52.255276 2026] [php:notice] [pid 8288:tid 1904] [client ::1:61580] Marked 0 jobs as Expired for farmer_id=12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:57:52.257383 2026] [php:notice] [pid 8288:tid 1904] [client ::1:61580] Query executed. Active rows found: 3, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 16:57:52.257383 2026] [php:notice] [pid 8288:tid 1904] [client ::1:61580] Total active jobs to return: 3, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:07:56.073683 2026] [php:notice] [pid 8288:tid 1432] [client ::1:49670] === GET MY JOBS API CALLED ===, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:07:56.074308 2026] [php:notice] [pid 8288:tid 1432] [client ::1:49670] Farmer ID: 12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:07:56.076748 2026] [php:notice] [pid 8288:tid 1432] [client ::1:49670] Marked 0 jobs as Expired for farmer_id=12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:07:56.079998 2026] [php:notice] [pid 8288:tid 1432] [client ::1:49670] Query executed. Active rows found: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:07:56.080710 2026] [php:notice] [pid 8288:tid 1432] [client ::1:49670] Total active jobs to return: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:11.522763 2026] [php:notice] [pid 8288:tid 1936] [client ::1:56303] === GET MY JOBS API CALLED ===, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:11.524395 2026] [php:notice] [pid 8288:tid 1936] [client ::1:56303] Farmer ID: 12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:11.527795 2026] [php:notice] [pid 8288:tid 1936] [client ::1:56303] Marked 0 jobs as Expired for farmer_id=12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:11.527795 2026] [php:notice] [pid 8288:tid 1936] [client ::1:56303] Query executed. Active rows found: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:11.527795 2026] [php:notice] [pid 8288:tid 1936] [client ::1:56303] Total active jobs to return: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:20.967307 2026] [php:notice] [pid 8288:tid 1432] [client ::1:60346] === GET MY JOBS API CALLED ===, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:20.967307 2026] [php:notice] [pid 8288:tid 1432] [client ::1:60346] Farmer ID: 12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:20.967307 2026] [php:notice] [pid 8288:tid 1432] [client ::1:60346] Marked 0 jobs as Expired for farmer_id=12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:20.972335 2026] [php:notice] [pid 8288:tid 1432] [client ::1:60346] Query executed. Active rows found: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:08:20.972335 2026] [php:notice] [pid 8288:tid 1432] [client ::1:60346] Total active jobs to return: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:25:28.041452 2026] [php:notice] [pid 8288:tid 536] [client ::1:53959] === GET MY JOBS API CALLED ===, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:25:28.041452 2026] [php:notice] [pid 8288:tid 536] [client ::1:53959] Farmer ID: 12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:25:28.043507 2026] [php:notice] [pid 8288:tid 536] [client ::1:53959] Marked 0 jobs as Expired for farmer_id=12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:25:28.046312 2026] [php:notice] [pid 8288:tid 536] [client ::1:53959] Query executed. Active rows found: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Sun Mar 08 17:25:28.046312 2026] [php:notice] [pid 8288:tid 536] [client ::1:53959] Total active jobs to return: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Mon Mar 09 06:34:05.498783 2026] [php:notice] [pid 8288:tid 1936] [client ::1:55291] === GET MY JOBS API CALLED ===, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Mon Mar 09 06:34:05.498783 2026] [php:notice] [pid 8288:tid 1936] [client ::1:55291] Farmer ID: 12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Mon Mar 09 06:34:05.500384 2026] [php:notice] [pid 8288:tid 1936] [client ::1:55291] Marked 0 jobs as Expired for farmer_id=12, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Mon Mar 09 06:34:05.502843 2026] [php:notice] [pid 8288:tid 1936] [client ::1:55291] Query executed. Active rows found: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Mon Mar 09 06:34:05.502843 2026] [php:notice] [pid 8288:tid 1936] [client ::1:55291] Total active jobs to return: 4, referer: http://localhost/Agrohub/my-posted-jobs.html
+[Mon Mar 09 07:10:00.496383 2026] [php:notice] [pid 8288:tid 1904] [client ::1:59572] Owner-signed email error: Unknown column 'e.name' in 'field list', referer: http://localhost/Agrohub/agreements.html?id=AGR-15
+[Mon Mar 09 08:53:03.879384 2026] [php:notice] [pid 8288:tid 1936] [client ::1:64751] [submit_feedback] Unknown column 'e.name' in 'field list', referer: http://localhost/Agrohub/agreements.html
+[Mon Mar 09 08:59:55.645280 2026] [php:error] [pid 8288:tid 1928] [client ::1:57409] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\\xampp\\htdocs\\Agrohub\\php\\submit_feedback.php:121\nStack trace:\n#0 C:\\xampp\\htdocs\\Agrohub\\php\\submit_feedback.php(121): mysqli_stmt->bind_param('iiiiiiiiiids', 1000014, 12, 14, 'john degree 505', 4, 4, 5, 5, 4, 4.4, 'nil')\n#1 {main}\n  thrown in C:\\xampp\\htdocs\\Agrohub\\php\\submit_feedback.php on line 121, referer: http://localhost/Agrohub/agreements.html
+[Mon Mar 09 09:02:19.683738 2026] [php:notice] [pid 8288:tid 1928] [client ::1:56648] [submit_feedback] Invalid JSON input
+[Mon Mar 09 09:02:48.675818 2026] [php:notice] [pid 8288:tid 1928] [client ::1:56665] [submit_feedback] Invalid JSON input
+[Mon Mar 09 09:04:14.751241 2026] [php:notice] [pid 8288:tid 1928] [client ::1:56705] [submit_feedback] Invalid JSON input
+[Mon Mar 09 09:04:30.582244 2026] [php:notice] [pid 8288:tid 1928] [client ::1:56714] [submit_feedback] Invalid JSON input
+[Mon Mar 09 09:05:30.956534 2026] [php:notice] [pid 8288:tid 1928] [client ::1:56734] [submit_feedback] Invalid JSON input
+[Mon Mar 09 09:06:09.408454 2026] [php:notice] [pid 8288:tid 1928] [client ::1:56751] [submit_feedback] Unauthorized: you are not the farmer for this rental
+[Mon Mar 09 09:06:23.300889 2026] [php:notice] [pid 8288:tid 1928] [client ::1:56757] [submit_feedback] Unauthorized: you are not the farmer for this rental
+[Mon Mar 09 09:06:48.451232 2026] [php:error] [pid 8288:tid 1928] [client ::1:56777] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\\xampp\\htdocs\\Agrohub\\php\\submit_feedback.php:121\nStack trace:\n#0 C:\\xampp\\htdocs\\Agrohub\\php\\submit_feedback.php(121): mysqli_stmt->bind_param('iiiiiiiiiids', 1000015, 12, 14, 'john degree 505', 4, 4, 4, 4, 4, 4.0, 'test')\n#1 {main}\n  thrown in C:\\xampp\\htdocs\\Agrohub\\php\\submit_feedback.php on line 121
+

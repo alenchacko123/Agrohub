@@ -1,4 +1,4 @@
-<?php
+@<?php
 /**
  * Sample Job Data Insertion Script
  * Run this once to populate the job_postings table with test data

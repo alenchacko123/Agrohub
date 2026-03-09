@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            background: white;
+            margin: 0;
+            padding: 20px;
+            color: black;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1.5px solid black;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: left;
+            vertical-align: top;
+            font-size: 12pt;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .outer-table {
+            border: 2px solid black;
+        }
+
+        .no-bottom-border {
+            border-bottom: none;
+        }
+
+        .no-top-border {
+            border-top: none;
+        }
+
+        .title-row {
+            background-color: white;
+            /* No shading in template */
+        }
+
+        .step-header {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body style="width: 850px; background: white;">
+
+    <div style="font-weight: bold; font-size: 12pt; margin-bottom: 20px; margin-left:2px;">Eg Test Report</div>
+
+    <table class="outer-table">
+        <tr>
+            <td colspan="6"
+                style="border: 1px solid #ccc; border-bottom: 2px solid black; font-weight: bold; font-size: 12pt;">Test
+                Case 1</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="bold">Project Name: AgroHub</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="bold center">Login Test Case</td>
+        </tr>
+        <tr>
+            <td colspan="3"><span class="bold">Test Case ID:</span> Test_1</td>
+            <td colspan="3"><span class="bold">Test Designed By:</span> Development Team</td>
+        </tr>
+        <tr>
+            <td colspan="3"><span class="bold">Test Priority(Low/Medium/High):</span> High</td>
+            <td colspan="3"><span class="bold">Test Designed Date:</span> 3 March 2026</td>
+        </tr>
+        <tr>
+            <td colspan="3"><span class="bold">Module Name:</span> Authentication / Login</td>
+            <td colspan="3"><span class="bold">Test Executed By :</span> Ms. meera rose mathew</td>
+        </tr>
+        <tr>
+            <td colspan="3"><span class="bold">Test Title :</span> Farmer Login and Dashboard Redirect</td>
+            <td colspan="3"><span class="bold">Test Execution Date:</span> 9 March 2026</td>
+        </tr>
+        <tr>
+            <td colspan="6"><span class="bold">Description: </span>Verifies that a farmer can log in using valid
+                credentials from the database and is successfully redirected to the farmer dashboard page.</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="bold">Pre-Condition :User has valid username and password</td>
+        </tr>
+        <tr class="step-header">
+            <td style="width: 5%;">Step</td>
+            <td style="width: 25%;">Test Step</td>
+            <td style="width: 15%;">Test Data</td>
+            <td style="width: 20%;">Expected Result</td>
+            <td style="width: 20%;">Actual Result</td>
+            <td style="width: 15%;">Status(Pass/Fail)</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Open the AgroHub landing page and click the 'Login' link in the navbar</td>
+            <td>URL: http://localhost/Agrohub/landingpage.html</td>
+            <td rowspan="7">
+                1. Landing page loads, click functions, and redirects to login.html.<br><br><br>
+                2. Page title should contain "AgroHub".<br><br><br>
+                3. Email field, password field, and submit button should be fully visible.<br><br><br>
+                4. Form submission completes and successfully redirects browser.<br><br><br>
+                5. Current URL contains farmer-dashboard.html and page body is populated.
+            </td>
+            <td rowspan="7">
+                1. Successfully navigated from Landing page to Login page.<br><br><br>
+                2. Login page verified successfully, title matched.<br><br><br>
+                3. All form elements found and visible on the page.<br><br><br>
+                4. Login successful! Redirected to Farmer Dashboard.<br><br><br>
+                5. Farmer Dashboard loaded successfully with expected content.
+            </td>
+            <td rowspan="7">
+                1. <span style="color:blue; text-decoration:underline;">Pass</span><br><br><br>
+                2. <span style="color:blue; text-decoration:underline;">Pass</span><br><br><br>
+                3. <span style="color:blue; text-decoration:underline;">Pass</span><br><br><br>
+                4. <span style="color:blue; text-decoration:underline;">Pass</span><br><br><br>
+                5. <span style="color:blue; text-decoration:underline;">Pass</span>
+            </td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Verify the Login page title</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Check if login form elements are present</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Enter farmer valid credentials and click the 'Sign In' button</td>
+            <td>Email: alenchacko2028@mca.ajce.in<br>Password: Alen123@</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Verify Farmer Dashboard page loaded correctly</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="6" class="bold" style="padding-top: 20px; padding-bottom: 20px;">Post-Condition: User session
+                is created, farmer is successfully logged in, and viewing the active dashboard interface.</td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

@@ -819,7 +819,248 @@
             transition: 0s;
         }
 
-        /* 4. Glass-morphic Hover Glow */
+        /* Feedback Button */
+        .btn-feedback {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-feedback:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .feedback-badge-done {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid #fcd34d;
+        }
+
+        /* ── Feedback Modal ─────────────────────────────────────── */
+        #feedbackModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #feedbackModal.active {
+            display: flex;
+        }
+
+        .feedback-modal-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 32px;
+            width: 100%;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+            animation: slideUpModal 0.3s ease;
+        }
+
+        @keyframes slideUpModal {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .feedback-modal-header .icon-wrap {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .feedback-modal-header h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        .feedback-modal-header p {
+            margin: 2px 0 0;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .feedback-close-btn {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 22px;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .feedback-close-btn:hover {
+            color: #1a1a2e;
+        }
+
+        /* Star Rating Row */
+        .feedback-question {
+            margin-bottom: 20px;
+        }
+
+        .feedback-question label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .feedback-question label span {
+            font-size: 12px;
+            font-weight: 400;
+            color: #94a3b8;
+            margin-left: 6px;
+        }
+
+        .star-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .star-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 32px;
+            color: #e2e8f0;
+            transition: color 0.15s, transform 0.15s;
+            padding: 0 2px;
+            line-height: 1;
+        }
+
+        .star-btn:hover,
+        .star-btn.selected {
+            color: #f59e0b;
+            transform: scale(1.2);
+        }
+
+        .star-label {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+            min-height: 16px;
+            font-style: italic;
+        }
+
+        /* Comments */
+        .feedback-comments {
+            margin-top: 4px;
+        }
+
+        .feedback-comments textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+            color: #374151;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        .feedback-comments textarea:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+
+        /* Submit */
+        .feedback-submit-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+            transition: all 0.2s;
+        }
+
+        .feedback-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5);
+        }
+
+        .feedback-submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success state */
+        .feedback-success {
+            text-align: center;
+            padding: 20px 0;
+            display: none;
+        }
+
+        .feedback-success .success-icon {
+            font-size: 60px;
+            animation: scaleIn 0.5s ease;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+
         .agreement-card::after,
         .insurance-card::after {
             content: '';
@@ -924,10 +1165,203 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
+        /* ── PRINT / PDF STYLES ─────────────────────────────────── */
+        @media print {
+
+            /* A4 page setup */
+            @page {
+                size: A4 portrait;
+                margin: 12mm 10mm;
+            }
+
+            /*
+             * KEY FIX: display:none collapses layout of hidden elements.
+             * visibility:hidden only hides visually but keeps space -> blank pages.
+             * body>*:not(#agreementPrintContainer) removes all other elements from layout.
+             */
+            body>*:not(#agreementPrintContainer) {
+                display: none !important;
+            }
+
+            html,
+            body {
+                background: #fff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Show the print container as normal block flow — NO position:absolute/fixed */
+            #agreementPrintContainer {
+                display: block !important;
+                position: static !important;
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #fff !important;
+                font-family: Arial, Helvetica, sans-serif !important;
+                font-size: 13px !important;
+                color: #1a1a2e !important;
+                line-height: 1.6 !important;
+                overflow: visible !important;
+            }
+
+            /* Page break between Page 1 and Page 2 */
+            .pdf-page-break {
+                page-break-before: always !important;
+                break-before: page !important;
+                display: block !important;
+            }
+
+            /* Don't break inside tables or signature blocks */
+            table {
+                page-break-inside: avoid;
+                border-collapse: collapse !important;
+            }
+
+            tr {
+                page-break-inside: avoid;
+            }
+
+            img {
+                max-width: 100% !important;
+                display: block !important;
+                page-break-inside: avoid;
+            }
+
+            /* Ensure table borders print */
+            table {
+                border-collapse: collapse !important;
+            }
+
+            /* Ensure images print at correct size */
+            img {
+                max-width: 100% !important;
+                display: block !important;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- ══ FEEDBACK MODAL ═══════════════════════════════════════ -->
+    <div id="feedbackModal">
+        <div class="feedback-modal-card">
+
+            <!-- Header -->
+            <div class="feedback-modal-header">
+                <div class="icon-wrap">⭐</div>
+                <div>
+                    <h3>Rate Your Rental Experience</h3>
+                    <p id="feedbackEquipmentLabel">Share your feedback about this equipment</p>
+                </div>
+                <button class="feedback-close-btn" onclick="closeFeedbackModal()">✕</button>
+            </div>
+
+            <!-- Form -->
+            <div id="feedbackForm">
+
+                <!-- Q1 -->
+                <div class="feedback-question">
+                    <label>1. Equipment Condition <span>How was the physical condition of the equipment?</span></label>
+                    <div class="star-row" id="stars_q1">
+                        <button class="star-btn" data-q="q1" data-val="1" onclick="setRating('q1',1)">★</button>
+                        <button class="star-btn" data-q="q1" data-val="2" onclick="setRating('q1',2)">★</button>
+                        <button class="star-btn" data-q="q1" data-val="3" onclick="setRating('q1',3)">★</button>
+                        <button class="star-btn" data-q="q1" data-val="4" onclick="setRating('q1',4)">★</button>
+                        <button class="star-btn" data-q="q1" data-val="5" onclick="setRating('q1',5)">★</button>
+                    </div>
+                    <div class="star-label" id="label_q1"></div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="feedback-question">
+                    <label>2. Performance & Reliability <span>Did the equipment work effectively throughout the
+                            rental?</span></label>
+                    <div class="star-row" id="stars_q2">
+                        <button class="star-btn" data-q="q2" data-val="1" onclick="setRating('q2',1)">★</button>
+                        <button class="star-btn" data-q="q2" data-val="2" onclick="setRating('q2',2)">★</button>
+                        <button class="star-btn" data-q="q2" data-val="3" onclick="setRating('q2',3)">★</button>
+                        <button class="star-btn" data-q="q2" data-val="4" onclick="setRating('q2',4)">★</button>
+                        <button class="star-btn" data-q="q2" data-val="5" onclick="setRating('q2',5)">★</button>
+                    </div>
+                    <div class="star-label" id="label_q2"></div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="feedback-question">
+                    <label>3. Value for Money <span>Was the rental price fair for the quality received?</span></label>
+                    <div class="star-row" id="stars_q3">
+                        <button class="star-btn" data-q="q3" data-val="1" onclick="setRating('q3',1)">★</button>
+                        <button class="star-btn" data-q="q3" data-val="2" onclick="setRating('q3',2)">★</button>
+                        <button class="star-btn" data-q="q3" data-val="3" onclick="setRating('q3',3)">★</button>
+                        <button class="star-btn" data-q="q3" data-val="4" onclick="setRating('q3',4)">★</button>
+                        <button class="star-btn" data-q="q3" data-val="5" onclick="setRating('q3',5)">★</button>
+                    </div>
+                    <div class="star-label" id="label_q3"></div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="feedback-question">
+                    <label>4. Owner Communication <span>Was the owner responsive and helpful?</span></label>
+                    <div class="star-row" id="stars_q4">
+                        <button class="star-btn" data-q="q4" data-val="1" onclick="setRating('q4',1)">★</button>
+                        <button class="star-btn" data-q="q4" data-val="2" onclick="setRating('q4',2)">★</button>
+                        <button class="star-btn" data-q="q4" data-val="3" onclick="setRating('q4',3)">★</button>
+                        <button class="star-btn" data-q="q4" data-val="4" onclick="setRating('q4',4)">★</button>
+                        <button class="star-btn" data-q="q4" data-val="5" onclick="setRating('q4',5)">★</button>
+                    </div>
+                    <div class="star-label" id="label_q4"></div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="feedback-question">
+                    <label>5. Would You Recommend? <span>Would you recommend this equipment/owner to other
+                            farmers?</span></label>
+                    <div class="star-row" id="stars_q5">
+                        <button class="star-btn" data-q="q5" data-val="1" onclick="setRating('q5',1)">★</button>
+                        <button class="star-btn" data-q="q5" data-val="2" onclick="setRating('q5',2)">★</button>
+                        <button class="star-btn" data-q="q5" data-val="3" onclick="setRating('q5',3)">★</button>
+                        <button class="star-btn" data-q="q5" data-val="4" onclick="setRating('q5',4)">★</button>
+                        <button class="star-btn" data-q="q5" data-val="5" onclick="setRating('q5',5)">★</button>
+                    </div>
+                    <div class="star-label" id="label_q5"></div>
+                </div>
+
+                <!-- Additional Comments -->
+                <div class="feedback-question feedback-comments">
+                    <label>Additional Comments <span>(optional)</span></label>
+                    <textarea id="feedbackComments"
+                        placeholder="Share anything else about your rental experience..."></textarea>
+                </div>
+
+                <!-- Submit -->
+                <button class="feedback-submit-btn" id="feedbackSubmitBtn" onclick="submitFeedback()">
+                    ⭐ Submit Feedback
+                </button>
+
+                <div id="feedbackError"
+                    style="margin-top:12px;color:#ef4444;font-size:13px;text-align:center;display:none;"></div>
+            </div>
+
+            <!-- Success State -->
+            <div class="feedback-success" id="feedbackSuccess">
+                <span class="success-icon">🌟</span>
+                <h3 style="margin:0 0 8px;color:#1a1a2e;font-size:20px;">Thank You for Your Feedback!</h3>
+                <p style="color:#64748b;font-size:14px;line-height:1.6;">Your review has been sent to the equipment
+                    owner.<br>Your feedback helps improve our farming community.</p>
+                <button onclick="closeFeedbackModal()"
+                    style="margin-top:20px;padding:12px 32px;border:none;border-radius:12px;background:linear-gradient(135deg,#2d6a4f,#1b4332);color:#fff;font-size:14px;font-weight:700;cursor:pointer;">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <!-- ══ END FEEDBACK MODAL ════════════════════════════════════ -->
+
     <div class="bg-blob blob-1"></div>
     <div class="bg-blob blob-2"></div>
     <div class="container">
@@ -1412,6 +1846,8 @@
                                         paidAmount: booking.paid_amount ? parseFloat(booking.paid_amount) : (parseFloat(booking.total_amount) || 0),
                                         paidAt: booking.paid_at || booking.created_at || null,
                                         transactionId: booking.transaction_id || booking.payment_id || null,
+                                        farmerPhone: booking.farmer_phone || '',
+                                        ownerPhone: booking.owner_phone || '',
                                         farmerSignature: booking.signature_data || null,
                                         signatureType: booking.signature_type || 'text',
                                         signedAt: booking.signed_at || null,
@@ -1436,22 +1872,23 @@
                             // Process Rental Requests (exclude 'paid' ones since they're in bookings)
                             if (requestsData && requestsData.success && requestsData.requests) {
                                 const pending = requestsData.requests
-                                    // Exclude 'paid' status - those are now bookings (Case insensitive check)
+                                    // Filter out only cancelled and rejected. If 'paid' or 'completed' lacks a booking, show it.
                                     .filter(r => {
                                         if (!r.status) return false;
                                         // Skip if we already have a booking for this request
                                         if (r.id && bookedRequestIds.has(parseInt(r.id))) return false;
 
                                         const s = r.status.toLowerCase();
-                                        return s !== 'cancelled' && s !== 'rejected' && s !== 'paid';
+                                        return s !== 'cancelled' && s !== 'rejected';
                                     })
                                     .map(request => {
                                         // Map status from DB to UI status
-
                                         let uiStatus = 'pending';
-                                        if (request.status === 'pending_payment') uiStatus = 'pending_payment';
-                                        if (request.status === 'initiated') uiStatus = 'pending_payment';
-                                        if (request.status === 'approved') uiStatus = 'pending_payment';
+                                        if (request.status === 'pending_payment' || request.status === 'initiated' || request.status === 'approved') {
+                                            uiStatus = 'pending_payment';
+                                        }
+                                        if (request.status === 'paid') uiStatus = 'active';
+                                        if (request.status === 'completed') uiStatus = 'expired';
 
                                         // Check for expiration
                                         const endDate = new Date(request.end_date);
@@ -1490,17 +1927,30 @@
                                             insurancePlanId: request.insurance_plan_id,
                                             insuranceFee: parseFloat(request.insurance_fee) || 0,
                                             insurancePlanName: request.insurance_plan_name,
-                                            insuranceCoverage: request.insurance_coverage_amount
+                                            insuranceCoverage: request.insurance_coverage_amount,
+                                            insuranceStatus: (request.status === 'paid' || request.status === 'completed' || request.payment_status === 'paid' || request.payment_status === 'completed') ? 'Active' : 'Inactive',
+                                            farmerPhone: request.farmer_phone || '',
+                                            ownerPhone: request.owner_phone || ''
                                         };
                                     });
                                 // Merge requests
                                 allAgreements = [...allAgreements, ...pending];
                             }
 
-                            agreements = allAgreements;
+                            // Deduplicate by ID to prevent multiple cards for the same rental
+                            const uniqueAgreements = [];
+                            const seenIds = new Set();
+                            for (const a of allAgreements) {
+                                if (!seenIds.has(a.id)) {
+                                    seenIds.add(a.id);
+                                    uniqueAgreements.push(a);
+                                }
+                            }
+
+                            agreements = uniqueAgreements;
                             renderAgreements(agreements);
 
-                            console.log('Loaded merged agreements:', agreements);
+                            console.log('Loaded merged unique agreements:', agreements);
 
                             // Check if we need to open a specific agreement from URL
                             const urlParams = new URLSearchParams(window.location.search);
@@ -1664,8 +2114,30 @@
                             }
 
 
+                            // Feedback Button — only for farmer, expired, not yet given
+                            if (userType === 'farmer' &&
+                                agreement.status === 'expired' &&
+                                !agreement.hasFeedback) {
+                                const fbNumericId = agreement.bookingId || agreement.requestId || 0;
+                                const fbType = agreement.bookingId ? 'booking' : 'request';
+                                actionButtons += `
+                                <button class="btn btn-feedback" onclick="event.stopPropagation(); openFeedbackModal('${agreement.id}', ${fbNumericId}, '${fbType}')">
+                                    <span class="material-icons-outlined">star</span>
+                                    Leave Feedback
+                                </button>
+                                `;
+                            }
 
-                            // Status Badge Color
+                            // Show feedback badge if already submitted
+                            if (userType === 'farmer' && agreement.hasFeedback) {
+                                actionButtons += `
+                                <span class="feedback-badge-done">
+                                    <span class="material-icons-outlined" style="font-size:14px;vertical-align:middle;">star</span>
+                                    Feedback Given (${agreement.feedbackRating || ''}&#9733;)
+                                </span>
+                                `;
+                            }
+
                             let badgeClass = agreement.status;
                             let badgeIcon = 'check_circle';
 
@@ -2671,23 +3143,35 @@
                         document.getElementById('insuranceCoverage').textContent = features;
                         document.getElementById('totalPremium').value = `\u20B9${parseInt(plan.price)}/month`;
 
-                        // Populate equipmentSelect — show ANY rental request that isn't paid/expired
+                        // Populate equipmentSelect — include BOTH rental requests (REQ-) and
+                        // confirmed bookings (AGR-) that are not expired/cancelled/rejected.
+                        // Also allow items without insurance regardless of payment status.
                         const eqSelect = document.getElementById('equipmentSelect');
                         const eligibleRequests = agreements.filter(a => {
-                            if (!a.id.startsWith('REQ-')) return false; // must be a request
-                            if (a.status === 'expired') return false;
-                            if (a.paymentStatus === 'paid') return false;
-                            // Include pending, approved, initiated, pending_payment statuses
+                            const status = (a.status || '').toLowerCase();
+                            // Exclude definitively closed/invalid statuses
+                            if (status === 'expired' || status === 'cancelled' ||
+                                status === 'rejected' || status === 'completed') return false;
+                            // Accept REQ- (rental requests in any active stage)
+                            if (a.id.startsWith('REQ-')) return true;
+                            // Accept AGR- (confirmed bookings) — they are active rentals
+                            if (a.id.startsWith('AGR-')) return true;
+                            // Accept numeric or any other IDs as fallback
                             return true;
                         });
 
                         if (eligibleRequests.length === 0) {
-                            eqSelect.innerHTML = '<option value="">No active rental requests found</option>';
+                            eqSelect.innerHTML = '<option value="">No active rentals or requests found</option>';
                         } else {
                             eqSelect.innerHTML = '<option value="">Select rental to insure</option>' +
                                 eligibleRequests.map(r => {
-                                    const insLabel = r.insurancePlanId ? ' (insurance already added)' : '';
-                                    return `<option value="${r.id.replace('REQ-', '')}">${r.title} (${r.id})${insLabel}</option>`;
+                                    const insLabel = r.insurancePlanId ? ' ✓ Insurance added' : '';
+                                    // For AGR- bookings use bookingId; for REQ- use requestId numeric part
+                                    const val = r.bookingId
+                                        ? `booking_${r.bookingId}`
+                                        : r.id.replace('REQ-', '');
+                                    const prefix = r.id.startsWith('AGR-') ? '📋 ' : '📝 ';
+                                    return `<option value="${val}">${prefix}${r.title} (${r.id})${insLabel}</option>`;
                                 }).join('');
                         }
 
@@ -2700,267 +3184,311 @@
                     }
 
 
-                    // Download agreement
+                    // Download / Print Agreement as PDF ───────────────────────────────────
                     function downloadAgreement(agreementId) {
                         const agreement = agreements.find(a => a.id === agreementId);
-                        if (!agreement) {
-                            alert('Agreement details not found.');
-                            return;
+                        if (!agreement) { alert('Agreement details not found.'); return; }
+
+                        // Get or create the persistent print container
+                        let printContainer = document.getElementById('agreementPrintContainer');
+                        if (!printContainer) {
+                            printContainer = document.createElement('div');
+                            printContainer.id = 'agreementPrintContainer';
+                            printContainer.style.display = 'none'; // Hide by default
+                            document.body.appendChild(printContainer);
                         }
 
-                        // Create a temporary container for generate the PDF content
-                        const element = document.createElement('div');
-                        element.className = 'agreement-document';
-                        // Inline explicit styles to ensure PDF renders correctly without relying on external css loading
-                        element.style.padding = '40px';
-                        element.style.fontFamily = 'Courier New, monospace';
-                        element.style.background = 'white';
-                        element.style.color = '#1a1a2e';
-                        element.style.lineHeight = '1.6';
+                        // Fill with agreement HTML
+                        printContainer.innerHTML = generateAgreementHTMLForPDF(agreement);
 
-                        // Generate PDF-optimized HTML (replace Material Icons with unicode symbols)
-                        let pdfHTML = generateAgreementHTMLForPDF(agreement);
-
-                        // Add Logo or Header
-                        const headerHTML = `
-                <div style="text-align: center; margin-bottom: 2rem; border-bottom: 2px solid #10b981; padding-bottom: 1rem;">
-                    <h1 style="font-family: serif; color: #10b981; margin: 0;">AgroHub</h1>
-                    <p style="margin: 0; font-size: 0.8rem; color: #666;">Digital Agricultural Services</p>
-                </div>
-            `;
-                        element.innerHTML = headerHTML + pdfHTML;
-
-                        const opt = {
-                            margin: 10,
-                            filename: `AgroHub_Agreement_${agreement.id}.pdf`,
-                            image: { type: 'jpeg', quality: 0.98 },
-                            html2canvas: {
-                                scale: 2,
-                                useCORS: true,
-                                allowTaint: true,
-                                logging: false
-                            },
-                            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                        };
-
-                        // Show a "Downloading..." toast or alert
-                        const btn = event.currentTarget;
-                        const originalText = btn.innerHTML;
-                        btn.innerHTML = '<span class="material-icons-outlined">downloading</span> Generating...';
-                        btn.disabled = true;
-
-                        html2pdf().from(element).set(opt).save().then(() => {
-                            btn.innerHTML = originalText;
-                            btn.disabled = false;
-                        }).catch(err => {
-                            console.error('PDF Error:', err);
-                            alert('Could not generate PDF.');
-                            btn.innerHTML = originalText;
-                            btn.disabled = false;
-                        });
+                        // Use browser print (saves as PDF via "Save as PDF" in dialog)
+                        // Slight delay ensures DOM is painted before print dialog opens
+                        setTimeout(function () {
+                            window.print();
+                        }, 150);
                     }
 
-                    // Generate PDF-optimized HTML (without Material Icons, with proper signature rendering)
+                    // ─── PDF HTML Generator (table-based layout for reliable rendering) ───────
                     function generateAgreementHTMLForPDF(agreement) {
+                        const safe = v => (v != null ? String(v) : '—');
+                        const money = v => '&#8377;' + (parseFloat(v) || 0).toLocaleString('en-IN');
+                        const fmtDate = d => { try { return new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); } catch (e) { return safe(d); } };
+
+                        // ── Signature boxes (table-safe) ────────────────────────────────────
+                        function sigBox(label, hasSignature, sigType, sigData, sigName, sigDate, sigNote) {
+                            const content = hasSignature
+                                ? ((sigType === 'text' && sigData && !sigData.startsWith('data:image'))
+                                    ? `<div style="font-size:22px;color:#1e293b;font-style:italic;padding:8px 0;">${sigName}</div>`
+                                    : `<img src="${sigData}" alt="Signature" style="max-width:160px;max-height:60px;display:block;margin:0 auto;">`)
+                                + `<div style="font-size:10px;color:#10b981;font-weight:bold;margin-top:6px;">&#10003; DIGITALLY SIGNED</div>`
+                                : `<span style="color:#999;font-style:italic;">Awaiting Signature</span>`;
+
+                            const borderStyle = hasSignature ? '2px solid #10b981' : '2px dashed #ccc';
+                            const bgColor = hasSignature ? '#f0fdf4' : '#f8fafc';
+
+                            return `
+                            <td style="width:50%;padding:0 8px;vertical-align:top;text-align:center;">
+                                <p style="font-weight:600;margin:0 0 8px;color:#333;text-decoration:underline;">${label}</p>
+                                <div style="border:${borderStyle};border-radius:8px;min-height:90px;padding:12px 8px;background:${bgColor};text-align:center;">
+                                    ${content}
+                                </div>
+                                <p style="font-size:11px;color:${hasSignature ? '#10b981' : '#666'};margin:6px 0;">
+                                    ${hasSignature && sigDate ? '&#10003; Signed on ' + fmtDate(sigDate) : safe(sigNote)}
+                                </p>
+                            </td>`;
+                        }
+
+                        // ── Row helper for info tables ──────────────────────────────────────
+                        const row = (label, value, valStyle = '') =>
+                            `<tr>
+                                <td style="padding:7px 10px;color:#64748b;font-weight:600;width:42%;border-bottom:1px solid #f1f5f9;">${label}</td>
+                                <td style="padding:7px 10px;font-weight:700;color:#1e293b;border-bottom:1px solid #f1f5f9;${valStyle}">${value}</td>
+                            </tr>`;
+
+                        const sectionTitle = (num, title) =>
+                            `<div style="font-weight:bold;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;
+                                         border-bottom:2px solid #10b981;padding-bottom:4px;margin:0 0 10px;color:#1b4332;">
+                                ${num}. ${title}
+                             </div>`;
+
+                        const totalAmount = (agreement.amount || 0) + (agreement.deposit || 0) + (agreement.insuranceFee || 0);
+
                         return `
-                <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.5rem; border-bottom: 2px solid #000; padding-bottom: 1rem;">EQUIPMENT RENTAL AGREEMENT</h3>
-                
-                <div style="margin-bottom: 1.5rem;">
-                    <div style="font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 1px dashed #999; display: inline-block;">1. PARTIES</div>
-                    <p style="margin: 0.5rem 0;">This agreement is made on ${new Date(agreement.startDate).toLocaleDateString()} between:</p>
-                    <p style="margin: 0.5rem 0;"><strong>LESSOR (Owner):</strong> ${agreement.ownerName || 'Equipment Owner'}</p>
-                    <p style="margin: 0.5rem 0;"><strong>LESSEE (Farmer):</strong> ${agreement.farmerName || 'Farmer'}</p>
-                </div>
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE 1 — EQUIPMENT RENTAL AGREEMENT
+═══════════════════════════════════════════════════════════════ -->
+<div style="padding:32px 36px 24px;">
 
-                <div style="margin-bottom: 1.5rem;">
-                    <div style="font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 1px dashed #999; display: inline-block;">2. EQUIPMENT DESCRIPTION</div>
-                    <p style="margin: 0.5rem 0;"><strong>Equipment:</strong> ${agreement.title}</p>
-                    <p style="margin: 0.5rem 0;"><strong>Agreement ID:</strong> ${agreement.id}</p>
-                </div>
+    <!-- Header -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;border-bottom:3px solid #10b981;padding-bottom:14px;">
+        <tr>
+            <td>
+                <div style="font-size:26px;font-weight:800;color:#1b4332;letter-spacing:-0.5px;">&#127807; AgroHub</div>
+                <div style="font-size:11px;color:#64748b;margin-top:2px;">Digital Agricultural Services</div>
+            </td>
+            <td style="text-align:right;vertical-align:top;">
+                <div style="font-size:11px;color:#64748b;">Agreement ID</div>
+                <div style="font-size:13px;font-weight:700;color:#1b4332;">${safe(agreement.id)}</div>
+                <div style="font-size:10px;color:#94a3b8;margin-top:2px;">Generated: ${fmtDate(new Date())}</div>
+            </td>
+        </tr>
+    </table>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <div style="font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 1px dashed #999; display: inline-block;">3. RENTAL PERIOD</div>
-                    <p style="margin: 0.5rem 0;"><strong>Start Date:</strong> ${new Date(agreement.startDate).toLocaleDateString()}</p>
-                    <p style="margin: 0.5rem 0;"><strong>End Date:</strong> ${new Date(agreement.endDate).toLocaleDateString()}</p>
-                </div>
+    <!-- Title -->
+    <h2 style="text-align:center;font-size:16px;font-weight:800;letter-spacing:1px;margin:0 0 22px;text-transform:uppercase;color:#1a1a2e;">
+        Equipment Rental Agreement
+    </h2>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <div style="font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 1px dashed #999; display: inline-block;">4. RENTAL CHARGES</div>
-                    <p style="margin: 0.5rem 0;"><strong>Rental Amount:</strong> ₹${agreement.amount.toLocaleString()}</p>
-                    <p style="margin: 0.5rem 0;"><strong>Security Deposit:</strong> ₹${agreement.deposit.toLocaleString()}</p>
-                    <p style="margin: 0.5rem 0;"><strong>Total:</strong> ₹${(agreement.amount + agreement.deposit).toLocaleString()}</p>
-                </div>
+    <!-- Section 1: Parties -->
+    <div style="margin-bottom:18px;">
+        ${sectionTitle(1, 'Parties')}
+        <p style="margin:0 0 6px;font-size:12px;color:#475569;">This agreement is entered into on <strong>${fmtDate(agreement.startDate)}</strong> between the following parties:</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            ${row('Lessor (Owner)', safe(agreement.ownerName))}
+            ${row('Lessor Address', safe(agreement.ownerAddress) || '—')}
+            ${agreement.ownerPhone ? row('Lessor Contact', `<a href="tel:${safe(agreement.ownerPhone)}" style="color:#1b4332;text-decoration:none;font-weight:700;">&#128222; ${safe(agreement.ownerPhone)}</a>`) : ''}
+            ${row('Lessee (Farmer)', safe(agreement.farmerName))}
+            ${row('Lessee Address', safe(agreement.farmerAddress) || '—')}
+            ${agreement.farmerPhone ? row('Lessee Contact', `<a href="tel:${safe(agreement.farmerPhone)}" style="color:#1b4332;text-decoration:none;font-weight:700;">&#128222; ${safe(agreement.farmerPhone)}</a>`) : ''}
+        </table>
+    </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <div style="font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 1px dashed #999; display: inline-block;">5. TERMS & CONDITIONS</div>
-                    <p style="margin: 0.5rem 0;">• The lessee shall use the equipment for agricultural purposes only.</p>
-                    <p style="margin: 0.5rem 0;">• The lessee is responsible for daily maintenance and fuel costs.</p>
-                    <p style="margin: 0.5rem 0;">• Any damage to the equipment must be reported immediately.</p>
-                    <p style="margin: 0.5rem 0;">• The security deposit will be refunded upon return in good condition.</p>
-                    <p style="margin: 0.5rem 0;">• Late returns may incur additional charges of ₹500 per day.</p>
-                </div>
 
-                <div style="margin-bottom: 2rem;">
-                    <div style="font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 1px dashed #999; display: inline-block;">6. LIABILITY</div>
-                    <p style="margin: 0.5rem 0;">The lessee assumes full responsibility for the equipment during the rental period and agrees to return it in the same condition as received, normal wear and tear excepted.</p>
-                </div>
+    <!-- Section 2: Equipment -->
+    <div style="margin-bottom:18px;">
+        ${sectionTitle(2, 'Equipment Description')}
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            ${row('Equipment Name', safe(agreement.title))}
+            ${row('Agreement ID', safe(agreement.id))}
+        </table>
+    </div>
 
-                <div style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #000;">
-                    <div style="display: flex; justify-content: space-between; gap: 2rem;">
-                        <div style="flex: 1; text-align: center;">
-                            <p style="font-weight: 600; margin-bottom: 1rem; color: #333; text-decoration: underline;">Lessor (Equipment Owner)</p>
-                            <div style="border: 2px ${agreement.ownerSignature ? 'solid #10b981' : 'dashed #999'}; border-radius: 8px; min-height: 100px; padding: 1rem; margin-bottom: 0.5rem; background: ${agreement.ownerSignature ? '#f0fdf4' : '#f8fafc'}; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-                                ${agreement.ownerSignature ? `
-                                    ${(agreement.ownerSignatureType === 'text' && !agreement.ownerSignature.startsWith('data:image')) ? `
-                                        <div style="font-family: 'Brush Script MT', cursive; font-size: 2rem; color: #1e293b; margin-bottom: 0.5rem;">${agreement.ownerName}</div>
-                                    ` : `
-                                        <img src="${agreement.ownerSignature}" alt="Owner Signature" style="max-width: 180px; max-height: 70px; object-fit: contain;" />
-                                    `}
-                                    <div style="font-size: 0.7rem; color: #10b981; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem;">
-                                        ✓ DIGITALLY SIGNED
-                                    </div>
-                                ` : `
-                                    <span style="color: #999; font-style: italic;">Awaiting Owner Signature</span>
-                                `}
-                            </div>
-                            ${agreement.ownerSignature ? `
-                                <p style="font-size: 0.85rem; color: #10b981; margin: 0.5rem 0; font-weight: 600;">
-                                    ✓ Signed by ${agreement.ownerName} on ${agreement.ownerSignedAt ? new Date(agreement.ownerSignedAt).toLocaleDateString() : new Date().toLocaleDateString()}
-                                </p>
-                            ` : `
-                                <p style="font-size: 0.85rem; color: #666; margin: 0.5rem 0;">${agreement.ownerName || 'Owner Name'}</p>
-                            `}
-                        </div>
-                        <div style="flex: 1; text-align: center;">
-                            <p style="font-weight: 600; margin-bottom: 1rem; color: #333; text-decoration: underline;">Lessee (Farmer)</p>
-                            <div style="border: 2px ${agreement.farmerSignature ? 'solid #10b981' : 'dashed #999'}; border-radius: 8px; min-height: 100px; padding: 1rem; margin-bottom: 0.5rem; background: ${agreement.farmerSignature ? '#f0fdf4' : '#f8fafc'}; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-                                ${agreement.farmerSignature ? `
-                                    ${(agreement.signatureType === 'text' && !agreement.farmerSignature.startsWith('data:image')) ? `
-                                        <div style="font-family: 'Brush Script MT', cursive; font-size: 2rem; color: #059669; margin-bottom: 0.5rem;">${agreement.farmerSignature}</div>
-                                    ` : `
-                                        <img src="${agreement.farmerSignature}" alt="Farmer Signature" style="max-width: 180px; max-height: 70px; object-fit: contain;" />
-                                    `}
-                                    <div style="font-size: 0.7rem; color: #10b981; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem;">
-                                        ✓ DIGITALLY SIGNED
-                                    </div>
-                                ` : `
-                                    <span style="color: #999; font-style: italic;">${agreement.paymentStatus === 'paid' ? 'Digitally Signed' : 'Awaiting Signature'}</span>
-                                `}
-                            </div>
-                            ${agreement.farmerSignature && agreement.signedAt ? `
-                                <p style="font-size: 0.85rem; color: #10b981; margin: 0.5rem 0; font-weight: 600;">
-                                    ✓ Signed on ${new Date(agreement.signedAt).toLocaleDateString()}
-                                </p>
-                            ` : `
-                                <p style="font-size: 0.85rem; color: #666; margin: 0.5rem 0;">${agreement.farmerName || 'Farmer Name'}</p>
-                            `}
-                        </div>
-                    </div>
-                </div>
+    <!-- Section 3: Rental Period -->
+    <div style="margin-bottom:18px;">
+        ${sectionTitle(3, 'Rental Period')}
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            ${row('Start Date', fmtDate(agreement.startDate))}
+            ${row('End Date', fmtDate(agreement.endDate))}
+        </table>
+    </div>
 
-                <!-- PAGE 2: PAYMENT STATUS & DETAILS -->
-                <div style="page-break-before: always; padding-top: 2rem;">
-                    <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.5rem; border-bottom: 2px solid #10b981; padding-bottom: 1rem; color: #10b981;">PAYMENT DETAILS & STATUS</h3>
-                    
-                    <div style="margin-bottom: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-                        <div style="font-weight: bold; margin-bottom: 1.5rem; font-size: 1.2rem; color: #1e293b; text-transform: uppercase;">Payment Information</div>
-                        
-                        <div style="display: grid; gap: 1rem;">
-                            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-left: 4px solid #10b981; border-radius: 4px;">
-                                <span style="color: #64748b; font-weight: 600;">Agreement ID:</span>
-                                <span style="font-weight: 700; color: #1e293b;">${agreement.id}</span>
-                            </div>
-                            
-                            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-left: 4px solid #10b981; border-radius: 4px;">
-                                <span style="color: #64748b; font-weight: 600;">Rental Amount:</span>
-                                <span style="font-weight: 700; color: #1e293b;">&#8377;${agreement.amount.toLocaleString()}</span>
-                            </div>
-                            
-                            ${agreement.insuranceFee > 0 ? `
-                            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 4px;">
-                                <span style="color: #1e40af; font-weight: 600;"><span style="vertical-align:middle;font-size:1rem;">&#128737;</span> Insurance (${agreement.insurancePlanName || 'Plan'}):</span>
-                                <span style="font-weight: 700; color: #1e40af;">&#8377;${agreement.insuranceFee.toLocaleString()}</span>
-                            </div>` : ''}
-                            
-                            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-left: 4px solid #10b981; border-radius: 4px;">
-                                <span style="color: #64748b; font-weight: 600;">Security Deposit (20%):</span>
-                                <span style="font-weight: 700; color: #1e293b;">&#8377;${agreement.deposit.toLocaleString()}</span>
-                            </div>
-                            
-                            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-left: 4px solid #059669; border-radius: 4px;">
-                                <span style="color: #64748b; font-weight: 600; font-size: 1.1rem;">Total Amount:</span>
-                                <span style="font-weight: 700; color: #059669; font-size: 1.2rem;">&#8377;${(agreement.amount + agreement.deposit + (agreement.insuranceFee || 0)).toLocaleString()}</span>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Section 4: Charges -->
+    <div style="margin-bottom:18px;">
+        ${sectionTitle(4, 'Rental Charges')}
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            ${row('Rental Amount', money(agreement.amount))}
+            ${agreement.insuranceFee > 0 ? row(`Insurance (${safe(agreement.insurancePlanName)})`, money(agreement.insuranceFee), 'color:#1e40af;') : ''}
+            ${row('Security Deposit (20%)', money(agreement.deposit))}
+            ${row('<strong>Total Amount</strong>', `<strong>${money(totalAmount)}</strong>`, 'color:#059669;font-size:14px;')}
+        </table>
+    </div>
 
-                    <div style="margin-bottom: 2rem;">
-                        <div style="font-weight: bold; margin-bottom: 1rem; font-size: 1.2rem; color: #1e293b; text-transform: uppercase;">Payment Status</div>
-                        
-                        ${agreement.paymentStatus === 'paid' ? `
-                            <div style="padding: 2rem; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 6px solid #10b981; border-radius: 12px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);">
-                                <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem;">
-                                    <div style="font-size: 4rem; color: #10b981; line-height: 1;">✓</div>
-                                    <div>
-                                        <div style="font-size: 1.8rem; font-weight: 700; color: #047857; margin-bottom: 0.5rem;">PAYMENT COMPLETED</div>
-                                        <div style="font-size: 1rem; color: #059669;">Thank you for your payment! Your rental agreement is now active.</div>
-                                    </div>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem;">
-                                    <div style="display: grid; gap: 1rem;">
-                                        <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid #e2e8f0;">
-                                            <span style="color: #64748b; font-weight: 600;">Amount Paid:</span>
-                                            <span style="font-weight: 700; color: #10b981; font-size: 1.1rem;">₹${agreement.paidAmount ? agreement.paidAmount.toLocaleString() : agreement.amount.toLocaleString()}</span>
-                                        </div>
-                                        ${agreement.paidAt ? `
-                                            <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid #e2e8f0;">
-                                                <span style="color: #64748b; font-weight: 600;">Payment Date:</span>
-                                                <span style="font-weight: 700; color: #1e293b;">${new Date(agreement.paidAt).toLocaleDateString()}</span>
-                                            </div>
-                                        ` : ''}
-                                        ${agreement.transactionId ? `
-                                            <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem;">
-                                                <span style="color: #64748b; font-weight: 600;">Transaction ID:</span>
-                                                <span style="font-weight: 700; color: #1e293b; font-family: 'Courier New', monospace;">${agreement.transactionId}</span>
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                        ` : `
-                            <div style="padding: 2rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 6px solid #f59e0b; border-radius: 12px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);">
-                                <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem;">
-                                    <div style="font-size: 4rem; color: #f59e0b; line-height: 1;">⏳</div>
-                                    <div>
-                                        <div style="font-size: 1.8rem; font-weight: 700; color: #d97706; margin-bottom: 0.5rem;">PAYMENT PENDING</div>
-                                        <div style="font-size: 1rem; color: #b45309;">Please complete the payment to activate your rental agreement.</div>
-                                    </div>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem;">
-                                    <div style="color: #92400e; font-weight: 600; margin-bottom: 0.75rem;">Amount Due (Breakdown):</div>
-                                    <div style="display:grid;gap:0.5rem;font-size:0.9rem;margin-bottom:0.75rem;">
-                                        <div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Rental</span><span>&#8377;${agreement.amount.toLocaleString()}</span></div>
-                                        ${agreement.insuranceFee > 0 ? `<div style="display:flex;justify-content:space-between;"><span style="color:#1e40af;">Insurance (${agreement.insurancePlanName || 'Plan'})</span><span style="color:#1e40af;">&#8377;${(agreement.insuranceFee || 0).toLocaleString()}</span></div>` : ''}
-                                        <div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Security Deposit (20%)</span><span>&#8377;${agreement.deposit.toLocaleString()}</span></div>
-                                    </div>
-                                    <div style="font-size: 2rem; font-weight: 700; color: #d97706;">&#8377;${(agreement.amount + agreement.deposit + (agreement.insuranceFee || 0)).toLocaleString()}</div>
-                                </div>
-                            </div>
-                        `}
-                    </div>
+    <!-- Section 5: Terms -->
+    <div style="margin-bottom:18px;">
+        ${sectionTitle(5, 'Terms & Conditions')}
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            <tr><td style="padding:10px 14px;">
+                <p style="margin:3px 0;">&#8226; The lessee shall use the equipment for agricultural purposes only.</p>
+                <p style="margin:3px 0;">&#8226; The lessee is responsible for daily maintenance and fuel costs.</p>
+                <p style="margin:3px 0;">&#8226; Any damage to the equipment must be reported immediately to the lessor.</p>
+                <p style="margin:3px 0;">&#8226; The security deposit will be refunded upon return of equipment in good condition.</p>
+                <p style="margin:3px 0;">&#8226; Late returns may incur additional charges of &#8377;500 per day.</p>
+                <p style="margin:3px 0;">&#8226; The lessee shall not sub-let or transfer use of the equipment to any third party.</p>
+            </td></tr>
+        </table>
+    </div>
 
-                    <div style="margin-top: 3rem; padding: 1.5rem; background: #f1f5f9; border-radius: 8px; border-top: 3px solid #10b981;">
-                        <div style="font-size: 0.9rem; color: #64748b; text-align: center;">
-                            <p style="margin: 0.5rem 0;"><strong>Note:</strong> This is a digitally generated document from AgroHub platform.</p>
-                            <p style="margin: 0.5rem 0;">For any queries, please contact AgroHub support.</p>
-                            <p style="margin: 0.5rem 0; font-family: 'Courier New', monospace; color: #94a3b8;">Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
+    <!-- Section 6: Liability -->
+    <div style="margin-bottom:24px;">
+        ${sectionTitle(6, 'Liability')}
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            <tr><td style="padding:10px 14px;color:#475569;">
+                The lessee assumes full responsibility for the equipment during the rental period and agrees
+                to return it in the same condition as received, normal wear and tear excepted. The lessor
+                shall not be liable for any indirect or consequential damages arising from the use of the equipment.
+            </td></tr>
+        </table>
+    </div>
+
+    <!-- Section 7: Signatures -->
+    <div style="margin-bottom:8px;">
+        ${sectionTitle(7, 'Digital Signatures')}
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+                ${sigBox(
+                            'Lessor — Equipment Owner',
+                            !!agreement.ownerSignature,
+                            agreement.ownerSignatureType,
+                            agreement.ownerSignature,
+                            agreement.ownerName,
+                            agreement.ownerSignedAt,
+                            agreement.ownerName || 'Owner Name'
+                        )}
+                ${sigBox(
+                            'Lessee — Farmer',
+                            !!agreement.farmerSignature,
+                            agreement.signatureType,
+                            agreement.farmerSignature,
+                            agreement.farmerSignature,
+                            agreement.signedAt,
+                            agreement.farmerName || 'Farmer Name'
+                        )}
+            </tr>
+        </table>
+        <p style="font-size:10px;color:#94a3b8;margin:10px 0 0;text-align:center;">
+            Both parties acknowledge that digital signatures above carry the same legal weight as physical signatures
+            under the Information Technology Act, 2000.
+        </p>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE 2 — PAYMENT DETAILS & STATUS
+═══════════════════════════════════════════════════════════════ -->
+<div class="pdf-page-break" style="padding:32px 36px 24px;background:#fff;">
+
+    <!-- Page 2 Header -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;border-bottom:3px solid #10b981;padding-bottom:14px;">
+        <tr>
+            <td>
+                <div style="font-size:20px;font-weight:800;color:#1b4332;">&#127807; AgroHub</div>
+                <div style="font-size:11px;color:#64748b;">Payment Details &amp; Status</div>
+            </td>
+            <td style="text-align:right;vertical-align:top;">
+                <div style="font-size:11px;color:#64748b;">Agreement ID</div>
+                <div style="font-size:13px;font-weight:700;color:#1b4332;">${safe(agreement.id)}</div>
+            </td>
+        </tr>
+    </table>
+
+    <h2 style="text-align:center;font-size:16px;font-weight:800;letter-spacing:1px;margin:0 0 22px;text-transform:uppercase;color:#1a1a2e;">
+        Payment Details &amp; Status
+    </h2>
+
+    <!-- Payment Breakdown -->
+    <div style="margin-bottom:22px;">
+        ${sectionTitle(1, 'Payment Breakdown')}
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            ${row('Agreement ID', safe(agreement.id))}
+            ${row('Equipment', safe(agreement.title))}
+            ${row('Rental Amount', money(agreement.amount))}
+            ${agreement.insuranceFee > 0 ? row(`Insurance — ${safe(agreement.insurancePlanName)}`, money(agreement.insuranceFee), 'color:#1e40af;') : ''}
+            ${row('Security Deposit (20%)', money(agreement.deposit))}
+            ${row('<strong>Total Payable</strong>', `<strong style="font-size:15px;color:#059669;">${money(totalAmount)}</strong>`)}
+        </table>
+    </div>
+
+    <!-- Payment Status -->
+    <div style="margin-bottom:22px;">
+        ${sectionTitle(2, 'Payment Status')}
+        ${agreement.paymentStatus === 'paid' ? `
+        <table width="100%" cellpadding="0" cellspacing="0"
+               style="background:#d1fae5;border:2px solid #10b981;border-radius:10px;margin-bottom:12px;">
+            <tr>
+                <td style="padding:16px 20px;vertical-align:middle;width:60px;text-align:center;">
+                    <div style="font-size:36px;color:#10b981;line-height:1;">&#10003;</div>
+                </td>
+                <td style="padding:16px 20px;vertical-align:middle;">
+                    <div style="font-size:16px;font-weight:800;color:#047857;">PAYMENT COMPLETED</div>
+                    <div style="font-size:12px;color:#059669;margin-top:2px;">Thank you! Your rental agreement is now active.</div>
+                </td>
+            </tr>
+        </table>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            ${row('Amount Paid', money(agreement.paidAmount || agreement.amount), 'color:#10b981;')}
+            ${agreement.paidAt ? row('Payment Date', fmtDate(agreement.paidAt)) : ''}
+            ${agreement.transactionId ? row('Transaction ID', `<span style="font-family:monospace;font-size:11px;">${safe(agreement.transactionId)}</span>`) : ''}
+        </table>
+        ` : `
+        <table width="100%" cellpadding="0" cellspacing="0"
+               style="background:#fef3c7;border:2px solid #f59e0b;border-radius:10px;margin-bottom:12px;">
+            <tr>
+                <td style="padding:16px 20px;vertical-align:middle;width:60px;text-align:center;">
+                    <div style="font-size:30px;line-height:1;">&#9203;</div>
+                </td>
+                <td style="padding:16px 20px;vertical-align:middle;">
+                    <div style="font-size:16px;font-weight:800;color:#d97706;">PAYMENT PENDING</div>
+                    <div style="font-size:12px;color:#b45309;margin-top:2px;">Please complete the payment to activate the agreement.</div>
+                </td>
+            </tr>
+        </table>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            ${row('Rental', money(agreement.amount))}
+            ${agreement.insuranceFee > 0 ? row('Insurance', money(agreement.insuranceFee)) : ''}
+            ${row('Security Deposit', money(agreement.deposit))}
+            ${row('<strong>Total Due</strong>', `<strong style="color:#d97706;font-size:15px;">${money(totalAmount)}</strong>`)}
+        </table>
+        `}
+    </div>
+
+    <!-- Agreement Status -->
+    <div style="margin-bottom:22px;">
+        ${sectionTitle(3, 'Agreement Status')}
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;">
+            ${row('Farmer Signed', agreement.farmerSignature ? `<span style="color:#10b981;font-weight:700;">&#10003; Yes — ${fmtDate(agreement.signedAt)}</span>` : '<span style="color:#f59e0b;">Pending</span>')}
+            ${row('Owner Signed', agreement.ownerSignature ? `<span style="color:#10b981;font-weight:700;">&#10003; Yes — ${fmtDate(agreement.ownerSignedAt)}</span>` : '<span style="color:#f59e0b;">Pending</span>')}
+            ${row('Overall Status', agreement.agreementStatus === 'fully_signed'
+                            ? '<span style="color:#10b981;font-weight:700;">&#10003; Fully Executed</span>'
+                            : `<span style="color:#f59e0b;">${safe(agreement.agreementStatus || 'Pending')}</span>`)}
+        </table>
+    </div>
+
+    <!-- Footer Note -->
+    <table width="100%" cellpadding="0" cellspacing="0"
+           style="background:#f1f5f9;border-top:3px solid #10b981;border-radius:6px;margin-top:16px;">
+        <tr><td style="padding:14px 16px;text-align:center;font-size:10px;color:#64748b;">
+            <p style="margin:2px 0;"><strong>Note:</strong> This is a digitally generated document from the AgroHub platform.</p>
+            <p style="margin:2px 0;">For any queries, please contact AgroHub support.</p>
+            <p style="margin:4px 0 0;color:#94a3b8;font-family:monospace;">
+                Generated on: ${new Date().toLocaleDateString('en-IN')} at ${new Date().toLocaleTimeString('en-IN')}
+            </p>
+        </td></tr>
+    </table>
+
+</div>`;
                     }
+
 
                     // Delete agreement
                     async function deleteAgreement(bookingId, agreementId) {
@@ -3001,15 +3529,36 @@
                     async function purchaseInsurance() {
                         const form = document.getElementById('insuranceForm');
                         const eqSelect = document.getElementById('equipmentSelect');
-                        const requestId = eqSelect.value;
+                        const selectedVal = eqSelect.value;
 
-                        if (!requestId) {
-                            alert('Please select a rental request to insure.');
+                        if (!selectedVal) {
+                            alert('Please select a rental or booking to insure.');
                             return;
                         }
 
                         if (!form.checkValidity()) {
                             alert('Please fill in all required fields');
+                            return;
+                        }
+
+                        // Resolve request_id — handles both REQ- and AGR- (booking) entries
+                        let request_id = null;
+                        if (selectedVal.startsWith('booking_')) {
+                            // AGR- confirmed booking: find the matching agreement and use its requestId
+                            const bookingId = parseInt(selectedVal.replace('booking_', ''));
+                            const bookingAgreement = agreements.find(a => a.bookingId == bookingId);
+                            if (bookingAgreement && bookingAgreement.requestId) {
+                                request_id = bookingAgreement.requestId;
+                            } else {
+                                alert('Could not resolve rental request for this booking. Please try again.');
+                                return;
+                            }
+                        } else {
+                            request_id = parseInt(selectedVal);
+                        }
+
+                        if (!request_id || isNaN(request_id)) {
+                            alert('Invalid rental selection. Please try again.');
                             return;
                         }
 
@@ -3023,7 +3572,7 @@
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                    request_id: requestId,
+                                    request_id: request_id,
                                     insurance_plan_id: currentInsurance.id,
                                     insurance_fee: currentInsurance.price
                                 })
@@ -3366,145 +3915,137 @@
                     loadAgreementsFromDatabase(); // Load real data from database
                     renderInsurance();
 
-                    // Feedback Functions
-                    function openFeedbackModal(bookingId, driverProvided) {
-                        console.log('Opening feedback modal for booking:', bookingId, 'Driver Provided:', driverProvided);
-                        const bookingIdInput = document.getElementById('feedbackBookingId');
-                        if (!bookingIdInput) {
-                            console.error('Feedback booking ID input not found');
-                            return;
-                        }
-                        bookingIdInput.value = bookingId;
+                    // ══ FEEDBACK MODAL JS ══════════════════════════════════════
+                    const STAR_LABELS = ['', '😞 Poor', '😐 Fair', '🙂 Good', '😊 Great', '🤩 Excellent!'];
+                    const feedbackRatings = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 };
+                    let feedbackBookingId = null;
+                    let feedbackAgreementId = null;
+                    let feedbackType = 'booking'; // 'booking' or 'request'
 
-                        // Reset form
-                        document.getElementById('feedbackComment').value = '';
-                        const stars = document.querySelectorAll('input[name="rating"]');
-                        stars.forEach(s => s.checked = false);
+                    function openFeedbackModal(agreementId, numericId, type) {
+                        feedbackAgreementId = agreementId;
+                        feedbackBookingId = numericId;   // numeric DB id
+                        feedbackType = type || 'booking';
 
-                        // Reset new ratings
-                        const elCondition = document.getElementById('ratingCondition');
-                        const elPerformance = document.getElementById('ratingPerformance');
-                        const elCleanliness = document.getElementById('ratingCleanliness');
+                        // Find agreement title
+                        const agr = agreements.find(a => a.id === agreementId);
+                        const label = document.getElementById('feedbackEquipmentLabel');
+                        if (label && agr) label.textContent = agr.title || 'Share your feedback about this equipment';
 
-                        if (elCondition) elCondition.value = '5';
-                        if (elPerformance) elPerformance.value = '5';
-                        if (elCleanliness) elCleanliness.value = '5';
+                        // Reset all ratings
+                        ['q1', 'q2', 'q3', 'q4', 'q5'].forEach(q => {
+                            feedbackRatings[q] = 0;
+                            updateStarUI(q, 0);
+                        });
+                        document.getElementById('feedbackComments').value = '';
 
-                        // Handle driver section
-                        const driverSection = document.getElementById('driverRatings');
-                        if (driverSection) {
-                            if (driverProvided) {
-                                driverSection.style.display = 'block';
-                                const elSkill = document.getElementById('ratingDriverSkill');
-                                const elPunctuality = document.getElementById('ratingDriverPunctuality');
-                                const elBehavior = document.getElementById('ratingDriverBehavior');
+                        // Reset error + success
+                        const err = document.getElementById('feedbackError');
+                        if (err) { err.textContent = ''; err.style.display = 'none'; }
+                        document.getElementById('feedbackForm').style.display = 'block';
+                        document.getElementById('feedbackSuccess').style.display = 'none';
+                        document.getElementById('feedbackSubmitBtn').disabled = false;
 
-                                if (elSkill) elSkill.value = '5';
-                                if (elPunctuality) elPunctuality.value = '5';
-                                if (elBehavior) elBehavior.value = '5';
-                            } else {
-                                driverSection.style.display = 'none';
-                            }
-                        }
-
-                        // Store driver provided status for submission
-                        bookingIdInput.dataset.driverProvided = driverProvided ? '1' : '0';
-
-                        const modal = document.getElementById('feedbackModal');
-                        if (modal) {
-                            modal.classList.add('active');
-                        } else {
-                            console.error('Feedback modal not found');
-                        }
+                        document.getElementById('feedbackModal').classList.add('active');
                     }
-                    // Attach to window just in case
                     window.openFeedbackModal = openFeedbackModal;
 
+                    function closeFeedbackModal() {
+                        document.getElementById('feedbackModal').classList.remove('active');
+                    }
+                    window.closeFeedbackModal = closeFeedbackModal;
+
+                    function setRating(q, val) {
+                        feedbackRatings[q] = val;
+                        updateStarUI(q, val);
+                        const lbl = document.getElementById('label_' + q);
+                        if (lbl) lbl.textContent = STAR_LABELS[val] || '';
+                    }
+                    window.setRating = setRating;
+
+                    function updateStarUI(q, val) {
+                        const row = document.getElementById('stars_' + q);
+                        if (!row) return;
+                        row.querySelectorAll('.star-btn').forEach(btn => {
+                            const bval = parseInt(btn.dataset.val);
+                            btn.classList.toggle('selected', bval <= val);
+                            btn.style.color = bval <= val ? '#f59e0b' : '#e2e8f0';
+                        });
+                    }
+
                     async function submitFeedback() {
-                        console.log('Submitting feedback...');
-                        const bookingIdInput = document.getElementById('feedbackBookingId');
-                        const bookingId = bookingIdInput.value;
-                        const comment = document.getElementById('feedbackComment').value;
-                        const ratingInput = document.querySelector('input[name="rating"]:checked');
+                        // Validate all 5 answered
+                        const missing = ['q1', 'q2', 'q3', 'q4', 'q5'].filter(q => feedbackRatings[q] === 0);
+                        const errEl = document.getElementById('feedbackError');
+                        if (missing.length > 0) {
+                            errEl.textContent = '⚠️ Please rate all 5 questions before submitting.';
+                            errEl.style.display = 'block';
+                            return;
+                        }
+                        errEl.style.display = 'none';
 
-                        const driverProvided = bookingIdInput.dataset.driverProvided === '1';
-
-                        if (!ratingInput) {
-                            alert('Please select an overall star rating');
+                        const userData = JSON.parse(localStorage.getItem('agrohub_user') || localStorage.getItem('user') || '{}');
+                        // Try multiple possible key names for farmer ID
+                        const farmerId = userData.id || userData.user_id || userData.farmer_id || 0;
+                        if (!farmerId) {
+                            errEl.textContent = '❌ Session expired. Please login again.';
+                            errEl.style.display = 'block';
                             return;
                         }
 
-                        const rating = parseInt(ratingInput.value);
-                        const userDataStr = localStorage.getItem('agrohub_user');
-                        if (!userDataStr) {
-                            alert('User session not found. Please login again.');
+                        const numericId = parseInt(feedbackBookingId) || 0;
+                        if (!numericId) {
+                            errEl.textContent = '❌ Could not identify the rental record. Please try again.';
+                            errEl.style.display = 'block';
                             return;
                         }
-                        const userData = JSON.parse(userDataStr);
 
-                        // Gather new ratings
-                        const ratingCondition = parseInt(document.getElementById('ratingCondition').value);
-                        const ratingPerformance = parseInt(document.getElementById('ratingPerformance').value);
-                        const ratingCleanliness = parseInt(document.getElementById('ratingCleanliness').value);
+                        const btn = document.getElementById('feedbackSubmitBtn');
+                        btn.disabled = true;
+                        btn.textContent = '⏳ Submitting...';
 
-                        let driverRatings = {};
-                        if (driverProvided) {
-                            driverRatings = {
-                                rating_driver_skill: parseInt(document.getElementById('ratingDriverSkill').value),
-                                rating_driver_punctuality: parseInt(document.getElementById('ratingDriverPunctuality').value),
-                                rating_driver_behavior: parseInt(document.getElementById('ratingDriverBehavior').value)
-                            };
-                        }
-
+                        // Use the correct field name depending on type
                         const payload = {
-                            booking_id: bookingId,
-                            farmer_id: userData.id,
-                            rating: rating,
-                            comment: comment,
-                            rating_condition: ratingCondition,
-                            rating_performance: ratingPerformance,
-                            rating_cleanliness: ratingCleanliness,
-                            driver_provided: driverProvided ? 1 : 0,
-                            ...driverRatings
+                            booking_id: feedbackType === 'booking' ? numericId : 0,
+                            request_id: feedbackType === 'request' ? numericId : 0,
+                            record_type: feedbackType,
+                            farmer_id: farmerId,
+                            q1_condition: feedbackRatings.q1,
+                            q2_performance: feedbackRatings.q2,
+                            q3_value: feedbackRatings.q3,
+                            q4_communication: feedbackRatings.q4,
+                            q5_recommend: feedbackRatings.q5,
+                            additional_comments: document.getElementById('feedbackComments').value.trim()
                         };
 
-                        console.log('Sending feedback payload:', payload);
-
                         try {
-                            const response = await fetch('php/submit_feedback.php', {
+                            const res = await fetch('php/submit_feedback.php', {
                                 method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
+                                headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(payload)
                             });
+                            const data = await res.json();
 
-                            const result = await response.json();
-                            console.log('Feedback response:', result);
-
-                            if (result.success) {
-                                // Show success feedback
-                                // Use partial match for onclick selector because arguments vary
-                                const btn = document.querySelector(`button[onclick*="openFeedbackModal('${bookingId}'"]`) ||
-                                    document.querySelector(`button[onclick*='openFeedbackModal("${bookingId}"']`);
-
-                                if (btn) {
-                                    btn.innerHTML = `<span class="material-icons-outlined">check</span> Thanks!`;
-                                    btn.style.background = '#10b981';
-                                    setTimeout(() => {
-                                        if (window.closeModal) window.closeModal('feedbackModal');
-                                        loadAgreementsFromDatabase(); // Reload to update UI
-                                    }, 1000);
-                                } else {
-                                    if (window.closeModal) window.closeModal('feedbackModal');
+                            if (data.success) {
+                                // Show success state
+                                document.getElementById('feedbackForm').style.display = 'none';
+                                document.getElementById('feedbackSuccess').style.display = 'block';
+                                // Reload agreements after 2s to update badge
+                                setTimeout(() => {
+                                    closeFeedbackModal();
                                     loadAgreementsFromDatabase();
-                                }
+                                }, 3000);
                             } else {
-                                alert(result.error || result.message || 'Failed to submit feedback');
+                                errEl.textContent = '❌ ' + (data.error || 'Submission failed. Please try again.');
+                                errEl.style.display = 'block';
+                                btn.disabled = false;
+                                btn.textContent = '⭐ Submit Feedback';
                             }
-                        } catch (error) {
-                            console.error('Error submitting feedback:', error);
-                            alert('An error occurred. Please try again.');
+                        } catch (e) {
+                            errEl.textContent = '❌ Network error. Please try again.';
+                            errEl.style.display = 'block';
+                            btn.disabled = false;
+                            btn.textContent = '⭐ Submit Feedback';
                         }
                     }
                     window.submitFeedback = submitFeedback;

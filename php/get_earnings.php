@@ -154,12 +154,21 @@ try {
     $net_wallet_balance = $gross_wallet_balance - $total_withdrawn;
     if ($net_wallet_balance < 0) $net_wallet_balance = 0; // Should not happen ideally
 
+    // Get average rating
+    $rating_sql = "SELECT COALESCE(AVG(overall_rating), 0) as average_rating FROM rental_feedback WHERE owner_id = ?";
+    $stmt6 = $conn->prepare($rating_sql);
+    $stmt6->bind_param("i", $owner_id);
+    $stmt6->execute();
+    $rating_result = $stmt6->get_result();
+    $rating_data = $rating_result->fetch_assoc();
+    $average_rating = floatval($rating_data['average_rating']);
+    $stmt6->close();
 
     echo json_encode([
         'success' => true,
         'earnings' => [
             'active_listings' => intval($active_listings),
-            'average_rating' => 0.0,
+            'average_rating' => $average_rating,
             'total_earnings' => floatval($earnings_data['total_earnings']),
             'wallet_balance' => $net_wallet_balance,
             'withdrawn_amount' => $total_withdrawn,

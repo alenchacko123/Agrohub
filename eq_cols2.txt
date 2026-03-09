@@ -1,0 +1,20 @@
+﻿Field	Type	Null	Key	Default	Extra
+id	int(11)	NO	PRI	NULL	auto_increment
+owner_id	int(11)	NO	MUL	NULL	
+owner_name	varchar(255)	NO		NULL	
+equipment_name	varchar(255)	NO		NULL	
+category	varchar(50)	NO	MUL	NULL	
+price_per_day	decimal(10,2)	NO		NULL	
+equipment_condition	varchar(50)	NO		NULL	
+availability_status	varchar(50)	NO	MUL	available	
+approval_status	varchar(20)	YES		pending	
+description	text	YES		NULL	
+model	varchar(100)	YES		NULL	
+year_of_manufacture	int(11)	YES		NULL	
+fuel_type	varchar(50)	YES		NULL	
+capacity	varchar(100)	YES		NULL	
+location	varchar(255)	NO			
+image_url	varchar(500)	YES		NULL	
+created_at	timestamp	NO		current_timestamp()	
+updated_at	timestamp	NO		current_timestamp()	on update current_timestamp()
+

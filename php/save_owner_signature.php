@@ -150,17 +150,16 @@ try {
     
     if ($farmerResult->num_rows > 0) {
         $farmerData = $farmerResult->fetch_assoc();
-        $farmer_id = $farmerData['farmer_id'];
-        
-        // 6. Create Notification for Farmer
+        $farmer_id  = $farmerData['farmer_id'];
+
+        // 6. Create In-App Notification for Farmer
         $notificationMessage = "The owner has signed your rental agreement. The contract is now fully executed.";
-        $displayId = ($booking_id > 0) ? "AGR-" . $booking_id : "REQ-" . $request_id;
-        
-        $actionUrl = "agreements.html?id=" . $displayId;
-        
+        $displayId  = ($booking_id > 0) ? "AGR-" . $booking_id : "REQ-" . $request_id;
+        $actionUrl  = "agreements.html?id=" . $displayId;
+
         $notifStmt = $conn->prepare("INSERT INTO notifications (user_id, message, related_agreement_id, type, action_url, is_read) VALUES (?, ?, ?, 'agreement_signed', ?, FALSE)");
         $notifStmt->bind_param("isss", $farmer_id, $notificationMessage, $displayId, $actionUrl);
-        
+
         if ($notifStmt->execute()) {
             $response['notification_sent'] = true;
         } else {
@@ -168,6 +167,82 @@ try {
             $response['notification_sent'] = false;
         }
         $notifStmt->close();
+
+        // 7. Send Email Notifications to BOTH parties ────────────────────────
+        try {
+            require_once __DIR__ . '/send_agreement_email.php';
+
+            // Fetch farmer email + name
+            $emailSql  = "SELECT u.email, u.name FROM users u WHERE u.id = ?";
+            $emailStmt = $conn->prepare($emailSql);
+            $emailStmt->bind_param("i", $farmer_id);
+            $emailStmt->execute();
+            $emailRes  = $emailStmt->get_result();
+
+            $farmer_email_addr = '';
+            $farmer_name_str   = '';
+            if ($emailRes->num_rows > 0) {
+                $row = $emailRes->fetch_assoc();
+                $farmer_email_addr = $row['email'];
+                $farmer_name_str   = $row['name'];
+            }
+            $emailStmt->close();
+
+            // Fetch owner email + name
+            $ownStmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
+            $ownStmt->bind_param("i", $owner_id);
+            $ownStmt->execute();
+            $ownRes  = $ownStmt->get_result();
+            $owner_name_str  = 'The Owner';
+            $owner_email_addr = '';
+            if ($ownRes->num_rows > 0) {
+                $ownRow = $ownRes->fetch_assoc();
+                $owner_name_str   = $ownRow['name'];
+                $owner_email_addr = $ownRow['email'];
+            }
+            $ownStmt->close();
+
+            // Fetch equipment name
+            if ($booking_id > 0) {
+                $eqRow = $conn->query(
+                    "SELECT e.name FROM bookings b JOIN equipment e ON b.equipment_id = e.id WHERE b.id = " . intval($booking_id)
+                );
+            } else {
+                $eqRow = $conn->query(
+                    "SELECT e.name FROM rental_requests r JOIN equipment e ON r.equipment_id = e.id WHERE r.id = " . intval($request_id)
+                );
+            }
+            $eq_name = ($eqRow && $eqRow->num_rows > 0) ? $eqRow->fetch_assoc()['name'] : 'Your Equipment';
+
+            $signedAt  = date('Y-m-d H:i:s');
+
+            // Email to FARMER — agreement fully signed, you can download
+            if (!empty($farmer_email_addr)) {
+                sendOwnerSignedEmail(
+                    $farmer_email_addr,
+                    $farmer_name_str,
+                    $owner_name_str,
+                    $eq_name,
+                    $displayId,
+                    $signedAt
+                );
+            }
+
+            // Email to OWNER — confirmation that agreement is fully executed
+            if (!empty($owner_email_addr)) {
+                sendFullySignedOwnerEmail(
+                    $owner_email_addr,
+                    $owner_name_str,
+                    $farmer_name_str,
+                    $eq_name,
+                    $displayId,
+                    $signedAt
+                );
+            }
+
+        } catch (Exception $emailEx) {
+            error_log('Agreement fully-signed email error: ' . $emailEx->getMessage());
+        }
     }
     $farmerStmt->close();
 

@@ -327,29 +327,309 @@
             color: #dc2626;
         }
 
-        /* Auto-expired notice banner */
-        .expired-notice {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border: 1px solid #fcd34d;
-            border-left: 4px solid #f59e0b;
-            border-radius: 12px;
-            padding: 1rem 1.25rem;
+        /* Expired job card style */
+        .job-card.expired-card {
+            border-color: #e5e7eb;
+            opacity: 0.85;
+            background: #fafafa;
+        }
+
+        .job-card.expired-card:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .status-expired {
+            background: rgba(107, 114, 128, 0.12);
+            color: #6b7280;
+        }
+
+        /* Section divider */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0 1.25rem;
+        }
+
+        .section-divider h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-gray);
+            white-space: nowrap;
+        }
+
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        /* Post new job CTA strip */
+        .post-job-strip {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 1.5px dashed #6ee7b7;
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
             margin-bottom: 1.5rem;
+        }
+
+        .post-job-strip p {
+            color: #065f46;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Header action row */
+        .header-action-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-post-job {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.25);
+        }
+
+        .btn-post-job:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(22, 163, 74, 0.35);
+        }
+
+        .btn-repost {
+            background: var(--white);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .btn-repost:hover {
+            background: var(--light-green);
+        }
+
+        /* ── Re-post modal ─────────────────────────────────────────────────── */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2rem;
+            width: min(440px, 92vw);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            transform: translateY(24px) scale(0.97);
+            transition: transform 0.3s ease, opacity 0.25s ease;
+            opacity: 0;
+        }
+
+        .modal-backdrop.active .modal-box {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            font-size: 0.9rem;
-            color: #92400e;
+            margin-bottom: 1.5rem;
         }
 
-        .expired-notice button {
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .modal-subtitle {
+            font-size: 0.82rem;
+            color: var(--text-gray);
+            margin-top: 0.15rem;
+        }
+
+        .modal-close {
             margin-left: auto;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1.2rem;
-            color: #92400e;
+            color: var(--text-gray);
+            font-size: 1.4rem;
             line-height: 1;
+            padding: 0.25rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f3f4f6;
+        }
+
+        .modal-job-preview {
+            background: #f9fafb;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.88rem;
+            color: var(--text-gray);
+        }
+
+        .modal-job-preview strong {
+            display: block;
+            font-size: 1rem;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-field label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        .modal-field input[type="date"] {
+            padding: 0.8rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            background: #fff;
+        }
+
+        .modal-field input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.12);
+        }
+
+        .modal-hint {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            margin-top: 0.25rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .modal-actions .btn-cancel {
+            padding: 0.7rem 1.4rem;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            background: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-gray);
+            transition: background 0.2s;
+        }
+
+        .modal-actions .btn-cancel:hover {
+            background: #f3f4f6;
+        }
+
+        .modal-actions .btn-confirm {
+            padding: 0.7rem 1.6rem;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+        }
+
+        .modal-actions .btn-confirm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(22, 163, 74, 0.35);
+        }
+
+        .modal-actions .btn-confirm:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal-success {
+            text-align: center;
+            padding: 1rem 0 0.5rem;
+        }
+
+        .modal-success .success-icon {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-success h3 {
+            font-size: 1.2rem;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-success p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -361,17 +641,68 @@
             Back to Dashboard
         </a>
 
-        <div class="page-header">
-            <h1 class="page-title">📋 My Posted Jobs</h1>
-            <p class="page-subtitle">Manage your job postings and view applications</p>
+        <div class="header-action-row">
+            <div class="page-header" style="margin-bottom:0;">
+                <h1 class="page-title">📋 My Posted Jobs</h1>
+                <p class="page-subtitle">Manage your job postings and view applications</p>
+            </div>
+            <a href="post-job.html" class="btn-post-job">
+                <span class="material-icons-outlined" style="font-size:1.2rem;">add_circle</span>
+                Post a New Job
+            </a>
         </div>
 
-        <div id="expiredNotice" style="display:none;"></div>
-        <div class="jobs-grid" id="jobsGrid">
+        <div id="jobsContainer">
             <div class="loading">
                 <span class="material-icons-outlined"
                     style="font-size: 3rem; animation: spin 2s linear infinite;">hourglass_empty</span>
                 <p>Loading your jobs...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Re-post Modal ─────────────────────────────────────────────────── -->
+    <div class="modal-backdrop" id="repostModal" onclick="closeRepostModal(event)">
+        <div class="modal-box" id="repostModalBox">
+            <div class="modal-header">
+                <div class="modal-icon">🔄</div>
+                <div>
+                    <div class="modal-title">Re-Post Job</div>
+                    <div class="modal-subtitle" id="repostModalSubtitle">Set a new start date to re-activate</div>
+                </div>
+                <button class="modal-close" onclick="closeRepostModal()" title="Close">&times;</button>
+            </div>
+
+            <!-- Job preview -->
+            <div class="modal-job-preview" id="repostJobPreview"></div>
+
+            <!-- Date inputs -->
+            <div id="repostFormArea">
+                <div class="modal-field">
+                    <label for="repostStartDate">New Start Date <span style="color:#ef4444">*</span></label>
+                    <input type="date" id="repostStartDate" onchange="updateRepostEndMin()">
+                    <span class="modal-hint">Must be a future date</span>
+                </div>
+                <div class="modal-field">
+                    <label for="repostEndDate">New End Date <small
+                            style="font-weight:400;color:var(--text-gray);">(Optional — auto-set from
+                            duration)</small></label>
+                    <input type="date" id="repostEndDate">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="closeRepostModal()">Cancel</button>
+                    <button class="btn-confirm" id="repostConfirmBtn" onclick="submitRepost()">
+                        <span class="material-icons-outlined" style="font-size:1.1rem;">refresh</span>
+                        Re-Post Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success state (shown after API call) -->
+            <div class="modal-success" id="repostSuccessArea" style="display:none;">
+                <div class="success-icon">✅</div>
+                <h3>Job Re-Posted!</h3>
+                <p>Your job is now live and workers can apply.</p>
             </div>
         </div>
     </div>
@@ -446,7 +777,6 @@
         async function loadMyJobs() {
             console.log('=== LOADING MY JOBS ===');
             console.log('Farmer ID:', farmerId);
-            console.log('API URL:', `php/get_my_jobs.php?farmer_id=${farmerId}`);
 
             if (!farmerId) {
                 console.error('No farmer ID - cannot load jobs');
@@ -456,34 +786,17 @@
 
             try {
                 const response = await fetch(`php/get_my_jobs.php?farmer_id=${farmerId}`);
-                console.log('Response status:', response.status);
-
                 const result = await response.json();
                 console.log('API Response:', result);
 
                 if (result.success) {
-                    // Show auto-expiry notice if any jobs were just expired
-                    if (result.auto_expired > 0) {
-                        const notice = document.getElementById('expiredNotice');
-                        notice.style.display = 'flex';
-                        notice.innerHTML = `
-                            <span class="material-icons-outlined" style="font-size:1.3rem;color:#f59e0b;">schedule</span>
-                            <span><strong>${result.auto_expired} job${result.auto_expired > 1 ? 's were' : ' was'} automatically removed</strong> because the job date has passed.</span>
-                            <button onclick="this.parentElement.style.display='none'" title="Dismiss">&times;</button>
-                        `;
-                    }
-
-                    console.log('Jobs count:', result.jobs?.length || 0);
                     if (result.jobs && result.jobs.length > 0) {
-                        console.log('Displaying jobs:', result.jobs);
                         displayJobs(result.jobs);
                     } else {
-                        console.warn('No active jobs returned from API');
-                        showEmptyState(result.auto_expired > 0);
+                        showEmptyState();
                     }
                 } else {
                     console.error('API returned error:', result.message);
-                    console.error('Debug info:', result.debug);
                     showEmptyState();
                 }
             } catch (error) {
@@ -492,132 +805,149 @@
             }
         }
 
-        function displayJobs(jobs) {
-            const grid = document.getElementById('jobsGrid');
-
-            // Get job category icons
-            function getJobIcon(category) {
-                const icons = {
-                    'planting': '🌱',
-                    'harvesting': '🚜',
-                    'irrigation': '💧',
-                    'pesticide': '🌿',
-                    'weeding': '🪴',
-                    'default': '🌾'
-                };
-                return icons[category?.toLowerCase()] || icons['default'];
-            }
-
-            grid.innerHTML = jobs.map(job => {
-                function getJobIcon(category) {
-                    const icons = {
-                        'planting': '🌱', 'harvesting': '🚜', 'irrigation': '💧',
-                        'pesticide': '🌿', 'weeding': '🪴', 'default': '🌾'
-                    };
-                    return icons[category?.toLowerCase()] || icons['default'];
-                }
-
-                // Expiry badge helper
-                let expiryBadge = '';
-                if (job.expiry_date) {
-                    const dr = job.days_remaining;
-                    let cls = 'expiry-safe', icon = 'event_available', label = '';
-                    if (dr === null || dr > 7) {
-                        cls = 'expiry-safe'; icon = 'event_available'; label = `Expires ${new Date(job.expiry_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`;
-                    } else if (dr > 3) {
-                        cls = 'expiry-soon'; icon = 'schedule'; label = `Expires in ${dr} days`;
-                    } else if (dr > 0) {
-                        cls = 'expiry-urgent'; icon = 'warning'; label = `Expires in ${dr} day${dr > 1 ? 's' : ''} ⚠️`;
-                    } else {
-                        cls = 'expiry-urgent'; icon = 'warning'; label = 'Expires today!';
-                    }
-                    expiryBadge = `<span class="expiry-badge ${cls}"><span class="material-icons-outlined" style="font-size:0.9rem;">${icon}</span>${label}</span>`;
-                }
-
-                return `
-                <div class="job-card">
-                    <span class="job-status status-active">Available</span>
-
-                    <div class="job-card-header">
-                        <div class="job-icon">${getJobIcon(job.job_category)}</div>
-                        <div class="job-title-section">
-                            <h3>${job.job_title}</h3>
-                            <div class="job-meta">Posted ${job.posted_ago || 'recently'}</div>
-                            ${expiryBadge}
-                        </div>
-                    </div>
-
-                    <div class="job-details-row">
-                        <div class="detail-item">
-                            <div class="detail-label">
-                                <span class="material-icons-outlined detail-icon">location_on</span>
-                                Location
-                            </div>
-                            <div class="detail-value">${job.location}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">
-                                <span class="material-icons-outlined detail-icon">calendar_today</span>
-                                Duration
-                            </div>
-                            <div class="detail-value">${job.duration_days} days</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">
-                                <span class="material-icons-outlined detail-icon">payments</span>
-                                Wage
-                            </div>
-                            <div class="detail-value">&#8377;${Number(job.wage_per_day).toFixed(2)}/day</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">
-                                <span class="material-icons-outlined detail-icon">groups</span>
-                                Workers Needed
-                            </div>
-                            <div class="detail-value">${job.workers_needed}</div>
-                        </div>
-                    </div>
-
-                    <div class="job-description">
-                        ${job.description || job.job_description || 'No description provided'}
-                    </div>
-
-                    <div class="job-footer">
-                        <div class="farmer-info">
-                            <div class="farmer-avatar">${(job.farmer_name || farmerName || 'F').charAt(0).toUpperCase()}</div>
-                            <div class="farmer-details">
-                                <div class="farmer-name">${job.farmer_name || farmerName || 'Farm Owner'}</div>
-                                <div class="farmer-role">Farm Owner</div>
-                            </div>
-                        </div>
-                        <div class="job-actions">
-                            <button class="btn btn-primary" onclick="viewApplications(${job.id})">
-                                <span class="material-icons-outlined" style="font-size: 1.1rem;">people</span>
-                                View Applications
-                            </button>
-                            <button class="btn btn-secondary" onclick="viewJobDetails(${job.id})">
-                                <span class="material-icons-outlined" style="font-size: 1.1rem;">visibility</span>
-                                View Job
-                            </button>
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
+        function getJobIcon(category) {
+            const icons = {
+                'planting': '🌱', 'harvesting': '🚜', 'irrigation': '💧',
+                'pesticide': '🌿', 'weeding': '🪴', 'default': '🌾'
+            };
+            return icons[category?.toLowerCase()] || icons['default'];
         }
 
-        function showEmptyState(allExpired = false) {
-            const grid = document.getElementById('jobsGrid');
-            const msg = allExpired
-                ? 'All your job postings have expired and been removed. <a href="post-job.html">Post a new job</a> to find workers!'
-                : 'You haven\'t posted any jobs yet. <a href="post-job.html">Post your first job</a> to find workers!';
-            const icon = allExpired ? 'event_busy' : 'work_off';
-            grid.innerHTML = `
+        function buildJobCard(job, isExpired) {
+            // Expiry badge helper
+            let expiryBadge = '';
+            if (!isExpired && job.expiry_date) {
+                const dr = job.days_remaining;
+                let cls = 'expiry-safe', icon = 'event_available', label = '';
+                if (dr === null || dr > 7) {
+                    cls = 'expiry-safe'; icon = 'event_available';
+                    label = `Expires ${new Date(job.expiry_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+                } else if (dr > 3) {
+                    cls = 'expiry-soon'; icon = 'schedule'; label = `Expires in ${dr} days`;
+                } else if (dr > 0) {
+                    cls = 'expiry-urgent'; icon = 'warning'; label = `Expires in ${dr} day${dr > 1 ? 's' : ''} ⚠️`;
+                } else {
+                    cls = 'expiry-urgent'; icon = 'warning'; label = 'Expires today!';
+                }
+                expiryBadge = `<span class="expiry-badge ${cls}"><span class="material-icons-outlined" style="font-size:0.9rem;">${icon}</span>${label}</span>`;
+            }
+
+            const statusBadge = isExpired
+                ? `<span class="job-status status-expired">Expired</span>`
+                : `<span class="job-status status-active">Active</span>`;
+
+            const actions = isExpired
+                ? `<div class="job-actions">
+                        <button class="btn btn-primary btn-repost" onclick="repostJob(${JSON.stringify(job).replace(/"/g, '&quot;')})">
+                            <span class="material-icons-outlined" style="font-size:1.1rem;">refresh</span>
+                            Re-Post This Job
+                        </button>
+                    </div>`
+                : `<div class="job-actions">
+                        <button class="btn btn-primary" onclick="viewApplications(${job.id})">
+                            <span class="material-icons-outlined" style="font-size:1.1rem;">people</span>
+                            View Applications
+                        </button>
+                        <button class="btn btn-secondary" onclick="viewJobDetails(${job.id})">
+                            <span class="material-icons-outlined" style="font-size:1.1rem;">visibility</span>
+                            View Job
+                        </button>
+                    </div>`;
+
+            return `
+            <div class="job-card${isExpired ? ' expired-card' : ''}">
+                ${statusBadge}
+                <div class="job-card-header">
+                    <div class="job-icon">${getJobIcon(job.job_category)}</div>
+                    <div class="job-title-section">
+                        <h3>${job.job_title}</h3>
+                        <div class="job-meta">Posted ${job.posted_ago || 'recently'}</div>
+                        ${expiryBadge}
+                    </div>
+                </div>
+                <div class="job-details-row">
+                    <div class="detail-item">
+                        <div class="detail-label"><span class="material-icons-outlined detail-icon">location_on</span>Location</div>
+                        <div class="detail-value">${job.location}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label"><span class="material-icons-outlined detail-icon">calendar_today</span>Duration</div>
+                        <div class="detail-value">${job.duration_days} days</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label"><span class="material-icons-outlined detail-icon">payments</span>Wage</div>
+                        <div class="detail-value">&#8377;${Number(job.wage_per_day).toFixed(2)}/day</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label"><span class="material-icons-outlined detail-icon">groups</span>Workers Needed</div>
+                        <div class="detail-value">${job.workers_needed}</div>
+                    </div>
+                </div>
+                <div class="job-description">${job.description || job.job_description || 'No description provided'}</div>
+                <div class="job-footer">
+                    <div class="farmer-info">
+                        <div class="farmer-avatar">${(job.farmer_name || farmerName || 'F').charAt(0).toUpperCase()}</div>
+                        <div class="farmer-details">
+                            <div class="farmer-name">${job.farmer_name || farmerName || 'Farm Owner'}</div>
+                            <div class="farmer-role">Farm Owner</div>
+                        </div>
+                    </div>
+                    ${actions}
+                </div>
+            </div>`;
+        }
+
+        function displayJobs(jobs) {
+            const container = document.getElementById('jobsContainer');
+
+            const activeJobs = jobs.filter(j => j.status !== 'Expired');
+            const expiredJobs = jobs.filter(j => j.status === 'Expired');
+
+            let html = '';
+
+            // ── Active jobs ──────────────────────────────────────────────────
+            if (activeJobs.length > 0) {
+                html += `<div class="jobs-grid" id="activeJobsGrid">
+                    ${activeJobs.map(j => buildJobCard(j, false)).join('')}
+                </div>`;
+            } else {
+                html += `
+                <div class="post-job-strip">
+                    <p>📭 You have no active jobs right now. Post a new job to find workers!</p>
+                    <a href="post-job.html" class="btn btn-primary" style="white-space:nowrap;text-decoration:none;">
+                        <span class="material-icons-outlined" style="font-size:1.1rem;">add_circle</span>
+                        Post a New Job
+                    </a>
+                </div>`;
+            }
+
+            // ── Expired jobs section ─────────────────────────────────────────
+            if (expiredJobs.length > 0) {
+                html += `
+                <div class="section-divider">
+                    <h2>⏰ Expired Jobs (${expiredJobs.length})</h2>
+                </div>
+                <div class="jobs-grid" id="expiredJobsGrid">
+                    ${expiredJobs.map(j => buildJobCard(j, true)).join('')}
+                </div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function showEmptyState() {
+            const container = document.getElementById('jobsContainer');
+            container.innerHTML = `
                 <div class="empty-state">
                     <div class="icon">
-                        <span class="material-icons-outlined" style="font-size: inherit;">${icon}</span>
+                        <span class="material-icons-outlined" style="font-size: inherit;">work_off</span>
                     </div>
-                    <h3>${allExpired ? 'No Active Jobs' : 'No Posted Jobs'}</h3>
-                    <p>${msg}</p>
+                    <h3>No Posted Jobs</h3>
+                    <p>You haven't posted any jobs yet.</p>
+                    <a href="post-job.html" class="btn-post-job" style="margin-top:1.5rem;display:inline-flex;text-decoration:none;">
+                        <span class="material-icons-outlined" style="font-size:1.2rem;">add_circle</span>
+                        Post Your First Job
+                    </a>
                 </div>
             `;
         }
@@ -629,6 +959,120 @@
         function viewJobDetails(jobId) {
             window.location.href = `farmer-job-manage.html?job_id=${jobId}`;
         }
+
+        // ── Re-post modal logic ──────────────────────────────────────────────
+        let _repostJobId = null;
+
+        function repostJob(job) {
+            _repostJobId = job.id;
+
+            // Populate preview info inside the modal
+            document.getElementById('repostJobPreview').innerHTML = `
+                <strong>${job.job_title}</strong>
+                📍 ${job.location} &nbsp;|&nbsp; ⏱ ${job.duration_days} day(s) &nbsp;|&nbsp; 💰 ₹${Number(job.wage_per_day || job.payment_amount || 0).toFixed(0)}/day
+            `;
+
+            // Reset date inputs
+            const today = new Date().toISOString().split('T')[0];
+            const startInput = document.getElementById('repostStartDate');
+            const endInput = document.getElementById('repostEndDate');
+            startInput.min = today;
+            startInput.value = '';
+            startInput.style.borderColor = '';
+            endInput.min = today;
+            endInput.value = '';
+
+            // Reset modal to form state
+            document.getElementById('repostFormArea').style.display = '';
+            document.getElementById('repostSuccessArea').style.display = 'none';
+            document.getElementById('repostConfirmBtn').disabled = false;
+            document.getElementById('repostConfirmBtn').innerHTML =
+                '<span class="material-icons-outlined" style="font-size:1.1rem;">refresh</span> Re-Post Now';
+
+            // Open modal
+            document.getElementById('repostModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => startInput.focus(), 300);
+        }
+
+        function updateRepostEndMin() {
+            const start = document.getElementById('repostStartDate').value;
+            if (start) {
+                document.getElementById('repostEndDate').min = start;
+                document.getElementById('repostStartDate').style.borderColor = '';
+            }
+        }
+
+        function closeRepostModal(e) {
+            // If triggered by backdrop click, only close when clicking the backdrop itself
+            if (e && e.target !== document.getElementById('repostModal')) return;
+            document.getElementById('repostModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function submitRepost() {
+            const startDate = document.getElementById('repostStartDate').value;
+            const endDate = document.getElementById('repostEndDate').value;
+            const today = new Date().toISOString().split('T')[0];
+
+            if (!startDate) {
+                document.getElementById('repostStartDate').style.borderColor = '#ef4444';
+                document.getElementById('repostStartDate').focus();
+                return;
+            }
+            if (startDate < today) {
+                document.getElementById('repostStartDate').style.borderColor = '#ef4444';
+                document.getElementById('repostStartDate').focus();
+                return;
+            }
+
+            const btn = document.getElementById('repostConfirmBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-icons-outlined" style="font-size:1.1rem;animation:spin 1s linear infinite;">hourglass_empty</span> Posting...';
+
+            try {
+                const resp = await fetch('php/repost_job.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job_id: _repostJobId,
+                        new_start_date: startDate,
+                        new_end_date: endDate || null
+                    })
+                });
+
+                const result = await resp.json();
+
+                if (result.success) {
+                    // Show success state
+                    document.getElementById('repostFormArea').style.display = 'none';
+                    document.getElementById('repostSuccessArea').style.display = 'block';
+                    // After 1.8 s, close modal and reload the job list
+                    setTimeout(() => {
+                        document.getElementById('repostModal').classList.remove('active');
+                        document.body.style.overflow = '';
+                        loadMyJobs();
+                    }, 1800);
+                } else {
+                    alert('Error: ' + (result.message || 'Failed to re-post job.'));
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-icons-outlined" style="font-size:1.1rem;">refresh</span> Re-Post Now';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-icons-outlined" style="font-size:1.1rem;">refresh</span> Re-Post Now';
+            }
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.getElementById('repostModal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
 
         // Load jobs on page load
         document.addEventListener('DOMContentLoaded', loadMyJobs);
