@@ -1854,7 +1854,7 @@
                                         ownerSignature: booking.owner_signature_data || null,
                                         ownerSignatureType: booking.owner_signature_type || 'text',
                                         ownerSignedAt: booking.owner_signed_at || null,
-                                        agreementStatus: booking.agreement_full_status || booking.agreement_status || 'fully_signed',
+                                        agreementStatus: booking.agreement_full_status || booking.agreement_status || (booking.signature_data ? 'farmer_signed' : 'pending'),
                                         hasFeedback: booking.has_feedback == 1,
                                         feedbackRating: booking.feedback_rating,
                                         feedbackComment: booking.feedback_comment,
@@ -1917,7 +1917,7 @@
                                             paymentStatus: (request.status === 'paid' || request.status === 'completed' || request.payment_status === 'paid' || request.payment_status === 'completed') ? 'paid' : 'pending',
                                             paidAmount: 0,
                                             paidAt: null,
-                                            agreementStatus: request.agreement_full_status || request.agreement_status || 'pending',
+                                            agreementStatus: request.agreement_full_status || request.agreement_status || (request.signature_data ? 'farmer_signed' : 'pending'),
                                             farmerSignature: request.signature_data || null,
                                             signatureType: request.signature_type || 'text',
                                             signedAt: request.signed_at || null,
@@ -1988,9 +1988,16 @@
                                                 signAgreementOwner(target.id);
                                             }
                                         }
-                                        // Case 3: Just View
+                                        // Case 3: Just View (or Download if requested)
                                         else {
                                             viewAgreement(target.id);
+                                            
+                                            // Auto-download if requested via URL
+                                            if (urlParams.get('download') == '1') {
+                                                setTimeout(() => {
+                                                    downloadAgreement(target.id);
+                                                }, 1000); // Give view a moment to load
+                                            }
                                         }
 
                                         // Clean URL
@@ -2060,14 +2067,10 @@
                             const userType = getCurrentUserType();
 
                             // Actions available
+                            let actionButtons = ''; // Initialize actionButtons here
                             const isActive = agreement.status === 'active';
-                            const isPending = agreement.status === 'pending';
-
-                            let actionButtons = '';
-
-                            // Sign & Pay Button for Pending Payment or Initiated (but NOT if already paid or already signed)
                             const isPaymentCompleted = agreement.paymentStatus === 'paid' || agreement.paymentStatus === 'completed';
-                            const isAlreadySigned = agreement.farmerSignature ||
+                            const isAlreadySigned = (agreement.farmerSignature && agreement.farmerSignature.length > 5) ||
                                 agreement.agreementStatus === 'farmer_signed' ||
                                 agreement.agreementStatus === 'fully_signed';
                             if (isPendingPayment && userType === 'farmer' && !isPaymentCompleted && !isAlreadySigned) {
@@ -2142,19 +2145,22 @@
                             let badgeIcon = 'check_circle';
 
                             // Priority: Check agreementStatus first, then status
-                            if (agreement.agreementStatus === 'fully_signed' || agreement.status === 'fully_signed') {
-                                badgeClass = 'active'; // Green
+                            // If it's expired AND paid, we consider it a completed (fully signed) transaction for history
+                            const isCompleted = agreement.status === 'expired' && isPaymentCompleted;
+
+                            if (agreement.agreementStatus === 'fully_signed' || agreement.status === 'fully_signed' || isCompleted) {
+                                badgeClass = agreement.status === 'expired' ? 'expired' : 'active'; // Keep gray for past, green for active
                                 badgeIcon = 'verified_user';
                                 statusText = 'Fully Signed';
-                            } else if (agreement.agreementStatus === 'farmer_signed') {
+                            } else if (isPaymentCompleted && (agreement.agreementStatus === 'farmer_signed' || (agreement.farmerSignature && agreement.farmerSignature.length > 5))) {
                                 badgeClass = 'pending'; // Orange/Yellow indicating action needed from owner
                                 badgeIcon = 'draw';
                                 statusText = 'Farmer Signed';
-                            } else if (agreement.status === 'active' && (agreement.paymentStatus === 'paid' || agreement.paymentStatus === 'completed')) {
+                            } else if (agreement.status === 'active' || isPaymentCompleted) {
                                 badgeClass = 'active'; // Green
                                 badgeIcon = 'verified';
                                 statusText = 'PAID';
-                            } else if (agreement.status === 'pending_payment' || agreement.status === 'pending' || agreement.status === 'initiated') {
+                            } else if (isPendingPayment || agreement.status === 'initiated') {
                                 badgeClass = 'pending'; // Orange
                                 badgeIcon = 'priority_high';
                                 statusText = 'Payment Pending';
@@ -2944,33 +2950,33 @@
                 </div>
 
                 <div class="section"
-                     style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px solid ${(agreement.agreementStatus === 'fully_signed') ? '#10b981' : '#e2e8f0'}; border-radius: 16px; padding: 1.5rem; margin-top: 1.5rem;">
-                    <div class="section-title" style="display: flex; align-items: center; gap: 0.5rem; color: ${(agreement.agreementStatus === 'fully_signed') ? '#047857' : '#64748b'};">
-                        <span class="material-icons-outlined" style="font-size: 1.2rem;">${(agreement.agreementStatus === 'fully_signed') ? 'contact_phone' : 'lock'}</span>
+                     style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px solid #10b981; border-radius: 16px; padding: 1.5rem; margin-top: 1.5rem;">
+                    <div class="section-title" style="display: flex; align-items: center; gap: 0.5rem; color: #047857;">
+                        <span class="material-icons-outlined" style="font-size: 1.2rem;">contact_phone</span>
                         8. CONTACT DETAILS
                     </div>
-                    ${(agreement.agreementStatus === 'fully_signed') ? `
-                        <p style="font-size: 0.9rem; color: #059669; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem;">
-                            <span class="material-icons-outlined" style="font-size: 1rem;">verified_user</span>
-                            Agreement fully executed &mdash; contact details are now unlocked.
-                        </p>
-                        <div id="contactInfo_${agreement.requestId || agreement.bookingId || agreement.id.replace(/AGR-|REQ-/g, '')}"
-                             style="background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid #d1fae5; min-height: 60px; display: flex; align-items: center; justify-content: center;">
-                            <button onclick="loadContactDetails('${agreement.requestId || 0}', '${agreement.bookingId || 0}', this)"
-                                    style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.4rem; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 12px rgba(16,185,129,0.3); transition: all 0.2s;">
-                                <span class="material-icons-outlined" style="font-size: 1.1rem;">contact_phone</span>
-                                View Contact Details
-                            </button>
-                        </div>
-                    ` : `
-                        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
-                            <span class="material-icons-outlined" style="font-size: 2rem; color: #94a3b8;">lock</span>
-                            <div>
-                                <p style="font-weight: 600; color: #475569; margin: 0;">Contact details are locked</p>
-                                <p style="font-size: 0.85rem; color: #94a3b8; margin: 0.25rem 0 0 0;">Contact details will be available after agreement completion.</p>
+                    <div style="display:flex;flex-direction:column;gap:0.75rem;width:100%;margin-top:1rem;">
+                        <div style="display:flex;align-items:center;gap:1rem;background:white;border-radius:12px;padding:1rem;border:1px solid #a7f3d0;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#10b981,#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <span class="material-icons-outlined" style="color:white;font-size:1.2rem;">agriculture</span>
+                            </div>
+                            <div style="flex:1;">
+                                <p style="font-weight:700;color:#1e293b;margin:0;font-size:0.9rem;">${agreement.farmerName}</p>
+                                <p style="font-size:0.7rem;color:#64748b;margin:0;">Farmer (Lessee)</p>
+                                <p style="font-size:0.9rem;color:#047857;margin:0.2rem 0 0 0;font-weight:600;">Tel: ${agreement.farmerPhone || 'Not Provided'}</p>
                             </div>
                         </div>
-                    `}
+                        <div style="display:flex;align-items:center;gap:1rem;background:white;border-radius:12px;padding:1rem;border:1px solid #bfdbfe;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <span class="material-icons-outlined" style="color:white;font-size:1.2rem;">business</span>
+                            </div>
+                            <div style="flex:1;">
+                                <p style="font-weight:700;color:#1e293b;margin:0;font-size:0.9rem;">${agreement.ownerName}</p>
+                                <p style="font-size:0.7rem;color:#64748b;margin:0;">Owner (Lessor)</p>
+                                <p style="font-size:0.9rem;color:#1d4ed8;margin:0.2rem 0 0 0;font-weight:600;">Tel: ${agreement.ownerPhone || 'Not Provided'}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="signature-section" style="margin-top: 3rem; display: flex; justify-content: space-between; gap: 2rem;">
@@ -3028,100 +3034,7 @@
             `;
                     }
 
-                    // Load contact details securely from backend
-                    async function loadContactDetails(requestId, bookingId, btn) {
-                        const userData = JSON.parse(localStorage.getItem('agrohub_user') || '{}');
-                        // Support both camelCase (userType) and snake_case (user_type) stored keys
-                        const resolvedUserType = userData.userType || userData.user_type || '';
-                        if (!userData.id || !resolvedUserType) {
-                            alert('Session expired. Please log in again.');
-                            return;
-                        }
 
-                        // Derive container ID — same logic as the button's data
-                        const containerId = (parseInt(requestId) > 0 ? requestId : bookingId) || requestId;
-                        const container = document.getElementById('contactInfo_' + containerId);
-                        if (!container) return;
-
-                        // Loading state
-                        btn.innerHTML = '<span class="material-icons-outlined" style="font-size:1rem;animation:spin 1s linear infinite;">sync</span> Loading...';
-                        btn.disabled = true;
-
-                        try {
-                            const res = await fetch('php/get_contact_details.php', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    user_id: userData.id,
-                                    user_type: resolvedUserType,
-                                    request_id: parseInt(requestId) || 0,
-                                    booking_id: parseInt(bookingId) || 0
-                                })
-                            });
-                            const resText = await res.text();
-                            let data;
-                            try {
-                                data = JSON.parse(resText);
-                            } catch (e) {
-                                console.error('Raw response:', resText);
-                                container.innerHTML = `<p style="color:#ef4444;font-size:0.85rem;">Server error: Invalid response format. Check console.</p>`;
-                                return;
-                            }
-
-                            if (!data.success) {
-                                container.innerHTML = `<p style="color:#ef4444;font-weight:600;"><span class="material-icons-outlined" style="vertical-align:middle;font-size:1rem;">error</span> ${data.error || 'Failed to load contact details.'}</p>`;
-                                return;
-                            }
-
-                            if (!data.unlocked) {
-                                container.innerHTML = `
-                                    <div style="display:flex;align-items:center;gap:0.75rem;">
-                                        <span class="material-icons-outlined" style="color:#f59e0b;font-size:1.5rem;">lock</span>
-                                        <p style="color:#92400e;font-weight:600;margin:0;">${data.message}</p>
-                                    </div>`;
-                                return;
-                            }
-
-                            // Success — render BOTH contact cards
-                            container.innerHTML = `
-                                <div style="display:flex;flex-direction:column;gap:0.75rem;width:100%;">
-                                    <div style="display:flex;align-items:center;gap:1rem;background:#f0fdf4;border-radius:12px;padding:1rem;border:1px solid #a7f3d0;">
-                                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#10b981,#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                            <span class="material-icons-outlined" style="color:white;font-size:1.4rem;">agriculture</span>
-                                        </div>
-                                        <div style="flex:1;">
-                                            <p style="font-weight:700;color:#1e293b;margin:0;font-size:0.95rem;">${data.farmer_name}</p>
-                                            <p style="font-size:0.75rem;color:#64748b;margin:0.1rem 0 0.4rem 0;">Farmer (Lessee)</p>
-                                            <a href="tel:${data.farmer_phone}"
-                                               style="display:inline-flex;align-items:center;gap:0.35rem;background:white;color:#047857;padding:0.3rem 0.85rem;border-radius:8px;font-weight:700;font-size:0.95rem;text-decoration:none;border:1.5px solid #6ee7b7;">
-                                                <span class="material-icons-outlined" style="font-size:1rem;">call</span>
-                                                ${data.farmer_phone}
-                                            </a>
-                                        </div>
-                                        <span style="background:#d1fae5;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.7rem;font-weight:700;color:#065f46;text-transform:uppercase;">Farmer</span>
-                                    </div>
-                                    <div style="display:flex;align-items:center;gap:1rem;background:#eff6ff;border-radius:12px;padding:1rem;border:1px solid #bfdbfe;">
-                                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                            <span class="material-icons-outlined" style="color:white;font-size:1.4rem;">business</span>
-                                        </div>
-                                        <div style="flex:1;">
-                                            <p style="font-weight:700;color:#1e293b;margin:0;font-size:0.95rem;">${data.owner_name}</p>
-                                            <p style="font-size:0.75rem;color:#64748b;margin:0.1rem 0 0.4rem 0;">Equipment Owner (Lessor)</p>
-                                            <a href="tel:${data.owner_phone}"
-                                               style="display:inline-flex;align-items:center;gap:0.35rem;background:white;color:#1d4ed8;padding:0.3rem 0.85rem;border-radius:8px;font-weight:700;font-size:0.95rem;text-decoration:none;border:1.5px solid #93c5fd;">
-                                                <span class="material-icons-outlined" style="font-size:1rem;">call</span>
-                                                ${data.owner_phone}
-                                            </a>
-                                        </div>
-                                        <span style="background:#dbeafe;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.7rem;font-weight:700;color:#1e40af;text-transform:uppercase;">Owner</span>
-                                    </div>
-                                </div>`;
-
-                        } catch (e) {
-                            // Show raw response for debugging
-                            container.innerHTML = `<p style="color:#ef4444;font-size:0.85rem;word-break:break-all;">Error: ${e.message}</p>`;
-                        }
-                    }
 
 
                     // Open insurance modal

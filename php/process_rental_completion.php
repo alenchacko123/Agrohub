@@ -193,6 +193,15 @@ try {
     $updateStmt->execute();
     $updateStmt->close();
 
+    // 4.5 Update Agreement Record Status
+    $agUpdateSql = "UPDATE agreements SET status = 'farmer_signed' WHERE rental_request_id = ?";
+    $agUpdateStmt = $conn->prepare($agUpdateSql);
+    if ($agUpdateStmt) {
+        $agUpdateStmt->bind_param("i", $clean_id);
+        $agUpdateStmt->execute();
+        $agUpdateStmt->close();
+    }
+
     // 5. Update Equipment Status to 'Rented'
     // This blocks the equipment from being rented by others instantly
     $eqSql = "UPDATE equipment SET availability_status = 'rented' WHERE id = ?";
@@ -263,7 +272,7 @@ try {
     // 7. Notify Owner to Sign Agreement (in-app + email)
     try {
         // Get Owner details (id, name, email) and equipment name
-        $ownSql = "SELECT e.owner_id, e.name as equipment_name, u.name as owner_name, u.email as owner_email
+        $ownSql = "SELECT e.owner_id, e.equipment_name, u.name as owner_name, u.email as owner_email
                    FROM equipment e
                    JOIN users u ON u.id = e.owner_id
                    WHERE e.id = ?";

@@ -2,9 +2,9 @@ import mysql.connector
 
 try:
     conn = mysql.connector.connect(
-        host="127.0.0.1",
+        host="localhost",
         user="root",
-        password="", # XAMPP default
+        password="", 
         database="agrohub",
         port=3306
     )

@@ -155,7 +155,7 @@ try {
         // 6. Create In-App Notification for Farmer
         $notificationMessage = "The owner has signed your rental agreement. The contract is now fully executed.";
         $displayId  = ($booking_id > 0) ? "AGR-" . $booking_id : "REQ-" . $request_id;
-        $actionUrl  = "agreements.html?id=" . $displayId;
+        $actionUrl  = "agreements.html?id=" . $displayId . "&download=1";
 
         $notifStmt = $conn->prepare("INSERT INTO notifications (user_id, message, related_agreement_id, type, action_url, is_read) VALUES (?, ?, ?, 'agreement_signed', ?, FALSE)");
         $notifStmt->bind_param("isss", $farmer_id, $notificationMessage, $displayId, $actionUrl);
@@ -205,14 +205,14 @@ try {
             // Fetch equipment name
             if ($booking_id > 0) {
                 $eqRow = $conn->query(
-                    "SELECT e.name FROM bookings b JOIN equipment e ON b.equipment_id = e.id WHERE b.id = " . intval($booking_id)
+                    "SELECT e.equipment_name FROM bookings b JOIN equipment e ON b.equipment_id = e.id WHERE b.id = " . intval($booking_id)
                 );
             } else {
                 $eqRow = $conn->query(
-                    "SELECT e.name FROM rental_requests r JOIN equipment e ON r.equipment_id = e.id WHERE r.id = " . intval($request_id)
+                    "SELECT e.equipment_name FROM rental_requests r JOIN equipment e ON r.equipment_id = e.id WHERE r.id = " . intval($request_id)
                 );
             }
-            $eq_name = ($eqRow && $eqRow->num_rows > 0) ? $eqRow->fetch_assoc()['name'] : 'Your Equipment';
+            $eq_name = ($eqRow && $eqRow->num_rows > 0) ? $eqRow->fetch_assoc()['equipment_name'] : 'Your Equipment';
 
             $signedAt  = date('Y-m-d H:i:s');
 

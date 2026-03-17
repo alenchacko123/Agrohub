@@ -92,7 +92,7 @@ try {
     $hasFeedbackTable = ($checkFeedback && $checkFeedback->num_rows > 0);
 
     if ($hasFeedbackTable) {
-        $sql .= ", rf.id as feedback_id, rf.rating as feedback_rating, rf.comment as feedback_comment, 
+        $sql .= ", rf.id as feedback_id, rf.overall_rating as feedback_rating, rf.additional_comments as feedback_comment, 
                    CASE WHEN rf.id IS NOT NULL THEN 1 ELSE 0 END as has_feedback";
     }
 

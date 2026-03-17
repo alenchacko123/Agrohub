@@ -249,8 +249,8 @@ function sendOwnerSignedEmail($farmerEmail, $farmerName, $ownerName, $equipmentN
     $siteName     = defined('SITE_NAME') ? SITE_NAME : 'AgroHub';
     $year         = date('Y');  // define BEFORE heredoc
     $signedDate   = $signedAt ? date('d M Y, h:i A', strtotime($signedAt)) : date('d M Y, h:i A');
-    $agreementUrl = $siteUrl . '/agreements.html?id=' . urlencode($agreementId);
-    $subject      = "[AgroHub] Agreement Fully Signed! {$ownerName} has completed your rental agreement";
+    $agreementUrl = $siteUrl . '/agreements.html?id=' . urlencode($agreementId) . '&download=1';
+    $subject      = "[AgroHub] Rental Approved! {$ownerName} has signed your agreement";
 
     $html = <<<HTML
 <!DOCTYPE html>
@@ -268,7 +268,8 @@ function sendOwnerSignedEmail($farmerEmail, $farmerName, $ownerName, $equipmentN
 
         <tr><td style="padding:0 40px;">
           <div style="background:#d1fae5;border-left:5px solid #10b981;border-radius:8px;padding:14px 18px;margin:24px 0 0;text-align:center;">
-            <p style="margin:0;color:#047857;font-weight:700;font-size:15px;">&#10003; Your Agreement is Now Fully Executed!</p>
+            <p style="margin:0;color:#047857;font-weight:700;font-size:16px;">&#10003; Payment Verified & Agreement Approved!</p>
+            <p style="margin:4px 0 0;color:#065f46;font-size:13px;">You are now cleared to rent the equipment.</p>
           </div>
         </td></tr>
 
@@ -317,7 +318,7 @@ function sendOwnerSignedEmail($farmerEmail, $farmerName, $ownerName, $equipmentN
         <tr><td style="padding:0 40px 28px;text-align:center;">
           <a href="{$agreementUrl}"
              style="display:inline-block;background:#1b4332;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:14px 36px;border-radius:50px;">
-            View &amp; Download Agreement
+            Download Final Agreement (PDF)
           </a>
           <p style="margin:12px 0 0;color:#94a3b8;font-size:12px;">
             Link: <a href="{$agreementUrl}" style="color:#2d6a4f;">{$agreementUrl}</a>
@@ -361,7 +362,7 @@ function sendFullySignedOwnerEmail($ownerEmail, $ownerName, $farmerName, $equipm
     $siteName     = defined('SITE_NAME') ? SITE_NAME : 'AgroHub';
     $year         = date('Y');  // define BEFORE heredoc
     $signedDate   = $signedAt ? date('d M Y, h:i A', strtotime($signedAt)) : date('d M Y, h:i A');
-    $agreementUrl = $siteUrl . '/agreements.html?id=' . urlencode($agreementId);
+    $agreementUrl = $siteUrl . '/agreements.html?id=' . urlencode($agreementId) . '&download=1';
     $subject      = "[AgroHub] Agreement Fully Signed! Your rental agreement with {$farmerName} is complete";
 
     $html = <<<HTML

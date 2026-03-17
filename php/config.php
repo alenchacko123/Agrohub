@@ -6,7 +6,7 @@
  */
 
 // Database Configuration
-define('DB_HOST', '127.0.0.1');
+define('DB_HOST', 'localhost');
 define('DB_USER', 'root');           // Change to your MySQL username
 define('DB_PASS', '');               // Change to your MySQL password
 define('DB_NAME', 'agrohub');        // Your database name
@@ -15,7 +15,7 @@ define('DB_NAME', 'agrohub');        // Your database name
 define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
 define('SMTP_USER', 'alenchacko2028@mca.ajce.in');     // Your email address
-define('SMTP_PASS', 'sfrxoljhnaqzybpi');           // Gmail App Password
+define('SMTP_PASS', 'tutcgydbvwjmsare');           // Gmail App Password
 define('SMTP_FROM', 'alenchacko2028@mca.ajce.in');
 define('SMTP_FROM_NAME', 'AgroHub');
 

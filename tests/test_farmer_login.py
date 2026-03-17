@@ -30,9 +30,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 #  Database Configuration (from php/config.php)
 # ─────────────────────────────────────────────
 DB_CONFIG = {
-    "host":     "127.0.0.1",
+    "host":     "localhost",
     "user":     "root",
-    "password": "",           # XAMPP default has no password
+    "password": "",
     "database": "agrohub",
     "port":     3306,
 }

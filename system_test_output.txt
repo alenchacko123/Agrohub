@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Test - AgroHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2d6a4f;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subtitle {
+            color: #4a5568;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .status-card {
+            background: #f8fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #2d6a4f;
+        }
+
+        .status-card h3 {
+            color: #2d6a4f;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #2d6a4f;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8fafb;
+        }
+
+        .success {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: rgba(45, 106, 79, 0.1);
+            color: #2d6a4f;
+        }
+
+        .links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .link-card {
+            background: linear-gradient(135deg, #2d6a4f, #1b4332);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(45, 106, 79, 0.3);
+        }
+
+        .link-card .material-icons-outlined {
+            font-size: 2.5rem;
+        }
+
+        .link-info h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .link-info p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span class="material-icons-outlined">check_circle</span>
+            AgroHub System Test
+        </h1>
+        <p class="subtitle">Job Application and Hiring Module - System Status</p>
+
+        <!-- Database Connection -->
+        <div class="status-card">
+            <h3>
+                <span class="material-icons-outlined">storage</span>
+                Database Connection
+            </h3>
+            <p class="success">Γ£ô Connected to MySQL database: agrohub</p>
+            <p><strong>Host:</strong> localhost</p>
+            <p><strong>User:</strong> root</p>
+        </div>
+
+        <!-- Database Tables -->
+        <div class="status-card">
+            <h3>
+                <span class="material-icons-outlined">table_chart</span>
+                Database Tables
+            </h3>
+            <p class='success'>Γ£ô Found 27 tables</p><table><tr><th>#</th><th>Table Name</th><th>Records</th></tr><tr><td>1</td><td><strong>agreements</strong></td><td><span class='badge'>34 records</span></td></tr><tr><td>2</td><td><strong>bookings</strong></td><td><span class='badge'>16 records</span></td></tr><tr><td>3</td><td><strong>dashboard_services</strong></td><td><span class='badge'>24 records</span></td></tr><tr><td>4</td><td><strong>equipment</strong></td><td><span class='badge'>4 records</span></td></tr><tr><td>5</td><td><strong>insurance_plans</strong></td><td><span class='badge'>3 records</span></td></tr><tr><td>6</td><td><strong>job_applications</strong></td><td><span class='badge'>3 records</span></td></tr><tr><td>7</td><td><strong>job_messages</strong></td><td><span class='badge'>4 records</span></td></tr><tr><td>8</td><td><strong>job_portal_applications</strong></td><td><span class='badge'>1 records</span></td></tr><tr><td>9</td><td><strong>job_postings</strong></td><td><span class='badge'>4 records</span></td></tr><tr><td>10</td><td><strong>job_posts</strong></td><td><span class='badge'>0 records</span></td></tr><tr><td>11</td><td><strong>notifications</strong></td><td><span class='badge'>23 records</span></td></tr><tr><td>12</td><td><strong>password_reset_tokens</strong></td><td><span class='badge'>2 records</span></td></tr><tr><td>13</td><td><strong>payments</strong></td><td><span class='badge'>10 records</span></td></tr><tr><td>14</td><td><strong>purchase_enquiries</strong></td><td><span class='badge'>2 records</span></td></tr><tr><td>15</td><td><strong>rental_feedback</strong></td><td><span class='badge'>3 records</span></td></tr><tr><td>16</td><td><strong>rental_requests</strong></td><td><span class='badge'>13 records</span></td></tr><tr><td>17</td><td><strong>secondhand_equipment</strong></td><td><span class='badge'>1 records</span></td></tr><tr><td>18</td><td><strong>system_settings</strong></td><td><span class='badge'>16 records</span></td></tr><tr><td>19</td><td><strong>user_sessions</strong></td><td><span class='badge'>172 records</span></td></tr><tr><td>20</td><td><strong>users</strong></td><td><span class='badge'>7 records</span></td></tr><tr><td>21</td><td><strong>videos</strong></td><td><span class='badge'>2 records</span></td></tr><tr><td>22</td><td><strong>withdrawals</strong></td><td><span class='badge'>8 records</span></td></tr><tr><td>23</td><td><strong>worker_availability</strong></td><td><span class='badge'>0 records</span></td></tr><tr><td>24</td><td><strong>worker_certifications</strong></td><td><span class='badge'>0 records</span></td></tr><tr><td>25</td><td><strong>worker_documents</strong></td><td><span class='badge'>0 records</span></td></tr><tr><td>26</td><td><strong>worker_profiles</strong></td><td><span class='badge'>0 records</span></td></tr><tr><td>27</td><td><strong>worker_skills</strong></td><td><span class='badge'>0 records</span></td></tr></table>        </div>
+
+        <!-- PHP Version -->
+        <div class="status-card">
+            <h3>
+                <span class="material-icons-outlined">code</span>
+                PHP Version
+            </h3>
+            <p class="success">Γ£ô PHP 8.2.12</p>
+        </div>
+
+        <!-- Available Pages -->
+        <div class="status-card">
+            <h3>
+                <span class="material-icons-outlined">description</span>
+                Available Pages
+            </h3>
+            <div class="links">
+                <a href="signup-worker.html" class="link-card">
+                    <span class="material-icons-outlined">person_add</span>
+                    <div class="link-info">
+                        <h4>Worker Signup</h4>
+                        <p>Register as a worker</p>
+                    </div>
+                </a>
+
+                <a href="login-worker.html" class="link-card">
+                    <span class="material-icons-outlined">login</span>
+                    <div class="link-info">
+                        <h4>Worker Login</h4>
+                        <p>Login to dashboard</p>
+                    </div>
+                </a>
+
+                <a href="worker-dashboard.html" class="link-card">
+                    <span class="material-icons-outlined">dashboard</span>
+                    <div class="link-info">
+                        <h4>Worker Dashboard</h4>
+                        <p>View your dashboard</p>
+                    </div>
+                </a>
+
+                <a href="job-portal.html" class="link-card">
+                    <span class="material-icons-outlined">work</span>
+                    <div class="link-info">
+                        <h4>Job Portal</h4>
+                        <p>Browse careers</p>
+                    </div>
+                </a>
+
+                <a href="job-portal-dashboard.html" class="link-card">
+                    <span class="material-icons-outlined">assignment</span>
+                    <div class="link-info">
+                        <h4>Portal Dashboard</h4>
+                        <p>Track applications</p>
+                    </div>
+                </a>
+
+                <a href="landingpage.html" class="link-card">
+                    <span class="material-icons-outlined">home</span>
+                    <div class="link-info">
+                        <h4>Home Page</h4>
+                        <p>Return to home</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="status-card">
+            <h3>
+                <span class="material-icons-outlined">info</span>
+                System Status
+            </h3>
+            <p class="success">Γ£ô All systems operational</p>
+            <p class="success">Γ£ô Database schema loaded successfully</p>
+            <p class="success">Γ£ô Worker portal ready</p>
+            <p class="success">Γ£ô Job portal ready</p>
+            <p class="success">Γ£ô All APIs functional</p>
+        </div>
+    </div>
+</body>
+</html>

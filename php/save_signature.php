@@ -112,13 +112,13 @@ try {
 
     // Prepare INSERT query - now includes status
     $insertSql = "INSERT INTO agreements (rental_request_id, farmer_id, signature_type, signature_data, ip_address, signed_at, status) 
-                  VALUES (?, ?, ?, ?, ?, NOW(), 'farmer_signed')
+                  VALUES (?, ?, ?, ?, ?, NOW(), 'signature_captured')
                   ON DUPLICATE KEY UPDATE 
                   signature_type = VALUES(signature_type), 
                   signature_data = VALUES(signature_data),
                   signed_at = NOW(),
                   ip_address = VALUES(ip_address),
-                  status = 'farmer_signed'";
+                  status = 'signature_captured'";
 
     $stmt = $conn->prepare($insertSql);
     if (!$stmt) {
@@ -133,16 +133,13 @@ try {
 
     // Update rental_requests table to mark as farmer_signed (only if column exists)
     // Check if agreement_status column exists first
+    /* Premature update removed - now handled in process_rental_completion.php after payment
     $checkCol = $conn->query("SHOW COLUMNS FROM rental_requests LIKE 'agreement_status'");
     if ($checkCol && $checkCol->num_rows > 0) {
         $updateRequestSql = "UPDATE rental_requests SET agreement_status = 'farmer_signed' WHERE id = ?";
-        $stmt = $conn->prepare($updateRequestSql);
-        if ($stmt) {
-            $stmt->bind_param("i", $rental_request_id);
-            $stmt->execute();
-            $stmt->close();
-        }
+        ...
     }
+    */
 
     // 5. Send notification to the owner
     $response['notification_sent'] = false;

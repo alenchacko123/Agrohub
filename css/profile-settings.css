@@ -1,6 +1,11 @@
 /* =============================
    PROFILE SETTINGS - PREMIUM STYLING
    ============================= */
+:root {
+    --primary-blue: #0077b6;
+    --dark-blue: #023e8a;
+    --surface-white: #ffffff;
+}
 
 .profile-card-premium {
     background: #ffffff;
@@ -185,7 +190,7 @@
     width: 100%;
     padding: 1.125rem 2rem;
     background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
-    color: var(--surface-white);
+    color: #ffffff;
     border: none;
     border-radius: 12px;
     font-size: 0.95rem;
